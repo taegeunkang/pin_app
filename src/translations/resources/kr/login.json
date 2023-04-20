@@ -1,0 +1,14 @@
+{
+  "title": "TREP 슬로건",
+  "slogan": "TREP",
+  "input": { "id": "이메일 또는 아이디", "password": "비밀번호" },
+  "forget": "비밀번호를 잊어버리셨나요?",
+  "loginBtn": "계속하기",
+  "snsLogin": "SNS 로그인",
+  "registerTitle": "아직 회원이 아니신가요? >",
+  "wrongId": "이메일 형식이 아닙니다.",
+  "wrongPassword": "비밀번호가 일치하지 않습니다.",
+  "wrongInfo": "사용자가 존재하지 않습니다.",
+  "header": { "register": "회원가입" },
+  "oauth": { "error": "알 수 없는 에러가 발생했습니다." }
+}

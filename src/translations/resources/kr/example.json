@@ -1,0 +1,10 @@
+{
+  "helloUser": "임시 사용자 {{name}} 입니다.",
+  "titles": {
+    "apiCalls": "사용자 ID -> 사용자 이름",
+    "themeChoice": "테마 선택"
+  },
+  "labels": {
+    "userId": "Id(숫자)를 입력하면 랜덤으로 이름이 생성됩니다."
+  }
+}
