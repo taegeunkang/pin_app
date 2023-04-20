@@ -17,8 +17,7 @@ const Startup = ({ navigation }) => {
 
     let token = await AsyncStorage.getItem('token');
     if (token && token.length > 0) {
-      // navigation.reset({ routes: [{ name: 'Home' }] });
-      // navigation.push('Content');
+      navigation.reset({ routes: [{ name: 'Home' }] });
     } else {
       navigation.reset({
         index: 0,

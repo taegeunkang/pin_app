@@ -10,11 +10,14 @@ import { useTheme } from '../hooks';
 import ContentNavigator from './Content';
 import { useFlipper } from '@react-navigation/devtools';
 import Login from '../screens/Login/Login';
-// import Register from '../screens/Login/Register';
+import Register from '../screens/Login/Register';
+import { useTranslation } from 'react-i18next';
+import { Colors } from '../theme/Variables';
 // import Home from '../screens/Home/Home';
 const Stack = createStackNavigator();
 // @refresh reset
 const ApplicationNavigator = () => {
+  const {t} = useTranslation('login');
   const { Layout, darkMode, NavigationTheme } = useTheme();
   const { colors } = NavigationTheme;
   const navigationRef = useNavigationContainerRef();
@@ -30,7 +33,7 @@ const ApplicationNavigator = () => {
             component={Login}
             options={{ title: '' }}
           />
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Register"
             component={Register}
             options={{
@@ -38,7 +41,7 @@ const ApplicationNavigator = () => {
               headerTintColor: Colors.black,
               headerTitleStyle: { color: Colors.black },
             }}
-          /> */}
+          />
           {/* <Stack.Screen
             name="Home"
             component={Home}
@@ -49,11 +52,11 @@ const ApplicationNavigator = () => {
               headerShown: false,
             }}
           /> */}
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Home"
             component={ContentNavigator}
             options={{ headerShown: false }}
-          /> */}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>
