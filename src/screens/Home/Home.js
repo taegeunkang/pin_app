@@ -3,15 +3,25 @@ import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { useState, useEffect } from 'react';
 import GpsAlert from '../../components/Content/GpsAlert';
+import ListModal from '../../components/Content/ListModal';
 import { Colors } from '../../theme/Variables';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { WithLocalSvg } from 'react-native-svg';
+import CurrentLocationBtn from "../../theme/assets/images/current_location_btn.svg";
+import ListBtn from "../../theme/assets/images/list_btn.svg";
+import MyPageBtn from "../../theme/assets/images/mypage_btn.svg";
+import UploadBtn from "../../theme/assets/images/upload_btn.svg";
 import { useTheme } from '../../hooks';
+import MyPage from './MyPage';
+import Upload from './Upload';
 const Home = ({ navigation }) => {
   const [gpsPermission, setGpsPermission] = useState(false);
   const [image, setImage] = useState([]);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [region, setRegion] = useState(null);
+  const [listBtn, setListBtn] = useState(false);
+
   const {Gutters} = useTheme();
   const openCamera = async () => {
     let result = await launchCamera({
@@ -62,7 +72,20 @@ const Home = ({ navigation }) => {
       longitude: longitude,
       latitudeDelta: 0.0175,
       longitudeDelta: 0.0175,
-    })
+    });
+  }
+
+  const moveToMyPage = () => {
+    navigation.navigate(MyPage);
+
+  }
+
+  const moveToUpload = () => {
+    navigation.navigate(Upload);
+  }
+
+  const showList = () => {
+    setListBtn(true);
   }
 
   useEffect(() => {
@@ -76,9 +99,22 @@ const Home = ({ navigation }) => {
       {!latitude && !longitude && <ActivityIndicator size={'large'} style={[Gutters.largeVMargin]} />}
       {latitude && longitude && <>
 
-      <View style={{ width: 45, height: 45, alignItems: 'center', justifyContent:'center', position: 'absolute', bottom: 30, left : 20, backgroundColor: Colors.lightGray, zIndex:100}}>
+      <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent:'center', position: 'absolute', top: 30, right : 20, backgroundColor: Colors.transparent, zIndex:100}}>
+         <Pressable style={{ width:'100%', height: '100%'}} onPress={moveToMyPage}>
+         <WithLocalSvg width={50} height={50} asset={MyPageBtn} />
+        </Pressable>
+      </View>
+
+
+      <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent:'center', position: 'absolute', top: 100, right : 20, backgroundColor: Colors.transparent, zIndex:100}}>
+         <Pressable style={{ width:'100%', height: '100%'}} onPress={showList}>
+         <WithLocalSvg width={50} height={50} asset={ListBtn} />
+        </Pressable>
+      </View>
+
+      <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent:'center', position: 'absolute', bottom: 30, left : 20, backgroundColor: Colors.transparent, zIndex:100}}>
          <Pressable style={{ width:'100%', height: '100%'}} onPress={returnCurrentLocation}>
-          <Text>return</Text>
+         <WithLocalSvg width={50} height={50} asset={CurrentLocationBtn} />
         </Pressable>
       </View>
       <View
@@ -95,10 +131,13 @@ const Home = ({ navigation }) => {
         }}
       >
        
-        <Pressable style={styles.uploadBtn} onPress={upload}>
-          <Text> upload </Text>
+        <Pressable style={styles.uploadBtn} onPress={moveToUpload}>
+          <WithLocalSvg width={50} height={50} asset={UploadBtn} />
         </Pressable>
       </View>
+
+
+
       <MapView
         style={styles.map}
          showsUserLocation = {true}
@@ -121,6 +160,10 @@ const Home = ({ navigation }) => {
       }} pinColor='#000000' /> */}
       </MapView></>}
 
+      <Modal visible={listBtn} animationType={'fade'} transparent={true} >
+        <ListModal closeModal={() => setListBtn(false)} />
+      </Modal>
+
       <Modal visible={gpsPermission} animationType={'fade'} transparent={true}>
         <GpsAlert />
       </Modal>
@@ -139,7 +182,7 @@ const styles = StyleSheet.create({
   uploadBtn: {
     width: 60,
     height: 60,
-    backgroundColor: Colors.lightGray,
+    backgroundColor: Colors.transparent,
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',

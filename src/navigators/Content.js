@@ -4,28 +4,30 @@ import MyPage from '../screens/Home/MyPage';
 import AlertScreen from '../screens/Home/AlertScreen';
 import Upload from '../screens/Home/Upload';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import { WithLocalSvg } from 'react-native-svg';
+import RightArrow from "../theme/assets/images/arrow-right-solid.svg";
+import {Button} from "react-native";
 const Stack = createStackNavigator();
 // @refresh reset
 const Content = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen
         name="HomeScreen"
         component={Home}
-        // options={{
-        //   tabBarIconStyle: { display: 'none' },
-        //   tabBarLabelPosition: 'beside-icon',
-        //   tabBarShowLabel: false,
-        // }}
+        options={{
+          headerShown : false
+        }}
       />
       <Stack.Screen
         name="Upload"
         component={Upload}
-        // options={{
-        //   tabBarIconStyle: { display: 'none' },
-        //   tabBarLabelPosition: 'beside-icon',
-        // }}
+        options={{
+          headerBackTitleVisible : false,
+          // 버튼 이미지 삽입 예정 
+          headerRight: () => (
+            <WithLocalSvg width={23} height={23} asset={RightArrow} onPress={() => alert("hi")}/>)
+        }}
       />
       {/* <Stack.Screen
         name="Dummy"
@@ -47,10 +49,9 @@ const Content = () => {
       <Stack.Screen
         name="MyPage"
         component={MyPage}
-        // options={{
-        //   tabBarIconStyle: { display: 'none' },
-        //   tabBarLabelPosition: 'beside-icon',
-        // }}
+        options={{
+          headerBackTitleVisible : false
+        }}
       />
     </Stack.Navigator>
   );
