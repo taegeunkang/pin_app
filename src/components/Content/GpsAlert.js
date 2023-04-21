@@ -2,7 +2,7 @@ import { View, StyleSheet, Text, Pressable } from 'react-native';
 import { BorderRadius, Colors, FontSize } from '../../theme/Variables';
 import { useTranslation } from 'react-i18next';
 const GpsAlert = () => {
-  const { t } = useTranslation('cotent');
+  const { t } = useTranslation('content');
 
   return (
     <View style={styles.container}>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   popUp: {
     width: '100%',
-    height: '35%',
+    height: '70%',
     backgroundColor: Colors.white,
     borderTopLeftRadius: BorderRadius.xLarge,
     borderTopRightRadius: BorderRadius.xLarge,

@@ -41,8 +41,9 @@ const Home = ({ navigation }) => {
         
       },
       error => {
-        console.log('Error:', error);
-        setGpsPermission(true);
+        switch(error["code"]){
+          case 1: setGpsPermission(true); break;
+        }
       },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
     );
