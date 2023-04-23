@@ -1,10 +1,12 @@
 import { Dimensions, FlatList, Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import CameraBtn from "../../theme/assets/images/camera-solid.svg";
+import CropBtn from "../../theme/assets/images/crop-solid.svg";
 import { FontSize } from "../../theme/Variables";
 import { WithLocalSvg } from "react-native-svg";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import * as RNFS from "react-native-fs";
+import * as ImagePicker from "react-native-image-crop-picker";
 
 const Upload = ({ navigation, route }) => {
   const [croppedImage, setCroppedImage] = useState(null);
@@ -18,6 +20,18 @@ const Upload = ({ navigation, route }) => {
     };
     t();
   }, []);
+
+  const cropImg = () => {
+    ImagePicker.openCropper({
+      path: target,
+      width: 400,
+      height: 400,
+      freeStyleCropEnabled: false,
+    }).then(image => {
+      console.log(image);
+      setTarget(image["path"]);
+    }).catch(error => console.warn(error));
+  };
   const getGalleryPhotos = async () => {
     const params = {
       //이미지를 불러올 개수 (최신순으로)
@@ -76,9 +90,24 @@ const Upload = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      {target && <Image source={{
-        uri: target,
-      }} style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").width }} />}
+      {target && <View>
+        <Image source={{
+          uri: target,
+        }} style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").width }} />
+        <Pressable style={{
+          width: 40,
+          height: 40,
+          borderRadius: 100,
+          backgroundColor: "rgba(255,255,255,0.5)",
+          position: "absolute",
+          bottom: 15,
+          left: 15,
+          alignItems: "center",
+          justifyContent: "center",
+        }} onPress={cropImg}>
+          <WithLocalSvg asset={CropBtn} width={20} height={20} />
+        </Pressable>
+      </View>}
 
 
       {!target &&
@@ -94,7 +123,21 @@ const Upload = ({ navigation, route }) => {
         alignItems: "center",
       }}>
         <Text style={{ fontSize: FontSize.regular, fontWeight: 600 }}>사진 목록</Text>
-        <WithLocalSvg asset={CameraBtn} width={20} height={20} />
+        <View style={{ flexDirection: "row" }}>
+          <Pressable style={{
+            paddingLeft: 5,
+            paddingRight: 5,
+            paddingTop: 2,
+            paddingBottom: 2,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 25,
+            backgroundColor: "rgba(0,0,0,0.1)",
+          }}>
+            <Text style={{ fontSize: FontSize.tiny }}>여러가지 선택</Text>
+          </Pressable>
+          <WithLocalSvg asset={CameraBtn} width={20} height={20} style={{ marginRight: 5 }} />
+        </View>
       </View>
 
       <FlatList

@@ -6161,10 +6161,20 @@ react-native-gradle-plugin@^0.71.17:
   resolved "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.17.tgz"
   integrity sha512-OXXYgpISEqERwjSlaCiaQY6cTY5CH6j73gdkWpK0hedxtiWMWgH+i5TOi4hIGYitm9kQBeyDu+wim9fA8ROFJA==
 
+react-native-image-crop-picker@^0.39.0:
+  version "0.39.0"
+  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.39.0.tgz#9cb8e8ffb0e8ab06f7b3227cadf077169e225eba"
+  integrity sha512-4aANbQMrmU6zN/4b0rVBA7SbaZ3aa5JESm3Xk751sINybZMt1yz/9h95LkO7U0pbslHDo3ofXjG75PmQRP6a/w==
+
 react-native-image-picker@5.3.1:
   version "5.3.1"
   resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-5.3.1.tgz"
   integrity sha512-zRCjtlE3KOeaWDM8gXzTwXfvo3ZeF2XMkHceU7CVCtKRleKxna/E4XWIPu/lXO2qlMdnSx1WvfPSbqzAX0qxpA==
+
+react-native-instagram-like-image-cropper@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-instagram-like-image-cropper/-/react-native-instagram-like-image-cropper-1.0.6.tgz#fec787b84f05a1e43d60fb4de7b95a409955ef3a"
+  integrity sha512-e5wVRRQUbaEAjbq7JIvJxPYnb++z7EJj4j8Kjq41PKxRxo62SIETwf9u8P0ELaSDSDuIEgmCNLOhbSsMvFdosQ==
 
 react-native-maps@1.4.0:
   version "1.4.0"
