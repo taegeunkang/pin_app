@@ -2,17 +2,22 @@ import { Dimensions, FlatList, Image, Platform, Pressable, StyleSheet, Text, Vie
 import { useEffect, useState } from "react";
 import CameraBtn from "../../theme/assets/images/camera-solid.svg";
 import CropBtn from "../../theme/assets/images/crop-solid.svg";
-import { FontSize } from "../../theme/Variables";
+import { Colors, FontSize } from "../../theme/Variables";
 import { WithLocalSvg } from "react-native-svg";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+import Square1 from "./Square1";
 import * as RNFS from "react-native-fs";
-import * as ImagePicker from "react-native-image-crop-picker";
 
 const Upload = ({ navigation, route }) => {
   const [croppedImage, setCroppedImage] = useState(null);
+  const [scale, setScale] = useState(1);
+  const [scales, setScales] = useState([]);
   const [photos, setPhotos] = useState([]);
   const [target, setTarget] = useState(null);
   const [galleryCursor, setGalleryCursor] = useState(null);
+  const [array, setArray] = useState([]);
+  const [arrayId, setArrayId] = useState([]);
+
   useEffect(() => {
     const t = async () => {
       await getGalleryPhotos();
@@ -22,15 +27,11 @@ const Upload = ({ navigation, route }) => {
   }, []);
 
   const cropImg = () => {
-    ImagePicker.openCropper({
-      path: target,
-      width: 400,
-      height: 400,
-      freeStyleCropEnabled: false,
-    }).then(image => {
-      console.log(image);
-      setTarget(image["path"]);
-    }).catch(error => console.warn(error));
+    setScale((scale == 1) ? 2 : 1);
+    // 구현 해야하는 기능
+    // 이미지 다중 선택시 이미지 별로 스케일 따로 저장
+    // 동영상 -> 이건 실물 기기 연결한 상태에서 해야함
+
   };
   const getGalleryPhotos = async () => {
     const params = {
@@ -87,27 +88,63 @@ const Upload = ({ navigation, route }) => {
 
     return fileURI;
   };
+  const isArrayContain = (target) => {
+    let arr = array;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] == target) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const addArray = (target) => {
+    let arr = array;
+    if (!isArrayContain(target) && arr.length <= 10) {
+      arr.push(target);
+      setArray(arr);
+    }
+    setTarget(target);
+  };
+  const findArrayIdx = (target) => {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] == target) return i + 1;
+    }
+    return -1;
+
+  };
+  const removeTargetFromArray = (target) => {
+    let arr = array;
+    let i;
+    for (i = 0; i < arr.length; i++) {
+      if (arr[i] === target) {
+        break;
+      }
+    }
+    let newArr = arr.slice(0, i).concat(arr.slice(i + 1));
+    setArray(newArr);
+
+  };
 
   return (
     <View style={styles.container}>
-      {target && <View>
-        <Image source={{
-          uri: target,
-        }} style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").width }} />
-        <Pressable style={{
-          width: 40,
-          height: 40,
-          borderRadius: 100,
-          backgroundColor: "rgba(255,255,255,0.5)",
-          position: "absolute",
-          bottom: 15,
-          left: 15,
-          alignItems: "center",
-          justifyContent: "center",
-        }} onPress={cropImg}>
-          <WithLocalSvg asset={CropBtn} width={20} height={20} />
-        </Pressable>
-      </View>}
+      {target &&
+        <View style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").width }}>
+          <Square1 image={target} scale={scale} setScale={setScale} />
+          <Pressable style={{
+            width: 40,
+            height: 40,
+            borderRadius: 100,
+            backgroundColor: "rgba(255,255,255,0.5)",
+            position: "absolute",
+            bottom: 15,
+            left: 15,
+            alignItems: "center",
+            justifyContent: "center",
+          }} onPress={cropImg}>
+            <WithLocalSvg asset={CropBtn} width={20} height={20} />
+          </Pressable>
+        </View>}
 
 
       {!target &&
@@ -121,21 +158,11 @@ const Upload = ({ navigation, route }) => {
         paddingRight: 10,
         height: 40,
         alignItems: "center",
+        backgroundColor: Colors.white,
       }}>
         <Text style={{ fontSize: FontSize.regular, fontWeight: 600 }}>사진 목록</Text>
         <View style={{ flexDirection: "row" }}>
-          <Pressable style={{
-            paddingLeft: 5,
-            paddingRight: 5,
-            paddingTop: 2,
-            paddingBottom: 2,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 25,
-            backgroundColor: "rgba(0,0,0,0.1)",
-          }}>
-            <Text style={{ fontSize: FontSize.tiny }}>여러가지 선택</Text>
-          </Pressable>
+
           <WithLocalSvg asset={CameraBtn} width={20} height={20} style={{ marginRight: 5 }} />
         </View>
       </View>
@@ -143,13 +170,32 @@ const Upload = ({ navigation, route }) => {
       <FlatList
         data={photos}
         renderItem={({ item }) => (
-          <Pressable onPress={() => setTarget(item.uri)}>
-            <Image source={{ uri: item.uri }}
-                   style={{ width: Dimensions.get("window").width / 4, height: Dimensions.get("window").width / 4 }} />
-          </Pressable>
+          <View>
+            <Pressable onPress={() => addArray(item.uri)}>
+              <Image source={{ uri: item.uri }}
+                     style={{
+                       width: Dimensions.get("window").width / 4,
+                       height: Dimensions.get("window").width / 4,
+                     }} />
+            </Pressable>
+            {(findArrayIdx(item.uri) !== -1) && <Pressable onPress={() => removeTargetFromArray(item.uri)} style={{
+              width: 20,
+              height: 20,
+              borderRadius: 100,
+              backgroundColor: "rgba(255,255,255,0.7)",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "absolute",
+              top: 5,
+              left: 5,
+            }}>
+              <Text>{findArrayIdx(item.uri)}</Text>
+            </Pressable>}
+          </View>
         )}
         keyExtractor={(item) => item.id.toString()}
         numColumns={4}
+        style={{ backgroundColor: Colors.white }}
 
       />
     </View>
