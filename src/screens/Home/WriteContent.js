@@ -6,8 +6,9 @@ import {
   Dimensions,
   TextInput,
   Pressable,
+  TouchableOpacity,
 } from 'react-native';
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Sample1 from '../../theme/assets/images/sample/sample1.png';
 
 import {WithLocalSvg} from 'react-native-svg';
@@ -19,7 +20,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const WriteContent = ({navigation, route}) => {
   const [text, setText] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
-
+  const [locationName, setLocationName] = useState('');
+  const [submitAva, setSubmitAva] = useState(false);
   // 사진 미니미 + 게시글 작성
   // 위치 지정
   // 함꼐한 친구 추가
@@ -28,6 +30,7 @@ const WriteContent = ({navigation, route}) => {
   const getLocationName = () => {
     try {
       if (route.params.locationName) {
+        setLocationName(route.params.locationName);
         return route.params.locationName;
       }
     } catch {
@@ -35,9 +38,31 @@ const WriteContent = ({navigation, route}) => {
     }
   };
 
+  const check = () => {
+    if (text && locationName) {
+      setSubmitAva(false);
+      console.log('a');
+    } else {
+      setSubmitAva(true);
+      console.log('b');
+    }
+  };
+
   const moveToFindingLocation = () => {
     navigation.navigate('FindingLocation');
   };
+
+  const submit = () => {
+    console.log('clicked');
+  };
+  const onChangeTyping = e => {
+    setText(e);
+  };
+
+  useEffect(() => {
+    check();
+    getLocationName();
+  });
 
   return (
     <View style={{flex: 1}}>
@@ -55,7 +80,7 @@ const WriteContent = ({navigation, route}) => {
                 textAlignVertical: 'top',
                 padding: 5,
               }}
-              onChangeText={e => setText(e.value)}
+              onChangeText={e => onChangeTyping(e)}
             />
           </View>
         </View>
@@ -64,7 +89,7 @@ const WriteContent = ({navigation, route}) => {
       <View style={{flex: 1, padding: 10}}>
         <View style={styles.listContent}>
           <Text style={{fontSize: FontSize.medium}}>위치</Text>
-          <Text>{getLocationName()}</Text>
+          <Text>{locationName}</Text>
           {/* {AsyncStorage.getItem('currentLocation') && (
             <Text>{AsyncStorage.getItem('currentLocation')}</Text>
           )} */}
@@ -75,10 +100,12 @@ const WriteContent = ({navigation, route}) => {
             onPress={moveToFindingLocation}
           />
         </View>
-        <View style={styles.listContent}>
+
+        {/* 친구 기능 추가 후 생성 */}
+        {/* <View style={styles.listContent}>
           <Text style={{fontSize: FontSize.medium}}>함꼐한 친구</Text>
           <WithLocalSvg asset={RightArrow} width={20} height={20} />
-        </View>
+        </View> */}
         <View style={styles.listContent}>
           <Text style={{fontSize: FontSize.medium}}>비공개</Text>
           <Switch
@@ -95,18 +122,20 @@ const WriteContent = ({navigation, route}) => {
             alignItems: 'center',
             flex: 1,
           }}>
-          <Pressable
+          <TouchableOpacity
             style={{
               width: '95%',
               height: 50,
-              backgroundColor: 'gray',
+              backgroundColor: '#bcbcbc',
               alignItems: 'center',
               justifyContent: 'center',
-            }}>
+            }}
+            disabled={submitAva}
+            onPress={submit}>
             <Text style={{fontSize: FontSize.medium}}>
               {t('write.content.upload')}
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

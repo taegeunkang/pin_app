@@ -1,10 +1,12 @@
 import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import {Button} from 'react-native-paper';
 const FindingLocation = ({navigation}) => {
   const [nearByLocations, setNearByLocations] = useState([]);
+  const [customTyping, setCustomTyping] = useState('');
+  const [typing, setTyping] = useState(false);
   const {t} = useTranslation('newPost');
   const getNearByLocations = async () => {
     const response = await fetch(
@@ -18,21 +20,43 @@ const FindingLocation = ({navigation}) => {
   const goBack = item => {
     navigation.navigate('WriteContent', {locationName: item});
   };
+  const onChangeTyping = e => {
+    setCustomTyping(e);
+    console.log(e);
+    // console.log(customTyping);
+    if (e.length > 0) {
+      setTyping(true);
+    } else {
+      console.log('empty');
+      setTyping(false);
+    }
+  };
 
   useEffect(() => {
     getNearByLocations();
   }, []);
   return (
     <ScrollView>
-      <Pressable style={styles.list}>
-        <Text>{t('write.content.location')}</Text>
+      <Pressable style={[styles.list, styles.search]}>
+        <TextInput
+          placeholder={t('write.content.location')}
+          style={{width: '100%', height: '100%'}}
+          value={customTyping}
+          onChangeText={e => onChangeTyping(e)}
+        />
       </Pressable>
       {nearByLocations &&
+        !typing &&
         nearByLocations.map(item => (
           <Pressable style={styles.list} id={item} onPress={() => goBack(item)}>
             <Text>{item}</Text>
           </Pressable>
         ))}
+      {typing && (
+        <Pressable style={styles.list} onPress={() => goBack(customTyping)}>
+          <Text>{customTyping}</Text>
+        </Pressable>
+      )}
 
       {/* <Button onPress={goBack}>goBack</Button> */}
     </ScrollView>
@@ -48,6 +72,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
     paddingHorizontal: 10,
+  },
+  search: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 25,
   },
 });
 export default FindingLocation;
