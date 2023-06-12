@@ -1,9 +1,9 @@
-import { View, StyleSheet, Text } from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 
 const MyPage = () => {
   return (
     <View style={styles.container}>
-      <Text>Mypage</Text>
+      <Text>Mypage!!</Text>
     </View>
   );
 };
