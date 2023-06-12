@@ -15,7 +15,8 @@ import {BorderRadius, FontSize} from '../../theme/Variables';
 import RightArrow from '../../theme/assets/images/arrow-right-solid.svg';
 import {Switch} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
-const WriteContent = ({navigation}) => {
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const WriteContent = ({navigation, route}) => {
   const [text, setText] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
 
@@ -24,6 +25,20 @@ const WriteContent = ({navigation}) => {
   // 함꼐한 친구 추가
   // 작성 버튼
   const {t} = useTranslation('newPost');
+  const getLocationName = () => {
+    try {
+      if (route.params.locationName) {
+        return route.params.locationName;
+      }
+    } catch {
+      return '';
+    }
+  };
+
+  const moveToFindingLocation = () => {
+    navigation.navigate('FindingLocation');
+  };
+
   return (
     <View style={{flex: 1}}>
       <View style={styles.inptContainer}>
@@ -33,6 +48,14 @@ const WriteContent = ({navigation}) => {
             <TextInput
               value={text}
               placeholder={t('write.content.placeholder')}
+              multiline={true}
+              style={{
+                width: '100%',
+                height: '100%',
+                textAlignVertical: 'top',
+                padding: 5,
+              }}
+              onChangeText={e => setText(e.value)}
             />
           </View>
         </View>
@@ -41,7 +64,16 @@ const WriteContent = ({navigation}) => {
       <View style={{flex: 1, padding: 10}}>
         <View style={styles.listContent}>
           <Text style={{fontSize: FontSize.medium}}>위치</Text>
-          <WithLocalSvg asset={RightArrow} width={20} height={20} />
+          <Text>{getLocationName()}</Text>
+          {/* {AsyncStorage.getItem('currentLocation') && (
+            <Text>{AsyncStorage.getItem('currentLocation')}</Text>
+          )} */}
+          <WithLocalSvg
+            asset={RightArrow}
+            width={20}
+            height={20}
+            onPress={moveToFindingLocation}
+          />
         </View>
         <View style={styles.listContent}>
           <Text style={{fontSize: FontSize.medium}}>함꼐한 친구</Text>

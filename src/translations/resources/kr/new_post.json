@@ -1,8 +1,9 @@
 {
   "header": {
-    "title": "게시물 작성"
+    "title": "게시물 작성",
+    "location": "위치"
   },
   "write": {
-    "content": {"placeholder": "내용을 입력해주세요.", "upload": "작성 완료"}
+    "content": {"placeholder": "내용을 입력해주세요.", "upload": "작성 완료", "location" : "직접 입력"}
   }
 }

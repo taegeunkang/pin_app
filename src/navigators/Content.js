@@ -13,6 +13,7 @@ import Square1 from '../screens/Home/Square1';
 import Detail from '../screens/Home/Detail';
 import MyList from '../screens/Home/MyList';
 import WriteContent from '../screens/Home/WriteContent';
+import FindingLocation from '../screens/Home/FindingLocation';
 
 const Stack = createStackNavigator();
 
@@ -52,6 +53,11 @@ const Content = () => {
         name="WriteContent"
         component={WriteContent}
         options={{title: t('header.title'), headerBackTitleVisible: false}}
+      />
+      <Stack.Screen
+        name="FindingLocation"
+        component={FindingLocation}
+        options={{title: t('header.location'), headerBackTitleVisible: false}}
       />
 
       {/* <Stack.Screen
