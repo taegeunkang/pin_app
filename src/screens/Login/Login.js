@@ -1,28 +1,35 @@
-import { useTranslation } from 'react-i18next';
-import { SafeAreaView, Text, View, StyleSheet, Pressable } from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {
+  SafeAreaView,
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import Button from '../../theme/components/login/Button';
-import { TextInput } from 'react-native-gesture-handler';
-import { useTheme } from '../../hooks';
-import { Colors, FontSize } from '../../theme/Variables';
+import {TextInput} from 'react-native-gesture-handler';
+import {useTheme} from '../../hooks';
+import {Colors, FontSize} from '../../theme/Variables';
 // import Sns from '../../theme/components/Sns';
-import { useState } from 'react';
+import {useState} from 'react';
 import TextBox from 'react-native-password-eye';
-import { check_email } from '../../utils/email';
-import { API_URL } from '../../utils/constants';
+import {check_email} from '../../utils/email';
+import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {
 //   GoogleSignin,
 //   statusCodes,
 // } from '@react-native-google-signin/google-signin';
 // import { login, loginWithKakaoAccount } from '@react-native-seoul/kakao-login';
-const Login = ({ navigation }) => {
-  const { t } = useTranslation('login');
+const Login = ({navigation}) => {
+  const {t} = useTranslation('login');
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [wrongId, setWrongId] = useState(false);
   const [wrongRes, setWrongRes] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
-  const { Common, Fonts, Gutters, Layout } = useTheme();
+  const {Common, Fonts, Gutters, Layout} = useTheme();
 
   const loginSubmit = async () => {
     if (!id && !password) {
@@ -38,7 +45,7 @@ const Login = ({ navigation }) => {
     if (id.length >= 0 && password.length >= 0) {
       let response = await fetch(API_URL + '/user/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           emailAddress: id,
           password: password,
@@ -51,7 +58,7 @@ const Login = ({ navigation }) => {
         AsyncStorage.setItem('token', response['token']);
         AsyncStorage.setItem('refreshToken', response['refreshToken']);
         AsyncStorage.setItem('emailAddress', response['emailAddress']);
-        navigation.reset({ routes: [{ name: 'Home' }] });
+        navigation.reset({routes: [{name: 'Home'}]});
       } else {
         console.log(response['code']);
         switch (response['code']) {
@@ -67,6 +74,7 @@ const Login = ({ navigation }) => {
       }
     }
   };
+  // oauth 로그인 기능 -> 추가 예정
 
   // const kakaoSignin = async () => {
   //   try {
@@ -115,7 +123,7 @@ const Login = ({ navigation }) => {
   // };
 
   return (
-    <SafeAreaView style={{ backgroundColor: Colors.white, flex: 1 }}>
+    <SafeAreaView style={{backgroundColor: Colors.white, flex: 1}}>
       <View style={styles.title}>
         <Text style={styles.titleText}>{t('title')}</Text>
         <Text style={styles.titleSub}>{t('slogan')}</Text>
@@ -153,7 +161,7 @@ const Login = ({ navigation }) => {
         {/* <Text style={styles.snsLoginSenetence}>{t('snsLogin')}</Text>
         <Sns googleSigin={googleSigin} kakaoSignin={kakaoSignin} /> */}
 
-        <Pressable
+        <TouchableOpacity
           style={{
             width: 180,
             height: 35,
@@ -161,10 +169,9 @@ const Login = ({ navigation }) => {
             justifyContent: 'center',
             marginTop: 30,
           }}
-          onPress={() => navigation.navigate('Register')}
-        >
+          onPress={() => navigation.navigate('Register')}>
           <Text style={styles.registerTitle}>{t('registerTitle')}</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

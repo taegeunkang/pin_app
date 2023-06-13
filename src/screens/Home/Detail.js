@@ -14,7 +14,7 @@ import Comment from '../../theme/assets/images/comment-regular.svg';
 import Like from '../../theme/assets/images/heart-regular.svg';
 import ClickedLike from '../../theme/assets/images/heart-solid.svg';
 import Share from '../../theme/assets/images/paper-plane-regular.svg';
-
+import Tag from '../../components/Content/Tag';
 import {WithLocalSvg} from 'react-native-svg';
 import {BorderRadius, FontSize} from '../../theme/Variables';
 const Detail = () => {
@@ -105,23 +105,3 @@ const styles = StyleSheet.create({
 });
 
 export default Detail;
-
-const Tag = ({tagName, bgColor}) => {
-  return (
-    <View>
-      <Text
-        style={{
-          backgroundColor: bgColor,
-          borderRadius: BorderRadius.large,
-          alignSelf: 'flex-start',
-          paddingHorizontal: 7,
-          paddingVertical: 5,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginRight: 7,
-        }}>
-        {tagName}
-      </Text>
-    </View>
-  );
-};

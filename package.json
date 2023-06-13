@@ -27,7 +27,7 @@
     "react-native": "0.71.7",
     "react-native-flipper": "^0.189.0",
     "react-native-fs": "^2.20.0",
-    "react-native-gesture-handler": "^2.9.0",
+    "react-native-gesture-handler": "^2.11.0",
     "react-native-image-crop-picker": "^0.39.0",
     "react-native-image-picker": "5.3.1",
     "react-native-instagram-like-image-cropper": "^1.0.6",

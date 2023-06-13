@@ -1,10 +1,10 @@
-import { Pressable, Text, StyleSheet } from 'react-native';
-import { Colors, FontSize } from '../../Variables';
-const Button = ({ title, onPress }) => {
+import {Pressable, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Colors, FontSize} from '../../Variables';
+const Button = ({title, onPress}) => {
   return (
-    <Pressable style={styles.button} onPress={onPress}>
+    <TouchableOpacity style={styles.button} onPress={onPress}>
       <Text style={styles.title}>{title}</Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     backgroundColor: Colors.DarkGray,
   },
-  title: { fontSize: FontSize.regular, color: Colors.white },
+  title: {fontSize: FontSize.regular, color: Colors.white},
 });
 
 export default Button;
