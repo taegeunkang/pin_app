@@ -116,6 +116,7 @@ const Content = () => {
         name="MyPage"
         component={MyPage}
         options={{
+          title: 'Mars2727',
           headerBackTitleVisible: false,
         }}
       />

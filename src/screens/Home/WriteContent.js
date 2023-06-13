@@ -41,10 +41,8 @@ const WriteContent = ({navigation, route}) => {
   const check = () => {
     if (text && locationName) {
       setSubmitAva(false);
-      console.log('a');
     } else {
       setSubmitAva(true);
-      console.log('b');
     }
   };
 
