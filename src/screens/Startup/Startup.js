@@ -18,15 +18,22 @@ const Startup = ({navigation}) => {
 
     let token = await AsyncStorage.getItem('token');
     let refreshToken = await AsyncStorage.getItem('refreshToken');
-    console.log(token);
     if (token && token.length > 0 && refreshToken && refreshToken.length > 0) {
-      const result1 = checkLogin(token);
-      console.log('???');
-      console.log('토큰 유효성 ' + result1 ? 'Vaild' : 'UnValid');
-      // 토큰이 만료되었을 때 -> 리프레시 토큰으로 재발급 시도
-      if (!result1) {
-        console.log('reissue');
-        reIssue(token, refreshToken);
+      const result1 = await checkLogin(token);
+
+      if (result1) {
+        navigation.reset({routes: [{name: 'Home'}]});
+      } else {
+        // console.log('토큰 만료 재발급 시도 ');
+        const result = await reIssue(token, refreshToken);
+        if (!result) {
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+          });
+        } else {
+          navigation.reset({routes: [{name: 'Home'}]});
+        }
       }
     } else {
       navigation.reset({
@@ -41,36 +48,34 @@ const Startup = ({navigation}) => {
       method: 'POST',
       headers: {Authorization: 'Bearer ' + token},
     });
-    console.log(response.status);
     switch (response.status) {
       case 200:
-        navigation.reset({routes: [{name: 'Home'}]});
-        break;
+        return true;
       case 400:
         return false;
     }
   };
 
   // 토큰 재발급에도 실패하면 로그인 홈으로 이동
-  // 아직 테스트 안했음
   const reIssue = async (token, refreshToken) => {
     let response = await fetch(API_URL + '/user/refresh', {
       method: 'POST',
       body: JSON.stringify({token: token, refreshToken: refreshToken}),
+      headers: {
+        Authorization: 'Bearer ' + refreshToken,
+        'Content-Type': 'Application/json',
+      },
     });
-    switch (response.status) {
-      case 200:
-        let responseJson = await response.json();
-        AsyncStorage.setItem('token', responseJson['token']);
-        AsyncStorage.setItem('refreshToken', response['refreshToken']);
-        break;
-      default:
-        AsyncStorage.removeItem('token');
-        AsyncStorage.removeItem('refreshToken');
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Login'}],
-        });
+    const result = await response.json();
+    if (response.status == 200) {
+      console.log('성공');
+      await AsyncStorage.setItem('token', result['token']);
+      await AsyncStorage.setItem('refreshToken', result['refreshToken']);
+      return true;
+    } else {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('refreshToken');
+      return false;
     }
   };
 

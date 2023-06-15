@@ -29,6 +29,8 @@ const WriteContent = ({navigation, route}) => {
   const [tagging, setTagging] = useState(false);
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState([]);
+  const [images, setImages] = useState([]);
+  const [multiple, setMultiple] = useState(false);
   // 사진 미니미 + 게시글 작성
   // 위치 지정
   // 함꼐한 친구 추가
@@ -56,9 +58,9 @@ const WriteContent = ({navigation, route}) => {
   const moveToFindingLocation = () => {
     navigation.navigate('FindingLocation');
   };
-
+  // 포스트 제출
+  // API_URL + "/post/create"
   const submit = () => {
-    console.log('clickdddd');
     navigation.reset({routes: [{name: 'Home'}]});
   };
   const onChangeTyping = e => {
@@ -82,16 +84,56 @@ const WriteContent = ({navigation, route}) => {
     setTagInput('');
     console.log(tagsVar);
   };
+  const loadImages = async () => {
+    const storedImages = await AsyncStorage.getItem('images');
+    const parsedImages = JSON.parse(storedImages);
+
+    console.log(JSON.parse(storedImages)[0]);
+    setImages(parsedImages);
+    if (parsedImages.length > 1) {
+      setMultiple(true);
+    }
+  };
 
   useEffect(() => {
+    const t = async () => {
+      await loadImages();
+    };
     check();
     getLocationName();
-  });
+    t();
+  }, []);
 
   return (
     <View style={{flex: 1}}>
       <View style={styles.inptContainer}>
-        <ImageContainer />
+        {images && (
+          <View style={styles.imageContainer}>
+            {images.length > 1 && (
+              <View
+                style={{
+                  width: 23,
+                  height: 23,
+                  borderRadius: 100,
+                  backgroundColor: '#ececec',
+                  position: 'absolute',
+                  bottom: 15,
+                  right: 15,
+                  zIndex: 100,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text>
+                  {images.length < 10 ? '+' + (images.length - 1) : '+n'}
+                </Text>
+              </View>
+            )}
+            <Image
+              style={{width: '100%', height: '100%'}}
+              source={{uri: images[0]}}
+            />
+          </View>
+        )}
         <View style={styles.inputTextContainer}>
           <View style={styles.inputBox}>
             <TextInput
@@ -114,16 +156,6 @@ const WriteContent = ({navigation, route}) => {
         <View style={styles.listContent}>
           <Text style={{fontSize: FontSize.medium}}>위치</Text>
           <Text>{locationName}</Text>
-          {/* {AsyncStorage.getItem('currentLocation') && (
-            <Text>{AsyncStorage.getItem('currentLocation')}</Text>
-          )} */}
-          {/* <WithLocalSvg
-            asset={RightArrow}
-            width={20}
-            height={20}
-            onPress={moveToFindingLocation}
-          />
-           */}
 
           <TouchableOpacity onPress={moveToFindingLocation}>
             <View>
@@ -242,19 +274,33 @@ const WriteContent = ({navigation, route}) => {
   );
 };
 
-const ImageContainer = images => {
-  return (
-    <View style={styles.imageContainer}>
-      <Image style={{width: '100%', height: '100%'}} source={Sample1} />
-    </View>
-  );
-};
-
 const SubmitButton = () => {
   return (
     <Pressable style={{width: '90%', height: 50}}>
       <Text>{t('write.content.upload')}</Text>
     </Pressable>
+  );
+};
+
+const PreviewImageContainer = images => {
+  return (
+    <View style={styles.imageContainer}>
+      <View
+        style={{
+          width: 20,
+          height: 20,
+          borderRadius: 100,
+          backgroundColor: 'black',
+          position: 'absolute',
+          bottom: 0,
+        }}>
+        <Text>+</Text>
+      </View>
+      <Image
+        style={{width: '100%', height: '100%'}}
+        source={{uri: images[0]}}
+      />
+    </View>
   );
 };
 
@@ -264,6 +310,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').width * 0.3333,
     borderRadius: BorderRadius.large,
     padding: 10,
+    position: 'relative',
   },
   inptContainer: {
     flexDirection: 'row',
