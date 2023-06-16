@@ -8,19 +8,28 @@ import {
   Pressable,
   TouchableOpacity,
   Animated,
+  Modal,
+  Alert,
 } from 'react-native';
 import {useEffect, useRef, useState} from 'react';
+import {toByteArray} from 'base64-js';
+import {useIsFocused} from '@react-navigation/native';
 import Sample1 from '../../theme/assets/images/sample/sample1.png';
 import Tag from '../../components/Content/Tag';
 import {WithLocalSvg} from 'react-native-svg';
 import {BorderRadius, FontSize} from '../../theme/Variables';
 import RightArrow from '../../theme/assets/images/arrow-right-solid.svg';
 import Plus from '../../theme/assets/images/plus-solid.svg';
+import Geolocation from '@react-native-community/geolocation';
+import {Buffer} from 'buffer';
 import {Switch} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {API_URL} from '../../utils/constants';
+import GpsAlert from '../../components/Content/GpsAlert';
 const WriteContent = ({navigation, route}) => {
   const [text, setText] = useState('');
+  const [texting, setTexting] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [locationName, setLocationName] = useState('');
   const [submitAva, setSubmitAva] = useState(false);
@@ -31,6 +40,9 @@ const WriteContent = ({navigation, route}) => {
   const [tags, setTags] = useState([]);
   const [images, setImages] = useState([]);
   const [multiple, setMultiple] = useState(false);
+  const [gpsPermission, setGpsPermission] = useState(false);
+
+  const isFocused = useIsFocused();
   // 사진 미니미 + 게시글 작성
   // 위치 지정
   // 함꼐한 친구 추가
@@ -60,11 +72,50 @@ const WriteContent = ({navigation, route}) => {
   };
   // 포스트 제출
   // API_URL + "/post/create"
-  const submit = () => {
-    navigation.reset({routes: [{name: 'Home'}]});
+  const submitPost = async () => {
+    // const lat = await AsyncStorage.getItem('lat');
+    // const lon = await AsyncStorage.getItem('lon');
+    // const arr = [];
+    // const parsedImages = JSON.parse(await AsyncStorage.getItem('images'));
+    // for (let i = 0; i < parsedImages.length; i++) {
+    //   let res = base64ToBlob(parsedImages[i]);
+    //   console.log(res);
+    //   arr.push(res);
+    // }
+    // let bd = new FormData();
+    // bd.append('content', text);
+    // bd.append('photoFiles', arr);
+    // bd.append('lat', lat);
+    // bd.append('lon', lon);
+    // bd.append('isPrivate', isPrivate);
+    // bd.append('tags', tags);
+    // console.log('Bearer ' + (await AsyncStorage.getItem('token')));
+    // console.log(text);
+    // console.log(lat);
+    // console.log(lon);
+    // console.log(isPrivate);
+    // console.log(tags);
+    // const response = await fetch(API_URL + '/post/create', {
+    //   method: 'POST',
+    //   headers: {
+    //     Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    //   body: bd,
+    // });
+    // if (response.status != 200) {
+    //   Alert('알 수 없는 에러가 발생했습니다.');
+    // }
+    // navigation.reset({routes: [{name: 'Home'}]});
   };
   const onChangeTyping = e => {
     setText(e);
+    // text가 비었는지 체크 -> for re-render
+    if (e.length >= 1) {
+      setTexting(true);
+    } else {
+      setTexting(false);
+    }
   };
   const rotateComponent = () => {
     Animated.timing(rotation, {
@@ -82,17 +133,19 @@ const WriteContent = ({navigation, route}) => {
     tagsVar.push(tagInput);
     setTags(tagsVar);
     setTagInput('');
-    console.log(tagsVar);
   };
   const loadImages = async () => {
     const storedImages = await AsyncStorage.getItem('images');
     const parsedImages = JSON.parse(storedImages);
-
-    console.log(JSON.parse(storedImages)[0]);
+    console.log(parsedImages[0]);
     setImages(parsedImages);
     if (parsedImages.length > 1) {
       setMultiple(true);
     }
+  };
+
+  const base64ToBlob = base64String => {
+    return toByteArray(base64String);
   };
 
   useEffect(() => {
@@ -102,7 +155,7 @@ const WriteContent = ({navigation, route}) => {
     check();
     getLocationName();
     t();
-  }, []);
+  }, [isFocused, locationName, tags, isPrivate, texting]);
 
   return (
     <View style={{flex: 1}}>
@@ -263,43 +316,17 @@ const WriteContent = ({navigation, route}) => {
               justifyContent: 'center',
             }}
             disabled={submitAva}
-            onPress={submit}>
+            onPress={submitPost}>
             <Text style={{fontSize: FontSize.medium}}>
               {t('write.content.upload')}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
-    </View>
-  );
-};
 
-const SubmitButton = () => {
-  return (
-    <Pressable style={{width: '90%', height: 50}}>
-      <Text>{t('write.content.upload')}</Text>
-    </Pressable>
-  );
-};
-
-const PreviewImageContainer = images => {
-  return (
-    <View style={styles.imageContainer}>
-      <View
-        style={{
-          width: 20,
-          height: 20,
-          borderRadius: 100,
-          backgroundColor: 'black',
-          position: 'absolute',
-          bottom: 0,
-        }}>
-        <Text>+</Text>
-      </View>
-      <Image
-        style={{width: '100%', height: '100%'}}
-        source={{uri: images[0]}}
-      />
+      <Modal visible={gpsPermission} animationType={'fade'} transparent={true}>
+        <GpsAlert />
+      </Modal>
     </View>
   );
 };

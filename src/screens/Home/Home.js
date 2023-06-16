@@ -20,6 +20,7 @@ import UploadBtn from '../../theme/assets/images/upload_btn.svg';
 import {useTheme} from '../../hooks';
 import MyPage from './MyPage';
 import Upload from './Upload';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({navigation}) => {
   const [gpsPermission, setGpsPermission] = useState(false);
@@ -92,7 +93,10 @@ const Home = ({navigation}) => {
     navigation.navigate(MyPage);
   };
 
-  const moveToUpload = () => {
+  const moveToUpload = async () => {
+    console.log(latitude, longitude);
+    await AsyncStorage.setItem('lat', latitude.toString());
+    await AsyncStorage.setItem('lon', longitude.toString());
     navigation.navigate(Upload);
   };
 

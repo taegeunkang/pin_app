@@ -1,8 +1,8 @@
-import { View, StyleSheet, Text, Pressable } from 'react-native';
-import { BorderRadius, Colors, FontSize } from '../../theme/Variables';
-import { useTranslation } from 'react-i18next';
+import {View, StyleSheet, Text, Pressable} from 'react-native';
+import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
+import {useTranslation} from 'react-i18next';
 const GpsAlert = () => {
-  const { t } = useTranslation('content');
+  const {t} = useTranslation('content');
 
   return (
     <View style={styles.container}>
@@ -13,19 +13,10 @@ const GpsAlert = () => {
               fontSize: FontSize.large,
               fontWeight: '800',
               marginBottom: 20,
-            }}
-          >
+            }}>
             {t('gps.alert')}
           </Text>
         </View>
-        {/* <View style={styles.buttonContainer}>
-          <Pressable style={styles.cancle} onPress={cancle}>
-            <Text>{t('back.cancel')}</Text>
-          </Pressable>
-          <Pressable style={styles.goBack} onPress={go_back}>
-            <Text>{t('back.go')}</Text>
-          </Pressable>
-        </View> */}
       </View>
     </View>
   );

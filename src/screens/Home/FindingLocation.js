@@ -2,15 +2,23 @@ import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
-import {Button} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const FindingLocation = ({navigation}) => {
   const [nearByLocations, setNearByLocations] = useState([]);
   const [customTyping, setCustomTyping] = useState('');
   const [typing, setTyping] = useState(false);
   const {t} = useTranslation('newPost');
+
   const getNearByLocations = async () => {
+    const lat = await AsyncStorage.getItem('lat');
+    const lon = await AsyncStorage.getItem('lon');
+
     const response = await fetch(
-      'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.5077, 126.8916&radius=100&key=AIzaSyBILqPwgBj9FmAjrifBmJGyJlcYz4w6ClY&language=ko&rankby=prominence',
+      'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+        lat +
+        ', ' +
+        lon +
+        '&radius=100&key=AIzaSyBILqPwgBj9FmAjrifBmJGyJlcYz4w6ClY&language=ko&rankby=prominence',
       {method: 'GET'},
     ).then(async res => await res.json());
 
@@ -47,8 +55,12 @@ const FindingLocation = ({navigation}) => {
       </Pressable>
       {nearByLocations &&
         !typing &&
-        nearByLocations.map(item => (
-          <Pressable style={styles.list} id={item} onPress={() => goBack(item)}>
+        nearByLocations.map((item, key) => (
+          <Pressable
+            key={key}
+            style={styles.list}
+            id={item}
+            onPress={() => goBack(item)}>
             <Text>{item}</Text>
           </Pressable>
         ))}
