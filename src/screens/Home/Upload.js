@@ -17,7 +17,9 @@ import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import Square1 from './Square1';
 import * as RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import RNFetchblob from 'react-native-fetch-blob';
+import {API_URL} from '../../utils/constants';
+import axios from 'axios';
 const Upload = ({navigation, route}) => {
   const [scale, setScale] = useState(1);
   const [photos, setPhotos] = useState([]);
@@ -119,10 +121,6 @@ const Upload = ({navigation, route}) => {
           reader.readAsDataURL(imageData);
         });
         arr.push(base64Image);
-        // // Save the base64 string to the localStorage
-
-        // console.log(imgs);
-        // console.log('Image saved to localStorage');
       } catch (error) {
         console.log('Error saving image:', error);
       }

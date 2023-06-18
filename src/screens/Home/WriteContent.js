@@ -27,6 +27,8 @@ import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import GpsAlert from '../../components/Content/GpsAlert';
+import axios from 'axios';
+import RNFetchBlob from 'react-native-fetch-blob';
 const WriteContent = ({navigation, route}) => {
   const [text, setText] = useState('');
   const [texting, setTexting] = useState(false);
@@ -72,42 +74,37 @@ const WriteContent = ({navigation, route}) => {
   };
   // 포스트 제출
   // API_URL + "/post/create"
+  // 동영상 기능 추가해야함
   const submitPost = async () => {
-    // const lat = await AsyncStorage.getItem('lat');
-    // const lon = await AsyncStorage.getItem('lon');
-    // const arr = [];
-    // const parsedImages = JSON.parse(await AsyncStorage.getItem('images'));
-    // for (let i = 0; i < parsedImages.length; i++) {
-    //   let res = base64ToBlob(parsedImages[i]);
-    //   console.log(res);
-    //   arr.push(res);
-    // }
-    // let bd = new FormData();
-    // bd.append('content', text);
-    // bd.append('photoFiles', arr);
-    // bd.append('lat', lat);
-    // bd.append('lon', lon);
-    // bd.append('isPrivate', isPrivate);
-    // bd.append('tags', tags);
-    // console.log('Bearer ' + (await AsyncStorage.getItem('token')));
-    // console.log(text);
-    // console.log(lat);
-    // console.log(lon);
-    // console.log(isPrivate);
-    // console.log(tags);
-    // const response = await fetch(API_URL + '/post/create', {
-    //   method: 'POST',
-    //   headers: {
-    //     Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
-    //     'Content-Type': 'multipart/form-data',
-    //   },
-    //   body: bd,
-    // });
-    // if (response.status != 200) {
-    //   Alert('알 수 없는 에러가 발생했습니다.');
-    // }
-    // navigation.reset({routes: [{name: 'Home'}]});
+    const latitude = parseFloat(await AsyncStorage.getItem('lat'));
+    const lontitude = parseFloat(await AsyncStorage.getItem('lon'));
+    const token = await AsyncStorage.getItem('token');
+    console.log(token);
+    const base64Images = await JSON.parse(await AsyncStorage.getItem('images'));
+
+    const response = await fetch(API_URL + '/post/create', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        content: text,
+        photoFiles: base64Images,
+        lat: latitude,
+        lon: lontitude,
+        locationName: locationName,
+        isPrivate: isPrivate,
+        tags: tags,
+      }),
+    });
+
+    if (response.status != 200) {
+      Alert('알 수 없는 에러가 발생했습니다.');
+    }
+    navigation.reset({routes: [{name: 'Home'}]});
   };
+
   const onChangeTyping = e => {
     setText(e);
     // text가 비었는지 체크 -> for re-render
@@ -137,15 +134,34 @@ const WriteContent = ({navigation, route}) => {
   const loadImages = async () => {
     const storedImages = await AsyncStorage.getItem('images');
     const parsedImages = JSON.parse(storedImages);
-    console.log(parsedImages[0]);
     setImages(parsedImages);
     if (parsedImages.length > 1) {
       setMultiple(true);
     }
   };
 
+  function generateBoundary() {
+    let boundary = '--------------------------'; // Start with a common prefix
+    const possibleCharacters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < 20; i++) {
+      // Append random characters to the prefix
+      const randomIndex = Math.floor(Math.random() * possibleCharacters.length);
+      boundary += possibleCharacters.charAt(randomIndex);
+    }
+
+    return boundary;
+  }
+
   const base64ToBlob = base64String => {
-    return toByteArray(base64String);
+    base64String.replace('data:image/jpeg;base64,', '');
+    // 패딩 추가
+    while (base64String.length % 4 !== 0) {
+      base64String += '=';
+    }
+
+    return new Blob([toByteArray(base64String)], {type: 'image/jpeg'});
   };
 
   useEffect(() => {
