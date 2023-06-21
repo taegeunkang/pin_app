@@ -334,8 +334,6 @@ PODS:
     - glog
   - react-native-cameraroll (5.6.0):
     - React-Core
-  - react-native-fetch-blob (0.10.6):
-    - React-Core
   - react-native-flipper (0.189.0):
     - React-Core
   - react-native-geolocation (3.0.5):
@@ -544,7 +542,6 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
-  - react-native-fetch-blob (from `../node_modules/react-native-fetch-blob`)
   - react-native-flipper (from `../node_modules/react-native-flipper`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - "react-native-image-editor (from `../node_modules/@react-native-community/image-editor`)"
@@ -639,8 +636,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
-  react-native-fetch-blob:
-    :path: "../node_modules/react-native-fetch-blob"
   react-native-flipper:
     :path: "../node_modules/react-native-flipper"
   react-native-geolocation:
@@ -737,7 +732,6 @@ SPEC CHECKSUMS:
   React-jsinspector: 9885f6f94d231b95a739ef7bb50536fb87ce7539
   React-logger: 3f8ebad1be1bf3299d1ab6d7f971802d7395c7ef
   react-native-cameraroll: 755bcc628148a90a7c9cf3f817a252be3a601bc5
-  react-native-fetch-blob: 0cbdf9764c75d9438c162427395f4bc35a857d5a
   react-native-flipper: e0e154c742a3c5020ec97362de664880b608dab1
   react-native-geolocation: 7383cbe9fa75b168bbbe40b566070fd0b44d30d6
   react-native-image-editor: 9361a215c3991cafbe5e7f28cbbad6e72c9c2705

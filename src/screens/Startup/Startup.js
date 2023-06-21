@@ -50,6 +50,10 @@ const Startup = ({navigation}) => {
     });
     switch (response.status) {
       case 200:
+        const res = await response.json();
+        console.log('check successful id : ' + res['id']);
+        await AsyncStorage.setItem('id', JSON.stringify(res['id']));
+
         return true;
       case 400:
         return false;

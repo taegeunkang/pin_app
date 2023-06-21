@@ -28,7 +28,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import GpsAlert from '../../components/Content/GpsAlert';
 import axios from 'axios';
-import RNFetchBlob from 'react-native-fetch-blob';
 const WriteContent = ({navigation, route}) => {
   const [text, setText] = useState('');
   const [texting, setTexting] = useState(false);

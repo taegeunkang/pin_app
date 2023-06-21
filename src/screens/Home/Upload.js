@@ -17,7 +17,6 @@ import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import Square1 from './Square1';
 import * as RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import RNFetchblob from 'react-native-fetch-blob';
 import {API_URL} from '../../utils/constants';
 import axios from 'axios';
 const Upload = ({navigation, route}) => {

@@ -5,7 +5,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {useEffect, useState} from 'react';
 import GpsAlert from '../../components/Content/GpsAlert';
@@ -21,6 +21,7 @@ import {useTheme} from '../../hooks';
 import MyPage from './MyPage';
 import Upload from './Upload';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {API_URL} from '../../utils/constants';
 
 const Home = ({navigation}) => {
   const [gpsPermission, setGpsPermission] = useState(false);
@@ -29,6 +30,7 @@ const Home = ({navigation}) => {
   const [longitude, setLongitude] = useState(null);
   const [region, setRegion] = useState(null);
   const [listBtn, setListBtn] = useState(false);
+  const [contents, setContents] = useState([]);
 
   const {Gutters} = useTheme();
   const openCamera = async () => {
@@ -114,8 +116,24 @@ const Home = ({navigation}) => {
     navigation.navigate('Detail');
   };
 
+  const getMyPosts = async () => {
+    const response = await fetch(
+      API_URL + '/post/all?id=' + (await AsyncStorage.getItem('id')),
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        },
+      },
+    );
+    const res = await response.json();
+    setContents(res['contents']);
+    console.log(res['contents']);
+  };
+
   useEffect(() => {
     getCurrentLocation();
+    getMyPosts();
   }, []);
 
   return (
@@ -210,7 +228,20 @@ const Home = ({navigation}) => {
               longitudeDelta: 0.0175,
             }}
             region={region}
-            onRegionChange={updatePosition}></MapView>
+            onRegionChange={updatePosition}>
+            {contents &&
+              contents.map((content, index) => (
+                <Marker
+                  key={index}
+                  coordinate={{
+                    latitude: content.lat,
+                    longitude: content.lon,
+                  }}
+                  // 클릭 후 상세 페이지로 이동
+                  onPress={() => console.log('called')}
+                />
+              ))}
+          </MapView>
         </>
       )}
 
