@@ -3,9 +3,11 @@ import {
   Modal,
   Pressable,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import {Marker} from 'react-native-maps';
+import MapView from 'react-native-map-clustering';
 import Geolocation from '@react-native-community/geolocation';
 import {useEffect, useState} from 'react';
 import GpsAlert from '../../components/Content/GpsAlert';
@@ -228,7 +230,22 @@ const Home = ({navigation}) => {
               longitudeDelta: 0.0175,
             }}
             region={region}
-            onRegionChange={updatePosition}>
+            onRegionChange={updatePosition}
+            renderCluster={cluster => {
+              // 클러스터링 정보
+              const {id, geometry, onPress, properties} = cluster;
+              const points = properties.point_count; // 클러스터링된 숫자
+              return ( // 클러스터링된 마커 렌더링
+                <Marker
+                  key={id}
+                  coordinate={{
+                    longitude: geometry.coordinates[0],
+                    latitude: geometry.coordinates[1],
+                  }}
+                  onPress={onPress}
+                />
+              );
+            }}>
             {contents &&
               contents.map((content, index) => (
                 <Marker
