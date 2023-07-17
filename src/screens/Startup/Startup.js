@@ -33,6 +33,7 @@ const Startup = ({navigation}) => {
         const result = await reIssue(token, refreshToken);
         console.log(result);
         if (!result) {
+          console.log('홈으로');
           navigation.reset({
             index: 0,
             routes: [{name: 'Login'}],
@@ -85,8 +86,6 @@ const Startup = ({navigation}) => {
       await AsyncStorage.setItem('refreshToken', result['refreshToken']);
       return true;
     } else {
-      console.log(await response.json());
-
       await AsyncStorage.removeItem('token');
       await AsyncStorage.removeItem('refreshToken');
       return false;
