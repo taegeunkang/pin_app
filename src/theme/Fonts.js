@@ -1,8 +1,8 @@
 /**
  * This file contains all application's style relative to fonts
  */
-import { StyleSheet } from 'react-native';
-export default function ({ FontSize, Colors }) {
+import {StyleSheet} from 'react-native';
+export default function ({FontSize, Colors}) {
   return StyleSheet.create({
     textTiny: {
       fontSize: FontSize.tiny,
@@ -62,9 +62,24 @@ export default function ({ FontSize, Colors }) {
     textPrimary: {
       color: Colors.primary,
     },
-    textLobster: {
-      fontFamily: 'lobster',
-      fontWeight: 'normal',
+    boldFont: {
+      fontFamily: 'SpoqaHanSansNeo-Bold',
+    },
+    regularFont: {
+      fontFamily: 'SpoqaHanSansNeo-Regular',
+    },
+    thinFont: {
+      fontFamily: 'SpoqaHanSansNeo-Thin',
+    },
+    lightFont: {
+      fontFamily: 'SpoqaHanSansNeo-Light',
+    },
+    inputHeader: {
+      fontFamily: 'SpoqaHanSansNeo-Bold',
+      fontSize: 12,
+      lineHeight: 18,
+      letterSpacing: -0.6,
+      color: '#353C49',
     },
   });
 }

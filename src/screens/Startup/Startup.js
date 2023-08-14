@@ -1,12 +1,19 @@
 import React, {useEffect} from 'react';
-import {ActivityIndicator, View, Text} from 'react-native';
+import {
+  ActivityIndicator,
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ImageBackground,
+} from 'react-native';
 import {setDefaultTheme} from '../../store/theme';
 import {useTheme} from '../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 
 const Startup = ({navigation}) => {
-  const {Layout, Gutters, Fonts} = useTheme();
+  const {Layout, Gutters, Fonts, Images} = useTheme();
 
   const init = async () => {
     // 의미 없는 delay but -> 나중에 AD 게시 가능
@@ -33,7 +40,6 @@ const Startup = ({navigation}) => {
         const result = await reIssue(token, refreshToken);
         console.log(result);
         if (!result) {
-          console.log('홈으로');
           navigation.reset({
             index: 0,
             routes: [{name: 'Login'}],
@@ -96,11 +102,20 @@ const Startup = ({navigation}) => {
     init();
   }, []);
   return (
-    <View style={[Layout.fill, Layout.colCenter]}>
+    <ImageBackground
+      source={Images.splash}
+      resizeMode="contain"
+      style={styles.bg}>
       <ActivityIndicator size={'large'} style={[Gutters.largeVMargin]} />
-      <Text style={Fonts.textCenter}>hhh</Text>
-    </View>
+    </ImageBackground>
   );
 };
+
+const styles = StyleSheet.create({
+  bg: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+});
 
 export default Startup;

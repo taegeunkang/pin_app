@@ -1,8 +1,10 @@
-import { View, StyleSheet, Text, Pressable } from 'react-native';
-import { BorderRadius, Colors, FontSize } from '../../theme/Variables';
-import { useTranslation } from 'react-i18next';
-const BackAlert = ({ cancle, go_back }) => {
-  const { t } = useTranslation('register');
+import {View, StyleSheet, Text, Pressable} from 'react-native';
+import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
+import {useTranslation} from 'react-i18next';
+import SubmitButton2 from '../SubmitButton2';
+import SubmitButton from '../SubmitButton';
+const BackAlert = ({cancle, go_back}) => {
+  const {t} = useTranslation('register');
 
   return (
     <View style={styles.container}>
@@ -10,22 +12,40 @@ const BackAlert = ({ cancle, go_back }) => {
         <View style={styles.content}>
           <Text
             style={{
-              fontSize: FontSize.large,
-              fontWeight: '800',
+              fontFamily: 'SpoqaHanSansNeo-Bold',
+              fontSize: 16,
+              lineHeight: 28,
+              letterSpacing: -0.6,
               marginBottom: 20,
-            }}
-          >
+              color: '#353C49',
+              marginTop: 10,
+            }}>
             {t('back.title')}
           </Text>
-          <Text>{t('back.detail')}</Text>
+          <Text
+            style={{
+              fontFamily: 'SpoqaHanSansNeo-Regular',
+              color: '#505866',
+              fontSize: 14,
+              lineHeight: 20,
+              letterSpacing: -0.6,
+            }}>
+            {t('back.detail')}
+          </Text>
         </View>
         <View style={styles.buttonContainer}>
-          <Pressable style={styles.cancle} onPress={cancle}>
-            <Text>{t('back.cancel')}</Text>
-          </Pressable>
-          <Pressable style={styles.goBack} onPress={go_back}>
-            <Text>{t('back.go')}</Text>
-          </Pressable>
+          <SubmitButton2
+            onPress={cancle}
+            title={t('back.cancel')}
+            width={170}
+            height={50}
+          />
+          <SubmitButton
+            onPress={go_back}
+            title={t('back.go')}
+            width={170}
+            height={50}
+          />
         </View>
       </View>
     </View>
@@ -46,18 +66,16 @@ const styles = StyleSheet.create({
     borderTopRightRadius: BorderRadius.xLarge,
   },
   content: {
-    width: '100%',
-    height: '55%',
     paddingVertical: 20,
     paddingHorizontal: 20,
   },
   buttonContainer: {
-    width: '100%',
-    height: '40%',
+    flex: 1,
     backgroundColor: Colors.transparent,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',
+    alignItems: 'flex-end',
+    marginBottom: 50,
     paddingHorizontal: 10,
   },
   cancle: {

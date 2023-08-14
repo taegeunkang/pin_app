@@ -64,6 +64,7 @@ const Upload = ({navigation, route}) => {
         for await (const item of edges) {
           const fileName = item.node.image.uri.replace('ph://', '');
           const result = await phPathToFilePath(item.node.image.uri);
+          await uploadFileToServer(result);
           item.node.image.uri = result;
         }
       }
@@ -88,6 +89,7 @@ const Upload = ({navigation, route}) => {
 
       // ph경로의 이미지를 file로 옮기는 작업
       fileURI = await RNFS.copyAssetsFileIOS(uri, copyPath, 360, 360);
+      console.log('이미지 파일 URI : ' + fileURI);
     }
 
     return fileURI;
@@ -101,6 +103,42 @@ const Upload = ({navigation, route}) => {
       }
     }
     return false;
+  };
+
+  const uploadFileToServer = async uri => {
+    let formData = new FormData();
+
+    let files = [
+      {
+        uri,
+        name: 'image.jpg',
+        type: 'image/jpg',
+      },
+      {
+        uri,
+        name: 'image.jpg',
+        type: 'image/jpg',
+      },
+      {
+        uri,
+        name: 'image.jpg',
+        type: 'image/jpg',
+      },
+    ];
+    console.log('요청 보냅');
+    files.forEach((file, index) => {
+      formData.append('file', file);
+    });
+    formData.append('id', '14');
+    formData.append('content', '하하하하하하하 이미지 테스트');
+    console.log(formData);
+    const result = await fetch(API_URL + '/post/image/test', {
+      method: 'POST',
+      body: formData,
+    });
+    console.log('요청 끝');
+    console.log(result.status);
+    console;
   };
 
   const saveImageToLocalStorage = async imagesArray => {

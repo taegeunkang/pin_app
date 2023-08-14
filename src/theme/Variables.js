@@ -19,7 +19,7 @@ export const Colors = {
   black: '#000000',
   lightGray: '#E4E4E4',
   DarkGray: '#BBBBBB',
-  red: '#FF8585',
+  red: '#E44949',
 };
 export const NavigationColors = {
   primary: Colors.primary,

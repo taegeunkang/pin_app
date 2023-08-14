@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Pressable,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import Button from '../../theme/components/login/Button';
 import {TextInput} from 'react-native-gesture-handler';
@@ -13,10 +14,13 @@ import {useTheme} from '../../hooks';
 import {Colors, FontSize} from '../../theme/Variables';
 // import Sns from '../../theme/components/Sns';
 import {useState} from 'react';
-import TextBox from 'react-native-password-eye';
+// import TextBox from 'react-native-password-eye';
 import {check_email} from '../../utils/email';
 import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Logo from '../../theme/assets/images/p-logo-transparent.svg';
+import SubmitButton from '../../components/SubmitButton';
+import InputBox from '../../components/InputBox';
 // import {
 //   GoogleSignin,
 //   statusCodes,
@@ -29,7 +33,7 @@ const Login = ({navigation}) => {
   const [wrongId, setWrongId] = useState(false);
   const [wrongRes, setWrongRes] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
-  const {Common, Fonts, Gutters, Layout} = useTheme();
+  const {Common, Fonts, Gutters, Layout, Images} = useTheme();
 
   const loginSubmit = async () => {
     if (!id && !password) {
@@ -43,6 +47,8 @@ const Login = ({navigation}) => {
     setWrongRes(false);
     setWrongPassword(false);
     if (id.length >= 0 && password.length >= 0) {
+      console.log('요청 보냄');
+
       let response = await fetch(API_URL + '/user/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -53,7 +59,6 @@ const Login = ({navigation}) => {
       });
       let status = response['status'];
       response = await response.json();
-
       if (status == 200) {
         AsyncStorage.setItem('token', response['token']);
         AsyncStorage.setItem('refreshToken', response['refreshToken']);
@@ -123,40 +128,43 @@ const Login = ({navigation}) => {
   // };
 
   return (
-    <SafeAreaView style={{backgroundColor: Colors.white, flex: 1}}>
-      <View style={styles.title}>
-        <Text style={styles.titleText}>{t('title')}</Text>
-        <Text style={styles.titleSub}>{t('slogan')}</Text>
+    <View style={{backgroundColor: Colors.white, flex: 1}}>
+      <View
+        style={{
+          width: '100%',
+          height: 200,
+          backgroundColor: 'transparent',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Image source={Images.appLogo} style={{width: 200, height: 200}} />
       </View>
 
       <View style={(Layout.fullWidth, Layout.center)}>
-        <TextInput
-          style={styles.loginInput}
+        <InputBox
+          title={'이메일'}
           placeholder={t('input.id')}
           onChangeText={e => setId(e)}
           value={id}
+          isWrong={wrongId || wrongRes}
         />
         {wrongId && <Text style={styles.wrongInput}>{t('wrongId')}</Text>}
         {wrongRes && <Text style={styles.wrongInput}>{t('wrongInfo')}</Text>}
-        {/* <TextInput
-          style={styles.loginInput}
-          secureTextEntry={true}
+
+        <InputBox
+          title={'비밀번호'}
           placeholder={t('input.password')}
           onChangeText={e => setPassword(e)}
-        /> */}
-        <TextBox
-          containerStyles={styles.loginInput}
-          placeholder={t('input.password')}
-          secureTextEntry={true}
-          iconFamily={'FontAwesome'}
-          onChangeText={e => setPassword(e)}
+          value={password}
+          isWrong={wrongPassword}
+          passwordInvisible={true}
         />
+
         {wrongPassword && (
           <Text style={styles.wrongInput}>{t('wrongPassword')}</Text>
         )}
         <Text style={styles.forgetSentence}>{t('forget')}</Text>
-
-        <Button title={t('loginBtn')} onPress={loginSubmit} />
+        <SubmitButton loginSubmit={loginSubmit} title={t('loginBtn')} />
 
         {/* <Text style={styles.snsLoginSenetence}>{t('snsLogin')}</Text>
         <Sns googleSigin={googleSigin} kakaoSignin={kakaoSignin} /> */}
@@ -169,11 +177,12 @@ const Login = ({navigation}) => {
             justifyContent: 'center',
             marginTop: 30,
           }}
-          onPress={() => navigation.navigate('Register')}>
+          onPress={() => navigation.navigate('Register')}
+          activeOpacity={1}>
           <Text style={styles.registerTitle}>{t('registerTitle')}</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -192,19 +201,19 @@ const styles = StyleSheet.create({
     fontSize: FontSize.regular,
   },
   loginInput: {
-    width: 320,
+    width: 370,
     height: 48,
-    borderRadius: 7,
-    fontSize: FontSize.regular,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: Colors.lightGray,
-    marginTop: 20,
+    borderRadius: 12,
+    backgroundColor: '#F2F4F6',
+    paddingHorizontal: 10,
+    color: '#505866',
   },
   forgetSentence: {
-    width: 320,
-    fontSize: FontSize.tiny,
-    color: Colors.DarkGray,
+    width: 370,
+    fontSize: 12,
+    lineHeight: 18,
+    letterSpacing: -0.6,
+    color: '#6D7582',
     marginBottom: 40,
     marginTop: 20,
   },
@@ -225,17 +234,25 @@ const styles = StyleSheet.create({
     width: 320,
   },
   loginButtonText: {
-    fontSize: FontSize.regular,
-    color: Colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 370,
+    height: 48,
+    backgroundColor: '#4880EE',
+    borderRadius: 12,
   },
   registerTitle: {
-    fontSize: FontSize.small,
-    color: Colors.DarkGray,
+    fontSize: 12,
+    lineHeight: 18,
+    letterSpacing: -0.6,
+    color: '#6D7582',
   },
   wrongInput: {
-    color: '#FF8585',
-    fontSize: FontSize.tiny,
-    width: 320,
+    color: '#E44949',
+    fontSize: 12,
+    lineHeight: 18,
+    letterSpacing: -0.6,
+    width: 370,
   },
 });
 
