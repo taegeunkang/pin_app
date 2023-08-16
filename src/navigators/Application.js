@@ -14,10 +14,12 @@ import {
 } from '@react-navigation/native';
 import Startup from '../screens/Startup/Startup';
 import {useTheme} from '../hooks';
-import ContentNavigator from './Content';
+// import ContentNavigator from './Content';
+import NavNavigator from './Nav';
 import {useFlipper} from '@react-navigation/devtools';
 import Login from '../screens/Login/Login';
 import Register from '../screens/Login/Register';
+import Congraturation from '../screens/Login/Congraturation';
 import {useTranslation} from 'react-i18next';
 import {Colors} from '../theme/Variables';
 // import Home from '../screens/Home/Home';
@@ -52,19 +54,16 @@ const ApplicationNavigator = () => {
               headerBackTitleVisible: false,
             }}
           />
-          {/* <Stack.Screen
-            name="Home"
-            component={Home}
+          <Stack.Screen
+            name="Congraturation"
+            component={Congraturation}
             options={{
-              title: t('header.register'),
-              headerTintColor: Colors.transparent,
-              headerTitleStyle: { color: Colors.transparent },
               headerShown: false,
             }}
-          /> */}
+          />
           <Stack.Screen
             name="Home"
-            component={ContentNavigator}
+            component={NavNavigator}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

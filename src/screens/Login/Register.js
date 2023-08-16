@@ -240,9 +240,8 @@ const Register = ({navigation}) => {
       });
 
       if (response['status'] == 200) {
-        alert('회원가입 완료');
         // 다시 로그인 화면으로
-        navigation.navigate('Login');
+        navigation.navigate('Congraturation');
       } else {
         response = await response.json();
 

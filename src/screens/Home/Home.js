@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Animated,
 } from 'react-native';
 import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
@@ -15,10 +16,7 @@ import ListModal from '../../components/Content/ListModal';
 import {Colors} from '../../theme/Variables';
 import {launchCamera} from 'react-native-image-picker';
 import {WithLocalSvg} from 'react-native-svg';
-import CurrentLocationBtn from '../../theme/assets/images/current_location_btn.svg';
-import ListBtn from '../../theme/assets/images/list_btn.svg';
-import MyPageBtn from '../../theme/assets/images/mypage_btn.svg';
-import UploadBtn from '../../theme/assets/images/upload_btn.svg';
+import CurrentLocationBtn from '../../theme/assets/images/nav/location.svg';
 import {useTheme} from '../../hooks';
 import MyPage from './MyPage';
 import Upload from './Upload';
@@ -96,7 +94,7 @@ const Home = ({navigation}) => {
   const moveToMyPage = () => {
     navigation.navigate(MyPage);
   };
-
+  // 게시글 생성 페이지 이동
   const moveToUpload = async () => {
     console.log(latitude, longitude);
     await AsyncStorage.setItem('lat', latitude.toString());
@@ -113,7 +111,6 @@ const Home = ({navigation}) => {
   };
 
   const moveToDetail = () => {
-    console.log('??');
     setListBtn(false);
     navigation.navigate('Detail');
   };
@@ -147,61 +144,32 @@ const Home = ({navigation}) => {
         <>
           <View
             style={{
-              width: 50,
-              height: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'absolute',
-              top: 30,
-              right: 20,
-              backgroundColor: Colors.transparent,
-              zIndex: 100,
-            }}>
-            <Pressable
-              style={{width: '100%', height: '100%'}}
-              onPress={moveToMyPage}>
-              <WithLocalSvg width={50} height={50} asset={MyPageBtn} />
-            </Pressable>
-          </View>
-
-          <View
-            style={{
-              width: 50,
-              height: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'absolute',
-              top: 100,
-              right: 20,
-              backgroundColor: Colors.transparent,
-              zIndex: 100,
-            }}>
-            <Pressable
-              style={{width: '100%', height: '100%'}}
-              onPress={moveToList}>
-              <WithLocalSvg width={50} height={50} asset={ListBtn} />
-            </Pressable>
-          </View>
-
-          <View
-            style={{
-              width: 50,
-              height: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: 45,
+              height: 45,
               position: 'absolute',
               bottom: 30,
               left: 20,
-              backgroundColor: Colors.transparent,
+              backgroundColor: '#EAF3FE',
+              borderRadius: 100,
               zIndex: 100,
+              shadowOffset: {width: 0, height: 3},
+              shadowOpacity: 0.25,
+              shadowRadius: 3,
+              shadowColor: '#000000',
+              elevation: 3,
             }}>
             <Pressable
-              style={{width: '100%', height: '100%'}}
+              style={{
+                width: 45,
+                height: 45,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
               onPress={returnCurrentLocation}>
-              <WithLocalSvg width={50} height={50} asset={CurrentLocationBtn} />
+              <WithLocalSvg width={25} height={25} asset={CurrentLocationBtn} />
             </Pressable>
           </View>
-          <View
+          {/* <View
             style={{
               width: 60,
               height: 60,
@@ -216,7 +184,7 @@ const Home = ({navigation}) => {
             <Pressable style={styles.uploadBtn} onPress={moveToUpload}>
               <WithLocalSvg width={50} height={50} asset={UploadBtn} />
             </Pressable>
-          </View>
+          </View> */}
 
           <MapView
             style={styles.map}
@@ -235,7 +203,8 @@ const Home = ({navigation}) => {
               // 클러스터링 정보
               const {id, geometry, onPress, properties} = cluster;
               const points = properties.point_count; // 클러스터링된 숫자
-              return ( // 클러스터링된 마커 렌더링
+              return (
+                // 클러스터링된 마커 렌더링
                 <Marker
                   key={id}
                   coordinate={{
@@ -262,12 +231,7 @@ const Home = ({navigation}) => {
         </>
       )}
 
-      {/* <Modal visible={listBtn} animationType={'fade'} transparent={true}>
-        <ListModal
-          moveToDetail={moveToDetail}
-          closeModal={() => setListBtn(false)}
-        />
-      </Modal> */}
+      {/*  GPS허용 모달*/}
 
       <Modal visible={gpsPermission} animationType={'fade'} transparent={true}>
         <GpsAlert />

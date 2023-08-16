@@ -2,7 +2,18 @@
   "gps": {
     "alert": "GPS 허용해주세요."
   },
-  "content" : {
-    "title" : "목록"
+  "content": {
+    "title": "목록"
+  },
+  "nav": {
+    "home": "홈",
+    "search": "검색",
+    "mypage": "마이페이지",
+    "alram": "알림"
+  },
+  "search": {
+    "user": "사용자 검색",
+    "notFound": "검색 결과가 없습니다.",
+    "history" :"검색 기록"
   }
 }

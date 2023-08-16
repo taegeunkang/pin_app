@@ -7,5 +7,9 @@ export default function ({}) {
     splash: require('./assets/images/splash.png'),
     appLogo: require('./assets/images/app-logo.png'),
     backBtn: require('./assets/images/back-btn.png'),
+    createBtnNot: require('./assets/images/nav/create-not.png'),
+    createBtn: require('./assets/images/nav/create.png'),
+    rightChevron: require('./assets/images/nav/right-chevron.png'),
+    close: require('./assets/images/nav/close.png'),
   };
 }

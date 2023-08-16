@@ -47,8 +47,6 @@ const Login = ({navigation}) => {
     setWrongRes(false);
     setWrongPassword(false);
     if (id.length >= 0 && password.length >= 0) {
-      console.log('요청 보냄');
-
       let response = await fetch(API_URL + '/user/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -164,7 +162,7 @@ const Login = ({navigation}) => {
           <Text style={styles.wrongInput}>{t('wrongPassword')}</Text>
         )}
         <Text style={styles.forgetSentence}>{t('forget')}</Text>
-        <SubmitButton loginSubmit={loginSubmit} title={t('loginBtn')} />
+        <SubmitButton onPress={loginSubmit} title={t('loginBtn')} />
 
         {/* <Text style={styles.snsLoginSenetence}>{t('snsLogin')}</Text>
         <Sns googleSigin={googleSigin} kakaoSignin={kakaoSignin} /> */}
