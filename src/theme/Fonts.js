@@ -81,5 +81,33 @@ export default function ({FontSize, Colors}) {
       letterSpacing: -0.6,
       color: '#353C49',
     },
+    contentRegularBold: {
+      fontFamily: 'SpoqaHanSansNeo-Bold',
+      fontSize: 12,
+      lineHeight: 18,
+      letterSpacing: -0.6,
+      color: '#353C49',
+    },
+    contentRegularRegualr: {
+      fontFamily: 'SpoqaHanSansNeo-Regular',
+      fontSize: 12,
+      lineHeight: 18,
+      letterSpacing: -0.6,
+      color: '#505866',
+    },
+    contentMediumRegualr: {
+      fontFamily: 'SpoqaHanSansNeo-Regular',
+      fontSize: 14,
+      lineHeight: 24,
+      letterSpacing: -0.6,
+      color: '#505866',
+    },
+    contentSmallRegular: {
+      fontFamily: 'SpoqaHanSansNeo-Regular',
+      fontSize: 10,
+      lineHeight: 18,
+      letterSpacing: -0.6,
+      color: '#6D7582',
+    },
   });
 }

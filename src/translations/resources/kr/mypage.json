@@ -1,0 +1,12 @@
+{
+  "profile": {
+    "edit": "프로필 편집",
+    "follow": "팔로우",
+    "unfollow": "언팔로우",
+    "eFollow": "맞팔하기",
+    "block": "차단하기",
+    "posts": "게시글",
+    "following": "팔로잉",
+    "follower": "팔로워"
+  }
+}

@@ -6,6 +6,7 @@ import {
   Text,
   View,
   Animated,
+  SafeAreaView,
 } from 'react-native';
 import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';

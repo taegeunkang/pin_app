@@ -1,146 +1,227 @@
-import {View, StyleSheet, Text, Image, Dimensions} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Dimensions,
+  ScrollView,
+  RefreshControl,
+  ActivityIndicator,
+  SafeAreaView,
+} from 'react-native';
 import Sample1 from '../../theme/assets/images/sample/sample1.png';
 import Sample2 from '../../theme/assets/images/sample/sample2.png';
 import Sample3 from '../../theme/assets/images/sample/sample3.png';
 import Sample4 from '../../theme/assets/images/sample/sample4.png';
+import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {FontSize} from '../../theme/Variables';
 import Cells from '../../theme/assets/images/table-cells-solid.svg';
 
 import {WithLocalSvg} from 'react-native-svg';
+import {useSSR, useTranslation} from 'react-i18next';
+import ProfileButton from '../../components/mypage/ProfileButton';
+import {useTheme} from '../../hooks';
+import PostBox from '../../components/mypage/PostBox';
+import {useState, useEffect} from 'react';
+import FollowButton from '../../components/mypage/FollowButton';
+
+// 게시글 없을 때 check
+
 const MyPage = () => {
+  const {t} = useTranslation('myPage');
+  const {Fonts} = useTheme();
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+
+    // 햅틱 피드백 발생
+    // const options = {
+    //   enableVibrateFallback: true,
+    //   ignoreAndroidSystemSettings: false,
+    // };
+    // RNHapticFeedback.trigger('impactMedium', options);
+
+    // 여기서 데이터를 새로 고치는 로직을 추가합니다.
+    // 예를 들면 아래와 같이 2초 후에 로딩을 중지할 수 있습니다.
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+
+    // 예: API에서 데이터를 가져오는 코드
+    // const response = await fetch(`YOUR_API_URL?page=${page}`);
+    // const result = await response.json();
+
+    // setData(prevData => [...prevData, ...result]);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    // setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [page]);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.profileContainer}>
-        <View style={styles.infoContainer}>
-          <View
-            style={{
-              width: 100,
-              height: 100,
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-            }}>
-            <View style={styles.imgContainer}>
-              <Image source={Sample1} style={styles.img} />
-            </View>
-          </View>
+    <SafeAreaView style={[styles.container]}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        onScroll={({nativeEvent}) => {
+          if (loading) return;
 
-          <View style={styles.info}>
-            <View>
-              <Text style={styles.infoTitle}>4,421</Text>
-              <Text style={styles.infoInfo}>게시물</Text>
-            </View>
-            <View>
-              <Text style={styles.infoTitle}>120만</Text>
-              <Text style={styles.infoInfo}>팔로워</Text>
-            </View>
-            <View>
-              <Text style={styles.infoTitle}>37</Text>
-              <Text style={styles.infoInfo}>팔로잉</Text>
-            </View>
-          </View>
-        </View>
-        <View style={{width: '100%', marginTop: 10}}>
-          <Text style={{fontSize: FontSize.regular, fontWeight: 'bold'}}>
-            강태근
-          </Text>
-        </View>
-
+          const isCloseToBottom =
+            nativeEvent.layoutMeasurement.height +
+              nativeEvent.contentOffset.y >=
+            nativeEvent.contentSize.height - 50;
+          if (isCloseToBottom) {
+            setPage(prevPage => prevPage + 1);
+          }
+        }}
+        scrollEventThrottle={400}
+        style={{
+          flex: 1,
+          width: '100%',
+          backgroundColor: '#F2F4F6',
+        }}>
+        <Image source={Sample1} style={styles.backgroundImage} />
         <View
           style={{
             width: '100%',
-            height: 60,
-            marginTop: 10,
+            alignItems: 'center',
+            backgroundColor: '#FFFFFF',
           }}>
-          <View
-            style={{
-              width: '25%',
-              height: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderBottomWidth: 1,
-              borderBottomColor: 'gray',
-            }}>
-            <WithLocalSvg asset={Cells} width={30} height={30} />
+          <View style={styles.profileContainer}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                marginBottom: 5,
+              }}>
+              <Image source={Sample5} style={styles.profileImage} />
+              <ProfileButton title={t('profile.edit')} />
+              {/* <FollowButton title={'팔로잉'} /> */}
+            </View>
+            <Text style={[styles.nickname, Fonts.contentRegularBold]}>
+              noisy_loud_dean
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  marginRight: 30,
+                }}>
+                <Text style={[{marginRight: 5}, Fonts.contentRegularBold]}>
+                  {t('profile.posts')}
+                </Text>
+                <Text style={Fonts.contentMediumRegular}>
+                  {formatNumber(13)}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  marginRight: 30,
+                }}>
+                <Text style={[{marginRight: 5}, Fonts.contentRegularBold]}>
+                  {t('profile.follower')}
+                </Text>
+                <Text style={Fonts.contentMediumRegular}>
+                  {formatNumber(13)}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                }}>
+                <Text style={[{marginRight: 5}, Fonts.contentRegularBold]}>
+                  {t('profile.following')}
+                </Text>
+                <Text style={Fonts.contentMediumRegular}>
+                  {formatNumber(13)}
+                </Text>
+              </View>
+            </View>
           </View>
         </View>
-      </View>
-      <View style={styles.contentContainer}>
-        <View style={styles.content}>
-          <Image source={Sample1} style={{width: '100%', height: '100%'}} />
-        </View>
-        <View style={styles.content}>
-          <Image source={Sample2} style={{width: '100%', height: '100%'}} />
-        </View>
-        <View style={styles.content}>
-          <Image source={Sample3} style={{width: '100%', height: '100%'}} />
-        </View>
-        <View style={styles.content}>
-          <Image source={Sample4} style={{width: '100%', height: '100%'}} />
-        </View>
-      </View>
-    </View>
+        <View style={{marginBottom: 10}} />
+        <PostBox />
+        <PostBox />
+
+        <PostBox />
+
+        {loading && <ActivityIndicator />}
+      </ScrollView>
+    </SafeAreaView>
   );
+};
+
+const formatNumber = num => {
+  if (num >= 1e9) {
+    // 1,000,000,000 이상 (십억 이상)
+    return (num / 1e9).toFixed(1) + 'b';
+  } else if (num >= 1e6) {
+    // 1,000,000 이상 (백만 이상)
+    return (num / 1e6).toFixed(1) + 'm';
+  } else if (num >= 1e3) {
+    // 1,000 이상
+    return (num / 1e3).toFixed(1) + 'k';
+  } else {
+    return num.toString();
+  }
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+  },
+  backgroundImage: {
+    height: 200,
+    width: '100%',
   },
   profileContainer: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    width: '100%',
-    height: 200,
-    padding: 10,
+    height: 110,
+    width: 370,
+    backgroundColor: '#FFFFFF',
   },
-  imgContainer: {
-    borderRadius: 100,
+  profileImage: {
     width: 75,
     height: 75,
-    borderWidth: 1,
-    overflow: 'hidden',
+    borderRadius: 12,
+    marginTop: -40,
+    borderWidth: 3,
+    borderColor: '#ffffff',
+    marginRight: 10,
   },
-  img: {
-    width: '100%',
-    height: '100%',
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-    width: '100%',
-    height: 100,
-  },
-  info: {
-    flexDirection: 'row',
-    width: Dimensions.get('window').width - 120,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-  },
-  nameContainer: {},
-  infoTitle: {
-    fontSize: FontSize.large,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  infoInfo: {
-    fontSize: FontSize.regular,
-    fontWeight: '400',
-    textAlign: 'center',
-  },
-  contentContainer: {
-    width: '100%',
-    height: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  content: {
-    width: Dimensions.get('window').width * 0.3333,
-    height: Dimensions.get('window').width * 0.3333,
-    borderWidth: 0.3,
-    borderColor: 'black',
+  nickname: {
+    marginBottom: 10,
   },
 });
 
