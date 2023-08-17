@@ -20,7 +20,7 @@ import {API_URL} from '../../utils/constants';
 import {useTheme} from '../../hooks';
 import SubmitButton from '../../components/SubmitButton';
 import {useNavigation} from '@react-navigation/native';
-
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 const Upload = () => {
   const [scale, setScale] = useState(1);
   const [photos, setPhotos] = useState([]);
@@ -221,37 +221,37 @@ const Upload = () => {
               <Pressable
                 onPress={() => addArray(item)}
                 style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 100,
+                  width: responsiveWidth(20),
+                  height: responsiveHeight(20),
+                  borderRadius: responsiveWidth(100),
                   backgroundColor: Colors.transparent,
-                  borderWidth: 2,
+                  borderWidth: responsiveWidth(2),
                   borderColor: '#EAF3FE',
                   position: 'absolute',
-                  top: 5,
-                  left: 5,
+                  top: responsiveHeight(5),
+                  left: responsiveWidth(5),
                 }}></Pressable>
             )}
             {findArrayIdx(item) !== -1 && (
               <Pressable
                 onPress={() => removeTargetFromArray(item)}
                 style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 100,
+                  width: responsiveWidth(20),
+                  height: responsiveHeight(20),
+                  borderRadius: responsiveWidth(100),
                   backgroundColor: '#4880EE',
                   justifyContent: 'center',
                   alignItems: 'center',
                   position: 'absolute',
-                  top: 5,
-                  left: 5,
+                  top: responsiveHeight(5),
+                  left: responsiveWidth(5),
                 }}>
                 <Text
                   style={{
                     fontFamily: 'SpoqaHanSansNeo-Bold',
-                    fontSize: 12,
-                    lineHeight: 18,
-                    letterSpacing: -0.6,
+                    fontSize: responsiveWidth(12),
+                    lineHeight: responsiveHeight(18),
+                    letterSpacing: responsiveWidth(-0.6),
                     color: '#EAF3FE',
                   }}>
                   {findArrayIdx(item)}
@@ -266,11 +266,11 @@ const Upload = () => {
       />
       <View
         style={{
-          height: 50,
+          height: responsiveHeight(50),
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          paddingHorizontal: 20,
+          paddingHorizontal: responsiveWidth(20),
           backgroundColor: 'rgba(234,243,254, 1)',
         }}>
         <Text>최대 10개의 사진, 동영상을 선택할 수 있습니다.</Text>
@@ -311,16 +311,16 @@ const styles = StyleSheet.create({
   container: {flex: 1, justifyContent: 'center'},
   headerTitle: {
     fontFamily: 'SpoqaHanSansNeo-Bold',
-    fontSize: 14,
-    lineHeight: 20,
-    letterSpacing: -0.6,
+    fontSize: responsiveWidth(14),
+    lineHeight: responsiveHeight(20),
+    letterSpacing: responsiveWidth(-0.6),
     color: '#1A1E27',
   },
   subscription: {
     fontFamily: 'SpoqaHanSansNeo-Regular',
-    fontSize: 14,
-    lineHeight: 20,
-    letterSpacing: -0.6,
+    fontSize: responsiveWidth(14),
+    lineHeight: responsiveHeight(20),
+    letterSpacing: responsiveWidth(-0.6),
     color: '#505866',
   },
 });

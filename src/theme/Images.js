@@ -12,5 +12,6 @@ export default function ({}) {
     rightChevron: require('./assets/images/nav/right-chevron.png'),
     leftChevron: require('./assets/images/nav/left-chevron.png'),
     close: require('./assets/images/nav/close.png'),
+    plus: require('./assets/images/nav/plus.png'),
   };
 }

@@ -3,6 +3,7 @@ import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
 import {useTranslation} from 'react-i18next';
 import SubmitButton2 from '../SubmitButton2';
 import SubmitButton from '../SubmitButton';
+import {responsiveHeight, responsiveWidth} from '../Scale';
 const BackAlert = ({cancle, go_back}) => {
   const {t} = useTranslation('register');
 
@@ -13,12 +14,12 @@ const BackAlert = ({cancle, go_back}) => {
           <Text
             style={{
               fontFamily: 'SpoqaHanSansNeo-Bold',
-              fontSize: 16,
-              lineHeight: 28,
-              letterSpacing: -0.6,
-              marginBottom: 20,
+              fontSize: responsiveWidth(16),
+              lineHeight: responsiveHeight(28),
+              letterSpacing: responsiveWidth(-0.6),
+              marginBottom: responsiveHeight(20),
               color: '#353C49',
-              marginTop: 10,
+              marginTop: responsiveHeight(10),
             }}>
             {t('back.title')}
           </Text>
@@ -26,9 +27,9 @@ const BackAlert = ({cancle, go_back}) => {
             style={{
               fontFamily: 'SpoqaHanSansNeo-Regular',
               color: '#505866',
-              fontSize: 14,
-              lineHeight: 20,
-              letterSpacing: -0.6,
+              fontSize: responsiveWidth(14),
+              lineHeight: responsiveHeight(20),
+              letterSpacing: responsiveWidth(-0.6),
             }}>
             {t('back.detail')}
           </Text>
@@ -66,8 +67,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: BorderRadius.xLarge,
   },
   content: {
-    paddingVertical: 20,
-    paddingHorizontal: 20,
+    paddingVertical: responsiveHeight(20),
+    paddingHorizontal: responsiveWidth(20),
   },
   buttonContainer: {
     flex: 1,
@@ -75,25 +76,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'flex-end',
-    marginBottom: 50,
-    paddingHorizontal: 10,
-  },
-  cancle: {
-    width: 170,
-    height: 60,
-    borderWidth: 0.2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: BorderRadius.small,
-  },
-  goBack: {
-    width: 170,
-    height: 60,
-    borderWidth: 0.2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: BorderRadius.small,
-    backgroundColor: Colors.DarkGray,
+    marginBottom: responsiveHeight(50),
+    paddingHorizontal: responsiveWidth(10),
   },
 });
 

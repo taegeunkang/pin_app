@@ -1,10 +1,8 @@
 import {useTranslation} from 'react-i18next';
 import {
-  SafeAreaView,
   Text,
   View,
   StyleSheet,
-  Pressable,
   TouchableOpacity,
   Image,
   TouchableWithoutFeedback,
@@ -23,6 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from '../../theme/assets/images/p-logo-transparent.svg';
 import SubmitButton from '../../components/SubmitButton';
 import InputBox from '../../components/InputBox';
+import {responsiveWidth, responsiveHeight} from '../../components/Scale';
 // import {
 //   GoogleSignin,
 //   statusCodes,
@@ -134,12 +133,15 @@ const Login = ({navigation}) => {
         <View
           style={{
             width: '100%',
-            height: 200,
+            height: responsiveHeight(200),
             backgroundColor: 'transparent',
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Image source={Images.appLogo} style={{width: 200, height: 200}} />
+          <Image
+            source={Images.appLogo}
+            style={{width: responsiveWidth(200), height: responsiveHeight(200)}}
+          />
         </View>
 
         <View style={(Layout.fullWidth, Layout.center)}>
@@ -179,11 +181,11 @@ const Login = ({navigation}) => {
 
           <TouchableOpacity
             style={{
-              width: 180,
-              height: 35,
+              width: responsiveWidth(180),
+              height: responsiveHeight(35),
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: 30,
+              marginTop: responsiveHeight(30),
             }}
             onPress={() => navigation.navigate('Register')}
             activeOpacity={1}>
@@ -196,72 +198,40 @@ const Login = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  title: {
-    marginTop: 100,
-    textAlign: 'center',
-    alignItems: 'center',
-    marginBottom: 55,
-  },
-  titleText: {
-    fontSize: FontSize.xLarge,
-    fontWeight: 700,
-  },
-  titleSub: {
-    fontSize: FontSize.regular,
-  },
   loginInput: {
-    width: 370,
-    height: 48,
-    borderRadius: 12,
+    width: responsiveWidth(370),
+    height: responsiveHeight(48),
+    borderRadius: responsiveWidth(12),
     backgroundColor: '#F2F4F6',
-    paddingHorizontal: 10,
+    paddingHorizontal: responsiveWidth(10),
     color: '#505866',
   },
   forgetSentence: {
-    width: 370,
-    fontSize: 12,
-    lineHeight: 18,
-    letterSpacing: -0.6,
+    width: responsiveWidth(370),
+    fontSize: responsiveWidth(12),
+    lineHeight: responsiveHeight(18),
+    letterSpacing: responsiveWidth(-0.6),
     color: '#6D7582',
-    marginBottom: 40,
-    marginTop: 20,
+    marginBottom: responsiveHeight(40),
+    marginTop: responsiveHeight(20),
   },
   snsLoginSenetence: {
     fontSize: FontSize.small,
     color: Colors.DarkGray,
-    marginTop: 30,
-  },
-  loginButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 7,
-    height: 48,
-    elevation: 3,
-    backgroundColor: Colors.DarkGray,
-    width: 320,
-  },
-  loginButtonText: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 370,
-    height: 48,
-    backgroundColor: '#4880EE',
-    borderRadius: 12,
+    marginTop: responsiveHeight(30),
   },
   registerTitle: {
-    fontSize: 12,
-    lineHeight: 18,
-    letterSpacing: -0.6,
+    fontSize: responsiveWidth(12),
+    lineHeight: responsiveHeight(18),
+    letterSpacing: responsiveHeight(-0.6),
     color: '#6D7582',
   },
   wrongInput: {
     color: '#E44949',
-    fontSize: 12,
-    lineHeight: 18,
-    letterSpacing: -0.6,
-    width: 370,
+    fontSize: responsiveWidth(12),
+    lineHeight: responsiveHeight(18),
+    letterSpacing: responsiveWidth(-0.6),
+    width: responsiveWidth(370),
   },
 });
 

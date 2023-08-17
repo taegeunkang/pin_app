@@ -1,7 +1,7 @@
 import {View, StyleSheet, Image, Text} from 'react-native';
 import {useTheme} from '../../hooks';
 import {responsiveHeight, responsiveWidth} from '../Scale';
-const UserCell = ({profileImage, name, closeAvailable, onPress}) => {
+const FriendsCell = ({profileImage, name, closeAvailable}) => {
   const {Images} = useTheme();
 
   return (
@@ -23,8 +23,8 @@ const UserCell = ({profileImage, name, closeAvailable, onPress}) => {
         />
       ) : (
         <Image
-          source={Images.rightChevron}
-          style={{width: responsiveWidth(8.75), height: responsiveHeight(15)}}
+          source={Images.plus}
+          style={{width: responsiveWidth(15), height: responsiveHeight(15)}}
         />
       )}
     </View>
@@ -47,4 +47,4 @@ const styles = StyleSheet.create({
     marginLeft: responsiveWidth(5),
   },
 });
-export default UserCell;
+export default FriendsCell;

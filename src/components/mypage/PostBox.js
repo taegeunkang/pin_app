@@ -9,6 +9,7 @@ import CommentIconNot from '../../theme/assets/images/nav/comment-not.svg';
 import LocationIconNot from '../../theme/assets/images/nav/loc.svg';
 import LocationIconNotIconNot from '../../theme/assets/images/nav/loc-not.svg';
 import {useState} from 'react';
+import {responsiveHeight, responsiveWidth} from '../Scale';
 const PostBox = () => {
   const {Fonts} = useTheme();
   const [isLiked, setIsLiked] = useState(false);
@@ -18,10 +19,14 @@ const PostBox = () => {
         <View style={styles.writerBox}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Image source={Sample5} style={styles.writerImage} />
-            <Text style={[Fonts.contentRegularBold, {marginRight: 5}]}>
+            <Text
+              style={[
+                Fonts.contentMediumBold,
+                {marginRight: responsiveWidth(5)},
+              ]}>
               noisy_loud_dean
             </Text>
-            <Text style={Fonts.contentSmallRegular}>
+            <Text style={Fonts.contentRegularRegualr}>
               {timeAgo('2023-08-06T12:00:00.000')}
             </Text>
           </View>
@@ -31,8 +36,9 @@ const PostBox = () => {
             <MoreFriends count={3} />
           </View>
         </View>
-        {/* 본문 글*/}
-        <Text style={[Fonts.contentRegularRegualr, {width: 370}]}>
+        {/* 본문 글 최대 250자 */}
+        <Text
+          style={[Fonts.contentMediumMedium, {width: responsiveWidth(370)}]}>
           컨텐츠를 여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도
           만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수 있습니다.
           컨텐츠를 여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도
@@ -42,51 +48,52 @@ const PostBox = () => {
         </Text>
 
         {/* 첨부 파일*/}
-        <View style={{marginBottom: 20}} />
+        <View style={{marginBottom: responsiveHeight(20)}} />
         <PostFiles />
-        <View style={{marginBottom: 20}} />
+        <View style={{marginBottom: responsiveHeight(20)}} />
         {/* 좋아요, 댓글, 위치*/}
         <View
           style={{
             flexDirection: 'row',
-            marginBottom: 5,
+            marginBottom: responsiveHeight(5),
           }}>
           <View
             style={{
               flexDirection: 'row',
-              marginRight: 10,
-              marginBottom: 5,
+              marginRight: responsiveWidth(10),
+              marginBottom: responsiveHeight(5),
             }}>
             <WithLocalSvg
-              width={15}
-              height={15}
+              width={responsiveWidth(20)}
+              height={responsiveHeight(20)}
               asset={isLiked ? SmaileIcon : SmaileIconNot}
-              style={{marginRight: 5}}
+              style={{marginRight: responsiveWidth(5)}}
               onPress={() => setIsLiked(!isLiked)}
             />
-            <Text style={Fonts.contentRegularRegualr}>
+            <Text style={Fonts.contentMediumRegualr}>
               {formatNumber(14000)}
             </Text>
           </View>
 
-          <View style={{flexDirection: 'row', marginRight: 10}}>
+          <View
+            style={{flexDirection: 'row', marginRight: responsiveWidth(10)}}>
             <WithLocalSvg
-              width={15}
-              height={15}
+              width={responsiveWidth(20)}
+              height={responsiveHeight(20)}
               asset={CommentIconNot}
-              style={{marginRight: 5}}
+              style={{marginRight: responsiveWidth(5)}}
             />
-            <Text style={Fonts.contentRegularRegualr}> {formatNumber(23)}</Text>
+            <Text style={Fonts.contentMediumRegualr}> {formatNumber(23)}</Text>
           </View>
 
           <View style={{flexDirection: 'row'}}>
             <WithLocalSvg
-              width={15}
-              height={15}
+              width={responsiveWidth(20)}
+              height={responsiveHeight(20)}
               asset={LocationIconNot}
-              style={{marginRight: 5}}
+              style={{marginRight: responsiveWidth(5)}}
             />
-            <Text style={Fonts.contentRegularRegualr}>떼르미니 역</Text>
+            <Text style={Fonts.contentMediumRegualr}>떼르미니 역</Text>
           </View>
         </View>
       </View>
@@ -98,9 +105,9 @@ const MoreFriends = ({count}) => {
   return (
     <View
       style={{
-        width: 25,
-        height: 25,
-        borderRadius: 8,
+        width: responsiveWidth(25),
+        height: responsiveHeight(25),
+        borderRadius: responsiveWidth(8),
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#F2F3F4',
@@ -108,9 +115,9 @@ const MoreFriends = ({count}) => {
       <Text
         style={{
           fontFamily: 'SpoqaHanSansNeo-Bold',
-          fontSize: 12,
-          lineHeight: 18,
-          letterSpacing: -0.6,
+          fontSize: responsiveWidth(12),
+          lineHeight: responsiveHeight(18),
+          letterSpacing: responsiveWidth(-0.6),
           color: '#505866',
         }}>
         {'+' + count}
@@ -128,9 +135,9 @@ const PostFiles = ({images}) => {
         <Text
           style={{
             fontFamily: 'SpoqaHanSansNeo-Bold',
-            fontSize: 14,
-            lineHeight: 24,
-            letterSpacing: -0.6,
+            fontSize: responsiveWidth(14),
+            lineHeight: responsiveHeight(24),
+            letterSpacing: responsiveWidth(-0.6),
             color: '#505866',
           }}>
           +3
@@ -184,27 +191,32 @@ const timeAgo = dateInput => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    maxHeight: 240,
+    maxHeight: responsiveHeight(300),
     backgroundColor: '#ffffff',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: responsiveHeight(10),
   },
-  postContainer: {width: 370},
-  writerImage: {width: 25, height: 25, borderRadius: 8, marginRight: 5},
+  postContainer: {width: responsiveWidth(370)},
+  writerImage: {
+    width: responsiveWidth(25),
+    height: responsiveHeight(25),
+    borderRadius: responsiveWidth(8),
+    marginRight: responsiveWidth(5),
+  },
   writerBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 45,
+    height: responsiveHeight(45),
   },
   media: {
-    width: 35,
-    height: 35,
+    width: responsiveWidth(35),
+    height: responsiveHeight(35),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F2F3F4',
-    borderRadius: 10,
-    marginRight: 5,
+    borderRadius: responsiveWidth(10),
+    marginRight: responsiveWidth(5),
   },
 });
 

@@ -25,7 +25,7 @@ import {useTheme} from '../../hooks';
 import PostBox from '../../components/mypage/PostBox';
 import {useState, useEffect} from 'react';
 import FollowButton from '../../components/mypage/FollowButton';
-
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 // 게시글 없을 때 check
 
 const MyPage = ({navigation}) => {
@@ -87,7 +87,7 @@ const MyPage = ({navigation}) => {
           const isCloseToBottom =
             nativeEvent.layoutMeasurement.height +
               nativeEvent.contentOffset.y >=
-            nativeEvent.contentSize.height - 50;
+            nativeEvent.contentSize.height - responsiveHeight(50);
           if (isCloseToBottom) {
             setPage(prevPage => prevPage + 1);
           }
@@ -110,13 +110,13 @@ const MyPage = ({navigation}) => {
               style={{
                 flexDirection: 'row',
                 alignItems: 'flex-end',
-                marginBottom: 5,
+                marginBottom: responsiveHeight(5),
               }}>
               <Image source={Sample5} style={styles.profileImage} />
               <ProfileButton title={t('profile.edit')} />
               {/* <FollowButton title={'팔로잉'} /> */}
             </View>
-            <Text style={[styles.nickname, Fonts.contentRegularBold]}>
+            <Text style={[styles.nickname, Fonts.contentMediumBold]}>
               noisy_loud_dean
             </Text>
             <View
@@ -130,7 +130,7 @@ const MyPage = ({navigation}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'flex-start',
-                  marginRight: 30,
+                  marginRight: responsiveWidth(30),
                 }}>
                 <Text style={[{marginRight: 5}, Fonts.contentRegularBold]}>
                   {t('profile.posts')}
@@ -146,7 +146,7 @@ const MyPage = ({navigation}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'flex-start',
-                  marginRight: 30,
+                  marginRight: responsiveWidth(30),
                 }}>
                 <Text style={[{marginRight: 5}, Fonts.contentRegularBold]}>
                   {t('profile.follower')}
@@ -162,7 +162,11 @@ const MyPage = ({navigation}) => {
                   justifyContent: 'flex-start',
                 }}
                 onPress={() => navigation.navigate('FollowingList')}>
-                <Text style={[{marginRight: 5}, Fonts.contentRegularBold]}>
+                <Text
+                  style={[
+                    {marginRight: responsiveWidth(5)},
+                    Fonts.contentRegularBold,
+                  ]}>
                   {t('profile.following')}
                 </Text>
                 <Text style={Fonts.contentMediumRegular}>
@@ -172,10 +176,9 @@ const MyPage = ({navigation}) => {
             </View>
           </View>
         </View>
-        <View style={{marginBottom: 10}} />
+        <View style={{marginBottom: responsiveHeight(10)}} />
         <PostBox />
         <PostBox />
-
         <PostBox />
 
         {loading && <ActivityIndicator />}
@@ -206,25 +209,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backgroundImage: {
-    height: 200,
+    height: responsiveHeight(200),
     width: '100%',
   },
   profileContainer: {
-    height: 110,
-    width: 370,
+    height: responsiveHeight(110),
+    width: responsiveWidth(370),
     backgroundColor: '#FFFFFF',
   },
   profileImage: {
-    width: 75,
-    height: 75,
-    borderRadius: 12,
-    marginTop: -40,
-    borderWidth: 3,
+    width: responsiveWidth(75),
+    height: responsiveHeight(75),
+    borderRadius: responsiveWidth(12),
+    marginTop: responsiveHeight(-40),
+    borderWidth: responsiveWidth(3),
     borderColor: '#ffffff',
-    marginRight: 10,
+    marginRight: responsiveWidth(10),
   },
   nickname: {
-    marginBottom: 10,
+    marginBottom: responsiveHeight(10),
   },
 });
 

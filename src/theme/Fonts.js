@@ -2,6 +2,7 @@
  * This file contains all application's style relative to fonts
  */
 import {StyleSheet} from 'react-native';
+import {responsiveWidth, responsiveHeight} from '../components/Scale';
 export default function ({FontSize, Colors}) {
   return StyleSheet.create({
     textTiny: {
@@ -76,37 +77,51 @@ export default function ({FontSize, Colors}) {
     },
     inputHeader: {
       fontFamily: 'SpoqaHanSansNeo-Bold',
-      fontSize: 12,
-      lineHeight: 18,
-      letterSpacing: -0.6,
+      fontSize: responsiveWidth(12),
+      lineHeight: responsiveHeight(18),
+      letterSpacing: responsiveWidth(-0.6),
       color: '#353C49',
     },
     contentRegularBold: {
       fontFamily: 'SpoqaHanSansNeo-Bold',
-      fontSize: 12,
-      lineHeight: 18,
-      letterSpacing: -0.6,
+      fontSize: responsiveWidth(12),
+      lineHeight: responsiveHeight(18),
+      letterSpacing: responsiveWidth(-0.6),
       color: '#353C49',
     },
     contentRegularRegualr: {
       fontFamily: 'SpoqaHanSansNeo-Regular',
-      fontSize: 12,
-      lineHeight: 18,
-      letterSpacing: -0.6,
+      fontSize: responsiveWidth(12),
+      lineHeight: responsiveHeight(18),
+      letterSpacing: responsiveWidth(-0.6),
       color: '#505866',
     },
     contentMediumRegualr: {
       fontFamily: 'SpoqaHanSansNeo-Regular',
-      fontSize: 14,
-      lineHeight: 24,
-      letterSpacing: -0.6,
+      fontSize: responsiveWidth(14),
+      lineHeight: responsiveHeight(24),
+      letterSpacing: responsiveWidth(-0.6),
+      color: '#505866',
+    },
+    contentMediumMedium: {
+      fontFamily: 'SpoqaHanSansNeo-Medium',
+      fontSize: responsiveWidth(14),
+      lineHeight: responsiveHeight(24),
+      letterSpacing: responsiveWidth(-0.6),
+      color: '#505866',
+    },
+    contentMediumBold: {
+      fontFamily: 'SpoqaHanSansNeo-Bold',
+      fontSize: responsiveWidth(14),
+      lineHeight: responsiveHeight(24),
+      letterSpacing: responsiveWidth(-0.6),
       color: '#505866',
     },
     contentSmallRegular: {
       fontFamily: 'SpoqaHanSansNeo-Regular',
-      fontSize: 10,
-      lineHeight: 18,
-      letterSpacing: -0.6,
+      fontSize: responsiveWidth(10),
+      lineHeight: responsiveHeight(18),
+      letterSpacing: responsiveWidth(-0.6),
       color: '#6D7582',
     },
   });

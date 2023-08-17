@@ -1,7 +1,7 @@
-import {View, Text, TextInput, StyleSheet} from 'react-native';
+import {View, Text, TextInput, StyleSheet, Dimensions} from 'react-native';
 import {useTheme} from '../hooks';
 import React from 'react';
-
+import {responsiveHeight, responsiveWidth} from './Scale';
 const InputBox = React.forwardRef(
   (
     {
@@ -19,18 +19,40 @@ const InputBox = React.forwardRef(
     ref,
   ) => {
     const {Fonts} = useTheme();
+    const screen = Dimensions.get('screen');
+    const screenWidth = screen.width;
+    const screenHeight = screen.height;
+
+    const styles = StyleSheet.create({
+      headerContainer: {
+        width: !width
+          ? responsiveWidth(370)
+          : responsiveWidth(width),
+        height: responsiveHeight(26),
+      },
+      loginInput: {
+        height: responsiveHeight(48),
+        width: !width
+          ? responsiveWidth(370)
+          : responsiveWidth(width),
+        borderRadius: responsiveWidth(12),
+        backgroundColor: '#F2F4F6',
+        paddingHorizontal: responsiveWidth(10),
+        color: '#505866',
+      },
+      wrongInput: {
+        borderWidth: responsiveWidth(1),
+        borderColor: '#E44949',
+      },
+    });
 
     return (
       <>
-        <View style={[!width ? {width: 370} : {width: width}, {height: 26}]}>
+        <View style={styles.headerContainer}>
           <Text style={Fonts.inputHeader}>{title}</Text>
         </View>
         <TextInput
-          style={[
-            !width ? {width: 370} : {width: width},
-            styles.loginInput,
-            isWrong ? styles.wrongInput : '',
-          ]}
+          style={[styles.loginInput, isWrong ? styles.wrongInput : '']}
           placeholder={placeholder}
           placeholderTextColor={'#6D7582'}
           onChangeText={onChangeText}
@@ -45,19 +67,5 @@ const InputBox = React.forwardRef(
     );
   },
 );
-
-const styles = StyleSheet.create({
-  loginInput: {
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: '#F2F4F6',
-    paddingHorizontal: 10,
-    color: '#505866',
-  },
-  wrongInput: {
-    borderWidth: 1,
-    borderColor: '#E44949',
-  },
-});
 
 export default InputBox;

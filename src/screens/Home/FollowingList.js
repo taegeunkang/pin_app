@@ -15,7 +15,7 @@ import {useTranslation} from 'react-i18next';
 import {useState, useRef} from 'react';
 import {WithLocalSvg} from 'react-native-svg';
 import UserCell from '../../components/Content/UserCell';
-
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
@@ -27,11 +27,15 @@ const FollowingList = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginInput}>
-        <WithLocalSvg width={25} height={25} asset={SearchIconNot} />
+        <WithLocalSvg
+          width={responsiveWidth(25)}
+          height={responsiveHeight(25)}
+          asset={SearchIconNot}
+        />
 
         <TextInput
           ref={inputRef}
-          style={{flex: 1, textAlign: 'left', marginLeft: 10}}
+          style={{flex: 1, textAlign: 'left', marginLeft: responsiveWidth(10)}}
           placeholder={t('search.user')}
           placeholderTextColor={'#6D7582'}
           onChangeText={e => setInpt(e)}
@@ -39,7 +43,7 @@ const FollowingList = () => {
         />
       </View>
 
-      <View style={{marginTop: 20}} />
+      <View style={{marginTop: responsiveHeight(20)}} />
       {/* 첫 화면 진입시 검색 기록이 존재 하지 않을 때 */}
       {/* <View style={{flex: 1, backgroundColor: Colors.white}}></View> */}
 
@@ -92,14 +96,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: responsiveHeight(20),
   },
   loginInput: {
-    height: 48,
-    width: 370,
-    borderRadius: 12,
+    height: responsiveHeight(48),
+    width: responsiveWidth(370),
+    borderRadius: responsiveWidth(12),
     backgroundColor: '#F2F4F6',
-    paddingHorizontal: 10,
+    paddingHorizontal: responsiveWidth(10),
     color: '#505866',
     flexDirection: 'row',
     alignItems: 'center',

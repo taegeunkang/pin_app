@@ -17,6 +17,7 @@ import {useTheme} from '../hooks';
 import {Image} from 'react-native';
 import Content from './Content';
 import UploadPost from './UploadPost';
+import {responsiveHeight, responsiveWidth} from '../components/Scale';
 const Tab = createBottomTabNavigator();
 const Nav = () => {
   const {t} = useTranslation('content');
@@ -26,47 +27,79 @@ const Nav = () => {
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         tabBarIcon: ({focused}) => {
-          if (route.name == t('nav.home')) {
+          if (route.name == 'Home') {
             return focused ? (
-              <WithLocalSvg width={25} height={25} asset={HomeIcon} />
+              <WithLocalSvg
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+                asset={HomeIcon}
+              />
             ) : (
-              <WithLocalSvg width={25} height={25} asset={HomeIconNot} />
+              <WithLocalSvg
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+                asset={HomeIconNot}
+              />
             );
           } else if (route.name == t('nav.search')) {
             return focused ? (
-              <WithLocalSvg width={25} height={25} asset={SearchIcon} />
+              <WithLocalSvg
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+                asset={SearchIcon}
+              />
             ) : (
-              <WithLocalSvg width={25} height={25} asset={SearchIconNot} />
+              <WithLocalSvg
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+                asset={SearchIconNot}
+              />
             );
           } else if (route.name == 'Medias') {
             return focused ? (
               <Image
                 source={Images.createBtnNot}
                 style={{
-                  width: 35,
-                  height: 35,
+                  width: responsiveWidth(35),
+                  height: responsiveHeight(35),
                 }}
               />
             ) : (
               <Image
                 source={Images.createBtnNot}
                 style={{
-                  width: 35,
-                  height: 35,
+                  width: responsiveWidth(35),
+                  height: responsiveHeight(35),
                 }}
               />
             );
           } else if (route.name == t('nav.mypage')) {
             return focused ? (
-              <WithLocalSvg width={25} height={25} asset={MyPageIcon} />
+              <WithLocalSvg
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+                asset={MyPageIcon}
+              />
             ) : (
-              <WithLocalSvg width={25} height={25} asset={MyPageIconNot} />
+              <WithLocalSvg
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+                asset={MyPageIconNot}
+              />
             );
           } else if (route.name == t('nav.alram')) {
             return focused ? (
-              <WithLocalSvg width={25} height={25} asset={BellIcon} />
+              <WithLocalSvg
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+                asset={BellIcon}
+              />
             ) : (
-              <WithLocalSvg width={25} height={25} asset={BellIconNot} />
+              <WithLocalSvg
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+                asset={BellIconNot}
+              />
             );
           }
         },
@@ -77,7 +110,7 @@ const Nav = () => {
         tabBarInactiveTintColor: '#6D7582',
       })}>
       <Tab.Screen
-        name={t('nav.home')}
+        name="Home"
         component={Home}
         options={{
           headerShown: false,
@@ -100,7 +133,6 @@ const Nav = () => {
           },
           headerShown: false,
           unmountOnBlur: true,
-          
         }}
       />
 

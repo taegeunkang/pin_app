@@ -22,7 +22,7 @@ import {useTheme} from '../../hooks';
 import MyPage from './MyPage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
-
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 const Home = ({navigation}) => {
   const [gpsPermission, setGpsPermission] = useState(false);
   const [image, setImage] = useState([]);
@@ -131,29 +131,33 @@ const Home = ({navigation}) => {
         <>
           <View
             style={{
-              width: 45,
-              height: 45,
+              width: responsiveWidth(45),
+              height: responsiveHeight(45),
               position: 'absolute',
-              bottom: 30,
-              left: 20,
+              bottom: responsiveHeight(30),
+              left: responsiveWidth(20),
               backgroundColor: '#EAF3FE',
-              borderRadius: 100,
+              borderRadius: responsiveWidth(100),
               zIndex: 100,
-              shadowOffset: {width: 0, height: 3},
+              shadowOffset: {width: 0, height: responsiveHeight(3)},
               shadowOpacity: 0.25,
-              shadowRadius: 3,
+              shadowRadius: responsiveWidth(3),
               shadowColor: '#000000',
               elevation: 3,
             }}>
             <Pressable
               style={{
-                width: 45,
-                height: 45,
+                width: responsiveWidth(45),
+                height: responsiveHeight(45),
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
               onPress={returnCurrentLocation}>
-              <WithLocalSvg width={25} height={25} asset={CurrentLocationBtn} />
+              <WithLocalSvg
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+                asset={CurrentLocationBtn}
+              />
             </Pressable>
           </View>
 
@@ -218,14 +222,6 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
-  },
-  uploadBtn: {
-    width: 60,
-    height: 60,
-    backgroundColor: Colors.transparent,
-    borderRadius: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

@@ -2,6 +2,7 @@ import {Image, View, StyleSheet, Text} from 'react-native';
 import {useTheme} from '../../hooks';
 import {ScrollView} from 'react-native-gesture-handler';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 const Alram = () => {
   return (
     <ScrollView style={{backgroundColor: '#F2F4F6'}}>
@@ -32,11 +33,12 @@ const Alram = () => {
 };
 
 const Notify = ({image, title, read}) => {
+  const {Fonts} = useTheme();
   return (
     <View style={[styles.notiContainer, read ? styles.isRead : '']}>
       <View style={styles.content}>
         <Image source={image} style={styles.profileImg} />
-        <Text>{title}</Text>
+        <Text style={Fonts.contentMediumRegualr}>{title}</Text>
       </View>
     </View>
   );
@@ -44,16 +46,21 @@ const Notify = ({image, title, read}) => {
 
 const styles = StyleSheet.create({
   notiContainer: {
-    height: 55,
+    height: responsiveHeight(55),
     alignItems: 'center',
     justifyContent: 'center',
   },
   isRead: {backgroundColor: '#EAF3FE'},
-  profileImg: {width: 35, height: 35, borderRadius: 12, marginRight: 5},
+  profileImg: {
+    width: responsiveWidth(35),
+    height: responsiveHeight(35),
+    borderRadius: responsiveWidth(12),
+    marginRight: responsiveWidth(5),
+  },
   content: {
-    width: 370,
-    height: 45,
-    paddingHorizontal: 5,
+    width: responsiveWidth(370),
+    height: responsiveHeight(45),
+    paddingHorizontal: responsiveWidth(5),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',

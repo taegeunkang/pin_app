@@ -1,9 +1,16 @@
 import React, {useState} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Animated} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Animated,
+  ActivityIndicator,
+} from 'react-native';
 import {useTheme} from '../hooks';
-
-const SubmitButton = ({onPress, title, width, height}) => {
-  const {Fonts} = useTheme();
+import {responsiveHeight, responsiveWidth} from './Scale';
+const SubmitButton = ({onPress, title, width, height, loading}) => {
+  const {Fonts, Gutters} = useTheme();
   const scaleValue = useState(new Animated.Value(1))[0];
 
   const onButtonPressIn = () => {
@@ -31,11 +38,31 @@ const SubmitButton = ({onPress, title, width, height}) => {
           onPress={onPress}
           activeOpacity={1}
           style={[
-            !width ? {width: 370} : {width: width},
-            !height ? {height: 48} : {height: height},
+            !width
+              ? {width: responsiveWidth(370)}
+              : {width: responsiveWidth(width)},
+            !height
+              ? {height: responsiveHeight(48)}
+              : {height: responsiveHeight(height)},
             styles.loginButtonText,
           ]}>
           <Text style={styles.submitBtnTitle}>{title}</Text>
+          {loading && (
+            <ActivityIndicator
+              size={'small'}
+              style={[
+                Gutters.largeVMargin,
+                {
+                  width: responsiveWidth(25),
+                  height: responsiveHeight(25),
+                  marginLeft: responsiveWidth(5),
+                  position: 'absolute',
+                  right: responsiveWidth(145),
+                },
+              ]}
+              color={'#FFFFFF'}
+            />
+          )}
         </TouchableOpacity>
       </Animated.View>
     </View>
@@ -47,13 +74,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#4880EE',
-    borderRadius: 12,
+    borderRadius: responsiveWidth(12),
   },
   submitBtnTitle: {
     fontFamily: 'SpoqaHanSansNeo-Bold',
-    fontSize: 14,
-    lineHeight: 24,
-    letterSpacing: -0.6,
+    fontSize: responsiveWidth(14),
+    lineHeight: responsiveHeight(24),
+    letterSpacing: responsiveWidth(-0.6),
     color: '#FFFFFF',
   },
 });

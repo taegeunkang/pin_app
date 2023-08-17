@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {useTheme} from '../hooks';
+import {responsiveHeight, responsiveWidth} from './Scale';
 
 const SubmitButton2 = ({onPress, title, width, height, loading}) => {
   const {Fonts, Gutters} = useTheme();
@@ -38,8 +39,12 @@ const SubmitButton2 = ({onPress, title, width, height, loading}) => {
           onPress={onPress}
           activeOpacity={1}
           style={[
-            !width ? {width: 370} : {width: width},
-            !height ? {height: 48} : {height: height},
+            !width
+              ? {width: responsiveWidth(370)}
+              : {width: responsiveWidth(width)},
+            !height
+              ? {height: responsiveHeight(48)}
+              : {height: responsiveHeight(height)},
             styles.btn,
           ]}>
           <Text style={styles.submitBtnTitleReverse}>{title}</Text>
@@ -49,11 +54,11 @@ const SubmitButton2 = ({onPress, title, width, height, loading}) => {
               style={[
                 Gutters.largeVMargin,
                 {
-                  width: 25,
-                  height: 25,
-                  marginLeft: 5,
+                  width: responsiveWidth(25),
+                  height: responsiveHeight(25),
+                  marginLeft: responsiveWidth(5),
                   position: 'absolute',
-                  right: 135,
+                  right: responsiveWidth(145),
                 },
               ]}
             />
@@ -69,15 +74,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#EAF3FE',
-    borderRadius: 12,
+    borderRadius: responsiveWidth(12),
     flexDirection: 'row',
     position: 'relative',
   },
   submitBtnTitleReverse: {
     fontFamily: 'SpoqaHanSansNeo-Bold',
-    fontSize: 14,
-    lineHeight: 24,
-    letterSpacing: -0.6,
+    fontSize: responsiveWidth(14),
+    lineHeight: responsiveHeight(24),
+    letterSpacing: responsiveWidth(-0.6),
     color: '#4880EE',
   },
 });
