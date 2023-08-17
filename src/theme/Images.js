@@ -10,6 +10,7 @@ export default function ({}) {
     createBtnNot: require('./assets/images/nav/create-not.png'),
     createBtn: require('./assets/images/nav/create.png'),
     rightChevron: require('./assets/images/nav/right-chevron.png'),
+    leftChevron: require('./assets/images/nav/left-chevron.png'),
     close: require('./assets/images/nav/close.png'),
   };
 }

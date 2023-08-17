@@ -1,10 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View} from 'react-native';
 import Home from '../screens/Home/Home';
 import Alram from '../screens/Home/Alram';
 import {useTranslation} from 'react-i18next';
-import MyPage from '../screens/Home/MyPage';
-import Upload from '../screens/Home/Upload';
 import Search from '../screens/Home/Search';
 import {Colors} from '../theme/Variables';
 import {WithLocalSvg} from 'react-native-svg';
@@ -18,7 +15,8 @@ import SearchIcon from '../theme/assets/images/nav/search.svg';
 import SearchIconNot from '../theme/assets/images/nav/search-not.svg';
 import {useTheme} from '../hooks';
 import {Image} from 'react-native';
-import {shadow} from 'react-native-paper';
+import Content from './Content';
+import UploadPost from './UploadPost';
 const Tab = createBottomTabNavigator();
 const Nav = () => {
   const {t} = useTranslation('content');
@@ -40,10 +38,10 @@ const Nav = () => {
             ) : (
               <WithLocalSvg width={25} height={25} asset={SearchIconNot} />
             );
-          } else if (route.name == 'upload') {
+          } else if (route.name == 'Medias') {
             return focused ? (
               <Image
-                source={Images.createBtn}
+                source={Images.createBtnNot}
                 style={{
                   width: 35,
                   height: 35,
@@ -94,17 +92,21 @@ const Nav = () => {
       />
 
       <Tab.Screen
-        name="upload"
-        component={Upload}
+        name="Medias"
+        component={UploadPost}
         options={{
           tabBarLabelStyle: {
             color: Colors.transparent,
           },
+          headerShown: false,
+          unmountOnBlur: true,
+          
         }}
       />
+
       <Tab.Screen
         name={t('nav.mypage')}
-        component={MyPage}
+        component={Content}
         options={{headerShown: false}}
       />
       <Tab.Screen name={t('nav.alram')} component={Alram} />

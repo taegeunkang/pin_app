@@ -8,6 +8,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   SafeAreaView,
+  Pressable,
 } from 'react-native';
 import Sample1 from '../../theme/assets/images/sample/sample1.png';
 import Sample2 from '../../theme/assets/images/sample/sample2.png';
@@ -27,7 +28,7 @@ import FollowButton from '../../components/mypage/FollowButton';
 
 // 게시글 없을 때 check
 
-const MyPage = () => {
+const MyPage = ({navigation}) => {
   const {t} = useTranslation('myPage');
   const {Fonts} = useTheme();
   const [refreshing, setRefreshing] = useState(false);
@@ -139,7 +140,8 @@ const MyPage = () => {
                 </Text>
               </View>
 
-              <View
+              <Pressable
+                onPress={() => navigation.navigate('FollowerList')}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -152,20 +154,21 @@ const MyPage = () => {
                 <Text style={Fonts.contentMediumRegular}>
                   {formatNumber(13)}
                 </Text>
-              </View>
-              <View
+              </Pressable>
+              <Pressable
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'flex-start',
-                }}>
+                }}
+                onPress={() => navigation.navigate('FollowingList')}>
                 <Text style={[{marginRight: 5}, Fonts.contentRegularBold]}>
                   {t('profile.following')}
                 </Text>
                 <Text style={Fonts.contentMediumRegular}>
                   {formatNumber(13)}
                 </Text>
-              </View>
+              </Pressable>
             </View>
           </View>
         </View>

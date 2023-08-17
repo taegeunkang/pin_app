@@ -21,8 +21,7 @@ import Login from '../screens/Login/Login';
 import Register from '../screens/Login/Register';
 import Congraturation from '../screens/Login/Congraturation';
 import {useTranslation} from 'react-i18next';
-import {Colors} from '../theme/Variables';
-// import Home from '../screens/Home/Home';
+
 const Stack = createStackNavigator();
 // @refresh reset
 const ApplicationNavigator = () => {

@@ -4,6 +4,15 @@
     "location": "위치"
   },
   "write": {
-    "content": {"placeholder": "내용을 입력해주세요.", "upload": "작성 완료", "location" : "직접 입력"}
+    "content": {
+      "placeholder": "내용을 입력해주세요.",
+      "upload": "작성 완료",
+      "location": "직접 입력"
+    }
+  },
+  "media": {
+    "title": "미디어 선택",
+    "preview": "미리보기",
+    "write": "게시글 작성"
   }
 }

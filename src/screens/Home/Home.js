@@ -20,7 +20,6 @@ import {WithLocalSvg} from 'react-native-svg';
 import CurrentLocationBtn from '../../theme/assets/images/nav/location.svg';
 import {useTheme} from '../../hooks';
 import MyPage from './MyPage';
-import Upload from './Upload';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 
@@ -46,11 +45,6 @@ const Home = ({navigation}) => {
     setImage(tmp);
     // setImage('data:image/png;base64,' + result.assets[0].base64);
     // 캔슬할 때 에러 처리
-  };
-
-  const upload = async () => {
-    await openCamera();
-    navigation.navigate('Upload', {images: tmp});
   };
 
   const getCurrentLocation = async () => {
@@ -90,25 +84,6 @@ const Home = ({navigation}) => {
       latitudeDelta: 0.0175,
       longitudeDelta: 0.0175,
     });
-  };
-
-  const moveToMyPage = () => {
-    navigation.navigate(MyPage);
-  };
-  // 게시글 생성 페이지 이동
-  const moveToUpload = async () => {
-    console.log(latitude, longitude);
-    await AsyncStorage.setItem('lat', latitude.toString());
-    await AsyncStorage.setItem('lon', longitude.toString());
-    navigation.navigate(Upload);
-  };
-
-  const showList = () => {
-    setListBtn(true);
-  };
-
-  const moveToList = () => {
-    navigation.navigate('MyList');
   };
 
   const moveToDetail = () => {

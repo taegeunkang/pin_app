@@ -7,26 +7,28 @@ import {
   StyleSheet,
   Text,
   View,
+  Modal,
+  SafeAreaView,
 } from 'react-native';
-import {useEffect, useState} from 'react';
-import CameraBtn from '../../theme/assets/images/camera-solid.svg';
-import CropBtn from '../../theme/assets/images/crop-solid.svg';
-import {Colors, FontSize} from '../../theme/Variables';
+import {useEffect, useState, useLayoutEffect} from 'react';
+import {Colors} from '../../theme/Variables';
 import {WithLocalSvg} from 'react-native-svg';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import Square1 from './Square1';
 import * as RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
-import axios from 'axios';
-const Upload = ({navigation, route}) => {
+import {useTheme} from '../../hooks';
+import SubmitButton from '../../components/SubmitButton';
+import {useNavigation} from '@react-navigation/native';
+
+const Upload = () => {
   const [scale, setScale] = useState(1);
   const [photos, setPhotos] = useState([]);
   const [target, setTarget] = useState(null);
   const [galleryCursor, setGalleryCursor] = useState(null);
   const [array, setArray] = useState([]);
-  const [images, setImages] = useState([]);
-
+  const {Images} = useTheme();
+  const navigation = useNavigation();
   useEffect(() => {
     const t = async () => {
       await getGalleryPhotos();
@@ -64,7 +66,7 @@ const Upload = ({navigation, route}) => {
         for await (const item of edges) {
           const fileName = item.node.image.uri.replace('ph://', '');
           const result = await phPathToFilePath(item.node.image.uri);
-          await uploadFileToServer(result);
+          // await uploadFileToServer(result);
           item.node.image.uri = result;
         }
       }
@@ -106,6 +108,7 @@ const Upload = ({navigation, route}) => {
   };
 
   const uploadFileToServer = async uri => {
+    console.log('called');
     let formData = new FormData();
 
     let files = [
@@ -125,7 +128,6 @@ const Upload = ({navigation, route}) => {
         type: 'image/jpg',
       },
     ];
-    console.log('요청 보냅');
     files.forEach((file, index) => {
       formData.append('file', file);
     });
@@ -174,6 +176,7 @@ const Upload = ({navigation, route}) => {
     }
     setTarget(target.uri); // viewer에 표시
   };
+
   const findArrayIdx = target => {
     for (let i = 0; i < array.length; i++) {
       if (array[i].id == target.id) return i + 1;
@@ -189,73 +192,23 @@ const Upload = ({navigation, route}) => {
       }
     }
     let newArr = arr.slice(0, i).concat(arr.slice(i + 1));
+    saveImageToLocalStorage(newArr);
     setArray(newArr);
+  };
+  // 프리뷰로 이동 및 재생(사진 동영상 둘다)
+  const watchPreview = uri => {
+    navigation.navigate('Preview', {item: uri});
   };
 
   return (
-    <View style={styles.container}>
-      {target && (
-        <View
-          style={{
-            width: Dimensions.get('window').width,
-            height: Dimensions.get('window').width,
-          }}>
-          <Square1 image={target} scale={scale} setScale={setScale} />
-          <Pressable
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 100,
-              backgroundColor: 'rgba(255,255,255,0.5)',
-              position: 'absolute',
-              bottom: 15,
-              left: 15,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onPress={cropImg}>
-            <WithLocalSvg asset={CropBtn} width={20} height={20} />
-          </Pressable>
-        </View>
-      )}
-      {/* 선택된 사진이 없을 때 */}
-      {!target && (
-        <View
-          style={{
-            width: Dimensions.get('window').width,
-            height: Dimensions.get('window').width,
-          }}
-        />
-      )}
-
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingLeft: 10,
-          paddingRight: 10,
-          height: 40,
-          alignItems: 'center',
-          backgroundColor: Colors.white,
-        }}>
-        <Text style={{fontSize: FontSize.regular, fontWeight: 600}}>
-          사진 목록
-        </Text>
-        <View style={{flexDirection: 'row'}}>
-          <WithLocalSvg
-            asset={CameraBtn}
-            width={20}
-            height={20}
-            style={{marginRight: 5}}
-          />
-        </View>
-      </View>
+    <SafeAreaView style={styles.container}>
       {/* 갤러리 사진 */}
+
       <FlatList
         data={photos}
         renderItem={({item}) => (
           <View>
-            <Pressable onPress={() => addArray(item)}>
+            <Pressable onPress={() => watchPreview(item.uri)}>
               <Image
                 source={{uri: item.uri}}
                 style={{
@@ -264,6 +217,22 @@ const Upload = ({navigation, route}) => {
                 }}
               />
             </Pressable>
+
+            {findArrayIdx(item) === -1 && (
+              <Pressable
+                onPress={() => addArray(item)}
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 100,
+                  backgroundColor: Colors.transparent,
+                  borderWidth: 2,
+                  borderColor: '#EAF3FE',
+                  position: 'absolute',
+                  top: 5,
+                  left: 5,
+                }}></Pressable>
+            )}
             {findArrayIdx(item) !== -1 && (
               <Pressable
                 onPress={() => removeTargetFromArray(item)}
@@ -271,23 +240,49 @@ const Upload = ({navigation, route}) => {
                   width: 20,
                   height: 20,
                   borderRadius: 100,
-                  backgroundColor: 'rgba(255,255,255,0.7)',
+                  backgroundColor: '#4880EE',
                   justifyContent: 'center',
                   alignItems: 'center',
                   position: 'absolute',
                   top: 5,
                   left: 5,
                 }}>
-                <Text>{findArrayIdx(item)}</Text>
+                <Text
+                  style={{
+                    fontFamily: 'SpoqaHanSansNeo-Bold',
+                    fontSize: 12,
+                    lineHeight: 18,
+                    letterSpacing: -0.6,
+                    color: '#EAF3FE',
+                  }}>
+                  {findArrayIdx(item)}
+                </Text>
               </Pressable>
             )}
           </View>
         )}
         keyExtractor={item => item.id.toString()}
         numColumns={4}
-        style={{backgroundColor: Colors.white}}
+        style={{backgroundColor: Colors.white, flex: 1}}
       />
-    </View>
+      <View
+        style={{
+          height: 50,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 20,
+          backgroundColor: 'rgba(234,243,254, 1)',
+        }}>
+        <Text>최대 10개의 사진, 동영상을 선택할 수 있습니다.</Text>
+        <SubmitButton
+          title="다음"
+          width={40}
+          height={40}
+          onPress={() => navigation.navigate('WriteContent')}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -312,7 +307,21 @@ const openCamera = async () => {
 };
 
 const styles = StyleSheet.create({
-  container: {width: '100%', height: '100%'},
+  container: {flex: 1, justifyContent: 'center'},
+  headerTitle: {
+    fontFamily: 'SpoqaHanSansNeo-Bold',
+    fontSize: 14,
+    lineHeight: 20,
+    letterSpacing: -0.6,
+    color: '#1A1E27',
+  },
+  subscription: {
+    fontFamily: 'SpoqaHanSansNeo-Regular',
+    fontSize: 14,
+    lineHeight: 20,
+    letterSpacing: -0.6,
+    color: '#505866',
+  },
 });
 
 export default Upload;

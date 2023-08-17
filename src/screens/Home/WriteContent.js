@@ -82,9 +82,7 @@ const WriteContent = ({navigation, route}) => {
     const base64Images = await JSON.parse(await AsyncStorage.getItem('images'));
     const base64Videos = await JSON.parse(await AsyncStorage.getItem('videos'));
 
-
     //이미지 추가 및 섬네일 생성
-    
 
     const response = await fetch(API_URL + '/post/create', {
       method: 'POST',
@@ -138,6 +136,8 @@ const WriteContent = ({navigation, route}) => {
   const loadImages = async () => {
     const storedImages = await AsyncStorage.getItem('images');
     const parsedImages = JSON.parse(storedImages);
+    console.log(parsedImages);
+
     setImages(parsedImages);
     if (parsedImages.length > 1) {
       setMultiple(true);

@@ -5,7 +5,10 @@ import {useEffect, useRef} from 'react';
 import WebView from 'react-native-webview';
 export const Slider = ({media}) => {
   const player = useRef(null);
-  useEffect(() => {});
+  useEffect(() => {
+    console.log('slider call');
+    console.log(media);
+  });
 
   // 게시글 업로드시 포스터 생성 후 포스터도 같이 표시를 해주어ㅑ 한다.
   return (

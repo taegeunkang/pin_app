@@ -78,7 +78,7 @@ const Detail = ({route, navigation}) => {
   };
 
   useEffect(() => {
-    load();
+    // load();
   }, []);
 
   return (
@@ -90,7 +90,7 @@ const Detail = ({route, navigation}) => {
           height: Dimensions.get('window').width,
         }}
       /> */}
-      <View
+      {/* <View
         style={{
           width: Dimensions.get('window').width,
           height: Dimensions.get('window').width,
@@ -98,8 +98,8 @@ const Detail = ({route, navigation}) => {
           justifyContent: 'center',
         }}>
         <Slider media={medialFiles} />
-      </View>
-
+      </View> */}
+      {/* 
       <View style={styles.infoBar}>
         <View style={{flexDirection: 'row'}}>
           <Pressable onPress={clickLike}>
@@ -112,14 +112,14 @@ const Detail = ({route, navigation}) => {
           </Pressable>
           <WithLocalSvg asset={Comment} width={25} height={25} />
         </View>
+      </View> */}
 
-        {/* url로 앱 여는 기능 구현 후 추가  */}
-        {/* <View style={{flexDirection: 'row'}}>
+      {/* url로 앱 여는 기능 구현 후 추가  */}
+      {/* <View style={{flexDirection: 'row'}}>
           <WithLocalSvg asset={Share} width={25} height={25} />
         </View> */}
-      </View>
 
-      <View style={styles.content}>
+      {/* <View style={styles.content}>
         <Text
           style={{
             fontSize: FontSize.regular,
@@ -132,25 +132,15 @@ const Detail = ({route, navigation}) => {
         <Text style={{marginBottom: 10}}>
           <Text style={{fontSize: FontSize.regular, fontWeight: 600}}>
             {nickName}
-          </Text>
-          {'  '}
-          {/* 일정 글자수 늘어나면 ... 더보기로 content + comments 화면 따로 제작 */}
-          {content}
-        </Text>
+          </Text> */}
+      {/* 일정 글자수 늘어나면 ... 더보기로 content + comments 화면 따로 제작 */}
+      {/* {content} */}
+      {/* </Text>
         <View style={styles.createdDateContainer}>
           <Text>{parseDate(createdDate)}</Text>
         </View>
-
-        <View style={styles.tagContainer}>
-          {/* tag */}
-          {tags &&
-            tags.map((tag, index) => (
-              <Tag key={index} tagName={tag} bgColor={'yellow'} />
-            ))}
-        </View>
-
-        {/*  댓글 0개일 때는 표시 안하고 0개 이상일 때만 댓글 개수 표시 -> 누르면 댓글 모달로 표시*/}
-      </View>
+      </View> */}
+      {/*  댓글 0개일 때는 표시 안하고 0개 이상일 때만 댓글 개수 표시 -> 누르면 댓글 모달로 표시*/}
     </View>
   );
 };

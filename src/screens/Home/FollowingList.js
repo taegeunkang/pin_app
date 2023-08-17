@@ -19,7 +19,7 @@ import UserCell from '../../components/Content/UserCell';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
-const Search = () => {
+const FollowingList = () => {
   const {t} = useTranslation('content');
   const [inpt, setInpt] = useState('');
   const inputRef = useRef(null);
@@ -43,25 +43,8 @@ const Search = () => {
       {/* 첫 화면 진입시 검색 기록이 존재 하지 않을 때 */}
       {/* <View style={{flex: 1, backgroundColor: Colors.white}}></View> */}
 
-      {/* 첫 화면 진입시 검색 기록이 존재 할 때 밑에 검색 결과가 있을 때 + 타이틀 */}
-      <ScrollView>
-        <Text
-          style={{
-            fontFamily: 'SpoqaHanSansNeo-Bold',
-            fontSize: 12,
-            lineHeight: 18,
-            letterSpacing: -0.6,
-          }}>
-          {t('search.history')}
-        </Text>
-        <UserCell closeAvailable={true} />
-        <UserCell closeAvailable={true} />
-        <UserCell closeAvailable={true} />
-        <UserCell closeAvailable={true} />
-        <UserCell closeAvailable={true} />
-      </ScrollView>
       {/* 검색 결과가 있을 때*/}
-      {/* <ScrollView>
+      <ScrollView>
         <UserCell />
         <UserCell />
         <UserCell />
@@ -80,26 +63,26 @@ const Search = () => {
         <UserCell />
         <UserCell />
         <UserCell />
-      </ScrollView> */}
+      </ScrollView>
 
       {/* 검색 결과가 없을 때*/}
       {/* 
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: Colors.white,
-          justifyContent: 'center',
-        }}>
-        <Text
-          style={{
-            fontFamily: 'SpoqaHanSansNeo-Regular',
-            fontSize: 14,
-            lineHeight: 20,
-            letterSpacing: -0.6,
-          }}>
-          {t('search.notFound')}
-        </Text>
-      </View> */}
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: Colors.white,
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'SpoqaHanSansNeo-Regular',
+                fontSize: 14,
+                lineHeight: 20,
+                letterSpacing: -0.6,
+              }}>
+              {t('search.notFound')}
+            </Text>
+          </View> */}
     </SafeAreaView>
   );
 };
@@ -123,4 +106,4 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
 });
-export default Search;
+export default FollowingList;
