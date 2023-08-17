@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
     color: '#6D7582',
     marginBottom: responsiveHeight(40),
     marginTop: responsiveHeight(20),
+    fontFamily: 'SpoqaHanSansNeo-Medium',
   },
   snsLoginSenetence: {
     fontSize: FontSize.small,
@@ -221,12 +222,14 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(30),
   },
   registerTitle: {
+    fontFamily: 'SpoqaHanSansNeo-Medium',
     fontSize: responsiveWidth(12),
     lineHeight: responsiveHeight(18),
     letterSpacing: responsiveHeight(-0.6),
     color: '#6D7582',
   },
   wrongInput: {
+    fontFamily: 'SpoqaHanSansNeo-Medium',
     color: '#E44949',
     fontSize: responsiveWidth(12),
     lineHeight: responsiveHeight(18),

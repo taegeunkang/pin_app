@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     color: '#353C49',
   },
   sub: {
-    fontFamily: 'SpoqaHanSansNeo-Regular',
+    fontFamily: 'SpoqaHanSansNeo-Medium',
     fontSize: 14,
     lineHeight: 20,
     letterSpacing: -0.6,

@@ -26,7 +26,7 @@ const PostBox = () => {
               ]}>
               noisy_loud_dean
             </Text>
-            <Text style={Fonts.contentRegularRegualr}>
+            <Text style={Fonts.contentRegualrMedium}>
               {timeAgo('2023-08-06T12:00:00.000')}
             </Text>
           </View>
@@ -70,9 +70,7 @@ const PostBox = () => {
               style={{marginRight: responsiveWidth(5)}}
               onPress={() => setIsLiked(!isLiked)}
             />
-            <Text style={Fonts.contentMediumRegualr}>
-              {formatNumber(14000)}
-            </Text>
+            <Text style={Fonts.contentMediumMedium}>{formatNumber(14000)}</Text>
           </View>
 
           <View
@@ -83,7 +81,7 @@ const PostBox = () => {
               asset={CommentIconNot}
               style={{marginRight: responsiveWidth(5)}}
             />
-            <Text style={Fonts.contentMediumRegualr}> {formatNumber(23)}</Text>
+            <Text style={Fonts.contentMediumMedium}> {formatNumber(23)}</Text>
           </View>
 
           <View style={{flexDirection: 'row'}}>
@@ -93,7 +91,7 @@ const PostBox = () => {
               asset={LocationIconNot}
               style={{marginRight: responsiveWidth(5)}}
             />
-            <Text style={Fonts.contentMediumRegualr}>떼르미니 역</Text>
+            <Text style={Fonts.contentMediumMedium}>떼르미니 역</Text>
           </View>
         </View>
       </View>

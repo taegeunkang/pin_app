@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nickname: {
-    fontFamily: 'SpoqaHanSansNeo-Regular',
+    fontFamily: 'SpoqaHanSansNeo-Medium',
     fontSize: responsiveWidth(14),
     lineHeight: responsiveHeight(20),
     letterSpacing: responsiveWidth(-0.6),

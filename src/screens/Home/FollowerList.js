@@ -79,7 +79,7 @@ const FollowerList = () => {
           }}>
           <Text
             style={{
-              fontFamily: 'SpoqaHanSansNeo-Regular',
+              fontFamily: 'SpoqaHanSansNeo-Medium',
               fontSize: 14,
               lineHeight: 20,
               letterSpacing: -0.6,

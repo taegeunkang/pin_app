@@ -38,7 +38,7 @@ const Notify = ({image, title, read}) => {
     <View style={[styles.notiContainer, read ? styles.isRead : '']}>
       <View style={styles.content}>
         <Image source={image} style={styles.profileImg} />
-        <Text style={Fonts.contentMediumRegualr}>{title}</Text>
+        <Text style={Fonts.contentMediumMedium}>{title}</Text>
       </View>
     </View>
   );

@@ -135,7 +135,7 @@ const MyPage = ({navigation}) => {
                 <Text style={[{marginRight: 5}, Fonts.contentRegularBold]}>
                   {t('profile.posts')}
                 </Text>
-                <Text style={Fonts.contentMediumRegular}>
+                <Text style={Fonts.contentMediumMedium}>
                   {formatNumber(13)}
                 </Text>
               </View>

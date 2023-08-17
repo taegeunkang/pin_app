@@ -125,7 +125,20 @@ const Home = ({navigation}) => {
   return (
     <View style={styles.container}>
       {!latitude && !longitude && (
-        <ActivityIndicator size={'large'} style={[Gutters.largeVMargin]} />
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#FFFFFF',
+          }}>
+          <ActivityIndicator
+            size={'large'}
+            color={'#4880EE'}
+            style={[Gutters.largeVMargin]}
+          />
+        </View>
       )}
       {latitude && longitude && (
         <>
@@ -219,6 +232,9 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
+    backgroundColor: '#FFFFFF',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   map: {
     flex: 1,

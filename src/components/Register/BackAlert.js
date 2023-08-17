@@ -25,7 +25,7 @@ const BackAlert = ({cancle, go_back}) => {
           </Text>
           <Text
             style={{
-              fontFamily: 'SpoqaHanSansNeo-Regular',
+              fontFamily: 'SpoqaHanSansNeo-Medium',
               color: '#505866',
               fontSize: responsiveWidth(14),
               lineHeight: responsiveHeight(20),

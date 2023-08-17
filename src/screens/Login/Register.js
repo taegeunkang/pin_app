@@ -283,7 +283,16 @@ const Register = ({navigation}) => {
               alignItems: 'flex-start',
               marginTop: responsiveHeight(5),
             }}>
-            <Text style={{color: Colors.red}}>{t('input.wrongEmail')}</Text>
+            <Text
+              style={{
+                fontFamily: 'SpoqaHanSansNeo-Medium',
+                color: '#E44949',
+                fontSize: responsiveWidth(12),
+                lineHeight: responsiveHeight(18),
+                letterSpacing: responsiveWidth(-0.6),
+              }}>
+              {t('input.wrongEmail')}
+            </Text>
           </View>
         )}
 
@@ -324,7 +333,16 @@ const Register = ({navigation}) => {
               alignItems: 'flex-start',
               marginTop: responsiveHeight(5),
             }}>
-            <Text style={{color: Colors.red}}>{t('error.sentResent')}</Text>
+            <Text
+              style={{
+                fontFamily: 'SpoqaHanSansNeo-Medium',
+                color: '#E44949',
+                fontSize: responsiveWidth(12),
+                lineHeight: responsiveHeight(18),
+                letterSpacing: responsiveWidth(-0.6),
+              }}>
+              {t('error.sentResent')}
+            </Text>
           </View>
         )}
         <View style={{marginBottom: responsiveHeight(10)}} />
@@ -377,7 +395,14 @@ const Register = ({navigation}) => {
                     maxLength={6}
                     editable={!verified}
                   />
-                  <Text style={{color: '#E44949'}}>
+                  <Text
+                    style={{
+                      fontFamily: 'SpoqaHanSansNeo-Medium',
+                      color: '#E44949',
+                      fontSize: responsiveWidth(12),
+                      lineHeight: responsiveHeight(18),
+                      letterSpacing: responsiveWidth(-0.6),
+                    }}>
                     {!verified ? countTime(remianTime) : ''}
                   </Text>
                 </View>
@@ -415,7 +440,16 @@ const Register = ({navigation}) => {
                   alignItems: 'flex-start',
                   marginTop: responsiveHeight(5),
                 }}>
-                <Text style={{color: Colors.red}}>{t('verify.expired')}</Text>
+                <Text
+                  style={{
+                    fontFamily: 'SpoqaHanSansNeo-Medium',
+                    color: '#E44949',
+                    fontSize: responsiveWidth(12),
+                    lineHeight: responsiveHeight(18),
+                    letterSpacing: responsiveWidth(-0.6),
+                  }}>
+                  {t('verify.expired')}
+                </Text>
               </View>
             )}
             {wrongCode && (
@@ -425,7 +459,16 @@ const Register = ({navigation}) => {
                   alignItems: 'flex-start',
                   marginTop: responsiveHeight(5),
                 }}>
-                <Text style={{color: Colors.red}}>{t('verify.wrongCode')}</Text>
+                <Text
+                  style={{
+                    fontFamily: 'SpoqaHanSansNeo-Medium',
+                    color: '#E44949',
+                    fontSize: responsiveWidth(12),
+                    lineHeight: responsiveHeight(18),
+                    letterSpacing: responsiveWidth(-0.6),
+                  }}>
+                  {t('verify.wrongCode')}
+                </Text>
               </View>
             )}
             {alreadyVerified && (
@@ -435,7 +478,16 @@ const Register = ({navigation}) => {
                   alignItems: 'flex-start',
                   marginTop: responsiveHeight(5),
                 }}>
-                <Text style={{color: Colors.red}}>{t('verify.exist')}</Text>
+                <Text
+                  style={{
+                    fontFamily: 'SpoqaHanSansNeo-Medium',
+                    color: '#E44949',
+                    fontSize: responsiveWidth(12),
+                    lineHeight: responsiveHeight(18),
+                    letterSpacing: responsiveWidth(-0.6),
+                  }}>
+                  {t('verify.exist')}
+                </Text>
               </View>
             )}
           </>
@@ -452,7 +504,17 @@ const Register = ({navigation}) => {
         />
         {wrongPasswordReg && (
           <View style={{width: responsiveWidth(370), alignItems: 'flex-start'}}>
-            <Text style={{color: Colors.red, marginTop: responsiveHeight(5)}}>
+            <Text
+              style={[
+                {
+                  fontFamily: 'SpoqaHanSansNeo-Medium',
+                  color: '#E44949',
+                  fontSize: responsiveWidth(12),
+                  lineHeight: responsiveHeight(18),
+                  letterSpacing: responsiveWidth(-0.6),
+                },
+                {marginTop: responsiveHeight(5)},
+              ]}>
               {t('input.passwordRule')}
             </Text>
           </View>
@@ -468,7 +530,17 @@ const Register = ({navigation}) => {
         />
         {!passwordCorrect && (
           <View style={{width: responsiveWidth(370), alignItems: 'flex-start'}}>
-            <Text style={{color: Colors.red, marginTop: responsiveHeight(5)}}>
+            <Text
+              style={[
+                {
+                  fontFamily: 'SpoqaHanSansNeo-Medium',
+                  color: '#E44949',
+                  fontSize: responsiveWidth(12),
+                  lineHeight: responsiveHeight(18),
+                  letterSpacing: responsiveWidth(-0.6),
+                },
+                {marginTop: responsiveHeight(5)},
+              ]}>
               {t('input.notCorrect')}
             </Text>
           </View>
@@ -536,9 +608,9 @@ const styles = StyleSheet.create({
     borderColor: Colors.red,
   },
   policyCheckTitle: {
-    fontFamily: 'SpoqaHanSansNeo-Regular',
+    fontFamily: 'SpoqaHanSansNeo-Medium',
     fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(20),
+    lineHeight: responsiveHeight(24),
     letterSpacing: responsiveWidth(-0.6),
     color: '#5D6471',
   },

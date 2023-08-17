@@ -96,6 +96,13 @@ export default function ({FontSize, Colors}) {
       letterSpacing: responsiveWidth(-0.6),
       color: '#505866',
     },
+    contentRegualrMedium: {
+      fontFamily: 'SpoqaHanSansNeo-Medium',
+      fontSize: responsiveWidth(12),
+      lineHeight: responsiveHeight(18),
+      letterSpacing: responsiveWidth(-0.6),
+      color: '#505866',
+    },
     contentMediumRegualr: {
       fontFamily: 'SpoqaHanSansNeo-Regular',
       fontSize: responsiveWidth(14),

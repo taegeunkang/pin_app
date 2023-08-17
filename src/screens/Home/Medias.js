@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     color: '#1A1E27',
   },
   subscription: {
-    fontFamily: 'SpoqaHanSansNeo-Regular',
+    fontFamily: 'SpoqaHanSansNeo-Medium',
     fontSize: responsiveWidth(14),
     lineHeight: responsiveHeight(20),
     letterSpacing: responsiveWidth(-0.6),

@@ -25,20 +25,15 @@ const InputBox = React.forwardRef(
 
     const styles = StyleSheet.create({
       headerContainer: {
-        width: !width
-          ? responsiveWidth(370)
-          : responsiveWidth(width),
+        width: !width ? responsiveWidth(370) : responsiveWidth(width),
         height: responsiveHeight(26),
       },
       loginInput: {
         height: responsiveHeight(48),
-        width: !width
-          ? responsiveWidth(370)
-          : responsiveWidth(width),
+        width: !width ? responsiveWidth(370) : responsiveWidth(width),
         borderRadius: responsiveWidth(12),
         backgroundColor: '#F2F4F6',
         paddingHorizontal: responsiveWidth(10),
-        color: '#505866',
       },
       wrongInput: {
         borderWidth: responsiveWidth(1),
@@ -52,7 +47,11 @@ const InputBox = React.forwardRef(
           <Text style={Fonts.inputHeader}>{title}</Text>
         </View>
         <TextInput
-          style={[styles.loginInput, isWrong ? styles.wrongInput : '']}
+          style={[
+            Fonts.contentRegualrMedium,
+            styles.loginInput,
+            isWrong ? styles.wrongInput : '',
+          ]}
           placeholder={placeholder}
           placeholderTextColor={'#6D7582'}
           onChangeText={onChangeText}

@@ -58,7 +58,7 @@ const SubmitButton2 = ({onPress, title, width, height, loading}) => {
                   height: responsiveHeight(25),
                   marginLeft: responsiveWidth(5),
                   position: 'absolute',
-                  right: responsiveWidth(145),
+                  right: responsiveWidth(10),
                 },
               ]}
             />

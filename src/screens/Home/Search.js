@@ -27,7 +27,11 @@ const Search = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginInput}>
-        <WithLocalSvg width={responsiveWidth(25)} height={responsiveHeight(25)} asset={SearchIconNot} />
+        <WithLocalSvg
+          width={responsiveWidth(25)}
+          height={responsiveHeight(25)}
+          asset={SearchIconNot}
+        />
 
         <TextInput
           ref={inputRef}
@@ -92,7 +96,7 @@ const Search = () => {
         }}>
         <Text
           style={{
-            fontFamily: 'SpoqaHanSansNeo-Regular',
+            fontFamily: 'SpoqaHanSansNeo-Medium',
             fontSize: 14,
             lineHeight: 20,
             letterSpacing: -0.6,

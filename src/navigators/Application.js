@@ -21,7 +21,7 @@ import Login from '../screens/Login/Login';
 import Register from '../screens/Login/Register';
 import Congraturation from '../screens/Login/Congraturation';
 import {useTranslation} from 'react-i18next';
-
+import {responsiveHeight, responsiveWidth} from '../components/Scale';
 const Stack = createStackNavigator();
 // @refresh reset
 const ApplicationNavigator = () => {
@@ -49,7 +49,13 @@ const ApplicationNavigator = () => {
             options={{
               title: t('header.register'),
               headerTintColor: '#353C49',
-              headerTitleStyle: {color: '#353C49'},
+              headerTitleStyle: {
+                color: '#1A1E27',
+                fontFamily: 'SpoqaHanSansNeo-Bold',
+                fontSize: responsiveWidth(14),
+                lineHeight: responsiveHeight(24),
+                letterSpacing: responsiveWidth(-0.6),
+              },
               headerBackTitleVisible: false,
             }}
           />
