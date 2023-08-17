@@ -91,7 +91,6 @@ const Upload = () => {
 
       // ph경로의 이미지를 file로 옮기는 작업
       fileURI = await RNFS.copyAssetsFileIOS(uri, copyPath, 360, 360);
-      console.log('이미지 파일 URI : ' + fileURI);
     }
 
     return fileURI;
@@ -149,17 +148,17 @@ const Upload = () => {
       try {
         let imageUrl = imagesArray[i].uri;
         // Fetch the image data
-        const response = await fetch(imageUrl);
-        const imageData = await response.blob();
+        // const response = await fetch(imageUrl);
+        // const imageData = await response.blob();
 
-        // Convert the image data to a base64 string
-        const base64Image = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(imageData);
-        });
-        arr.push(base64Image);
+        // // Convert the image data to a base64 string
+        // const base64Image = await new Promise((resolve, reject) => {
+        //   const reader = new FileReader();
+        //   reader.onloadend = () => resolve(reader.result);
+        //   reader.onerror = reject;
+        //   reader.readAsDataURL(imageData);
+        // });
+        arr.push(imageUrl);
       } catch (error) {
         console.log('Error saving image:', error);
       }
@@ -279,7 +278,9 @@ const Upload = () => {
           title="다음"
           width={40}
           height={40}
-          onPress={() => navigation.navigate('WriteContent')}
+          onPress={() =>
+            navigation.navigate('WriteContent', {mediaFiles: array})
+          }
         />
       </View>
     </SafeAreaView>

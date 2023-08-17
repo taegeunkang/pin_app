@@ -7,13 +7,15 @@ import {
   Pressable,
   TouchableOpacity,
   Image,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import Button from '../../theme/components/login/Button';
 import {TextInput} from 'react-native-gesture-handler';
 import {useTheme} from '../../hooks';
 import {Colors, FontSize} from '../../theme/Variables';
 // import Sns from '../../theme/components/Sns';
-import {useState} from 'react';
+import {useState, useRef} from 'react';
 // import TextBox from 'react-native-password-eye';
 import {check_email} from '../../utils/email';
 import {API_URL} from '../../utils/constants';
@@ -35,6 +37,7 @@ const Login = ({navigation}) => {
   const [wrongPassword, setWrongPassword] = useState(false);
   const {Common, Fonts, Gutters, Layout, Images} = useTheme();
 
+  const inputRef = useRef(null);
   const loginSubmit = async () => {
     if (!id && !password) {
       return;
@@ -126,61 +129,69 @@ const Login = ({navigation}) => {
   // };
 
   return (
-    <View style={{backgroundColor: Colors.white, flex: 1}}>
-      <View
-        style={{
-          width: '100%',
-          height: 200,
-          backgroundColor: 'transparent',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Image source={Images.appLogo} style={{width: 200, height: 200}} />
-      </View>
+    <TouchableWithoutFeedback onPress={() => inputRef.current.blur()}>
+      <View style={{backgroundColor: Colors.white, flex: 1}}>
+        <View
+          style={{
+            width: '100%',
+            height: 200,
+            backgroundColor: 'transparent',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Image source={Images.appLogo} style={{width: 200, height: 200}} />
+        </View>
 
-      <View style={(Layout.fullWidth, Layout.center)}>
-        <InputBox
-          title={'이메일'}
-          placeholder={t('input.id')}
-          onChangeText={e => setId(e)}
-          value={id}
-          isWrong={wrongId || wrongRes}
-        />
-        {wrongId && <Text style={styles.wrongInput}>{t('wrongId')}</Text>}
-        {wrongRes && <Text style={styles.wrongInput}>{t('wrongInfo')}</Text>}
+        <View style={(Layout.fullWidth, Layout.center)}>
+          <InputBox
+            title={'이메일'}
+            placeholder={t('input.id')}
+            onChangeText={e => setId(e)}
+            value={id}
+            isWrong={wrongId || wrongRes}
+            ref={inputRef}
+          />
+          {wrongId && <Text style={styles.wrongInput}>{t('wrongId')}</Text>}
+          {wrongRes && <Text style={styles.wrongInput}>{t('wrongInfo')}</Text>}
 
-        <InputBox
-          title={'비밀번호'}
-          placeholder={t('input.password')}
-          onChangeText={e => setPassword(e)}
-          value={password}
-          isWrong={wrongPassword}
-          passwordInvisible={true}
-        />
+          <InputBox
+            title={'비밀번호'}
+            placeholder={t('input.password')}
+            onChangeText={e => setPassword(e)}
+            value={password}
+            isWrong={wrongPassword}
+            passwordInvisible={true}
+            ref={inputRef}
+          />
 
-        {wrongPassword && (
-          <Text style={styles.wrongInput}>{t('wrongPassword')}</Text>
-        )}
-        <Text style={styles.forgetSentence}>{t('forget')}</Text>
-        <SubmitButton onPress={loginSubmit} title={t('loginBtn')} />
+          {wrongPassword && (
+            <Text style={styles.wrongInput}>{t('wrongPassword')}</Text>
+          )}
+          <Text style={styles.forgetSentence}>{t('forget')}</Text>
+          {/* <SubmitButton onPress={loginSubmit} title={t('loginBtn')} /> */}
+          <SubmitButton
+            onPress={() => navigation.reset({routes: [{name: 'Home'}]})}
+            title={t('loginBtn')}
+          />
 
-        {/* <Text style={styles.snsLoginSenetence}>{t('snsLogin')}</Text>
+          {/* <Text style={styles.snsLoginSenetence}>{t('snsLogin')}</Text>
         <Sns googleSigin={googleSigin} kakaoSignin={kakaoSignin} /> */}
 
-        <TouchableOpacity
-          style={{
-            width: 180,
-            height: 35,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 30,
-          }}
-          onPress={() => navigation.navigate('Register')}
-          activeOpacity={1}>
-          <Text style={styles.registerTitle}>{t('registerTitle')}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: 180,
+              height: 35,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 30,
+            }}
+            onPress={() => navigation.navigate('Register')}
+            activeOpacity={1}>
+            <Text style={styles.registerTitle}>{t('registerTitle')}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

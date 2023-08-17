@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
 import {check_email as checkEmail} from '../../utils/email';
-import {useEffect, useState, useLayoutEffect} from 'react';
+import {useEffect, useState, useLayoutEffect, useRef} from 'react';
 import {password_test} from '../../utils/password';
 import {API_URL} from '../../utils/constants';
 import BackAlert from '../../components/Register/BackAlert';
@@ -85,32 +85,6 @@ const Register = ({navigation}) => {
       setWrongPasswordReg(false);
     }
   };
-
-  // const nicknameCheck = async e => {
-  //   inpt = String(e).toLowerCase();
-  //   setNickname(inpt);
-
-  //   if (inpt == '') {
-  //     setNicknameDuplicate(false);
-  //   } else {
-  //     let response = await fetch(
-  //       API_URL + '/user/nickname/duplicate?nickname=' + e,
-  //       {method: 'GET'},
-  //     );
-  //     if (response['status'] == 200) {
-  //       setNicknameDuplicate(false);
-  //     } else {
-  //       response = await response.json();
-  //       switch (response['code']) {
-  //         case 'U07':
-  //           setNicknameDuplicate(true);
-  //           break;
-  //       }
-  //     }
-  //   }
-
-  //   return true;
-  // };
 
   const verifyCode = async () => {
     let response = await fetch(

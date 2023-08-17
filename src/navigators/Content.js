@@ -9,17 +9,9 @@ import Detail from '../screens/Home/Detail';
 import {Colors} from '../theme/Variables';
 import {WithLocalSvg} from 'react-native-svg';
 import {useTheme} from '../hooks';
+import HeaderLeftButton from '../components/HeaderLeftButton';
 const Stack = createStackNavigator();
 
-const HeaderLeftButton = ({onPress}) => {
-  const {Images} = useTheme();
-  return (
-    <Image
-      source={Images.leftChevron}
-      style={{marginLeft: 5, width: 25, height: 25}}
-    />
-  );
-};
 // @refresh reset
 const Content = () => {
   const {t} = useTranslation('mypage');
@@ -28,6 +20,7 @@ const Content = () => {
       screenOptions={{
         headerShown: true,
         headerBackTitleVisible: false,
+        headerTitleStyle: {color: '#1A1E27'},
         headerBackImage: () => <HeaderLeftButton />,
       }}>
       <Stack.Screen

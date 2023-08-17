@@ -52,6 +52,8 @@ const SubmitButton2 = ({onPress, title, width, height, loading}) => {
                   width: 25,
                   height: 25,
                   marginLeft: 5,
+                  position: 'absolute',
+                  right: 135,
                 },
               ]}
             />
@@ -69,6 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAF3FE',
     borderRadius: 12,
     flexDirection: 'row',
+    position: 'relative',
   },
   submitBtnTitleReverse: {
     fontFamily: 'SpoqaHanSansNeo-Bold',

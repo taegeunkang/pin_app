@@ -13,6 +13,8 @@
   "media": {
     "title": "미디어 선택",
     "preview": "미리보기",
-    "write": "게시글 작성"
+    "write": "게시글 작성",
+    "location": "위치 검색",
+    "friends": "함께한 친구"
   }
 }

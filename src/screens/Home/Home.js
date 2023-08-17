@@ -11,7 +11,7 @@ import {
 import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
 import Geolocation from '@react-native-community/geolocation';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import GpsAlert from '../../components/Content/GpsAlert';
 import ListModal from '../../components/Content/ListModal';
 import {Colors} from '../../theme/Variables';
@@ -28,9 +28,8 @@ const Home = ({navigation}) => {
   const [image, setImage] = useState([]);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  const [region, setRegion] = useState(null);
-  const [listBtn, setListBtn] = useState(false);
   const [contents, setContents] = useState([]);
+  const mapRef = useRef(null);
 
   const {Gutters} = useTheme();
   const openCamera = async () => {
@@ -71,14 +70,20 @@ const Home = ({navigation}) => {
     );
   };
 
-  const updatePosition = region => {
-    setRegion(region);
-    console.log(region);
-  };
+  // const updatePosition = region => {
+  //   setRegion(region);
+  //   console.log(region);
+  // };
 
   const returnCurrentLocation = () => {
-    getCurrentLocation();
-    setRegion({
+    // setRegion({
+    //   latitude: latitude,
+    //   longitude: longitude,
+    //   latitudeDelta: 0.0175,
+    //   longitudeDelta: 0.0175,
+    // });
+
+    mapRef.current.animateToRegion({
       latitude: latitude,
       longitude: longitude,
       latitudeDelta: 0.0175,
@@ -107,8 +112,14 @@ const Home = ({navigation}) => {
   };
 
   useEffect(() => {
-    getCurrentLocation();
-    getMyPosts();
+    const t = async () => {
+      await getCurrentLocation();
+      // getMyPosts();
+    };
+    const intervalId = setInterval(t, 5000);
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   return (
@@ -145,36 +156,20 @@ const Home = ({navigation}) => {
               <WithLocalSvg width={25} height={25} asset={CurrentLocationBtn} />
             </Pressable>
           </View>
-          {/* <View
-            style={{
-              width: 60,
-              height: 60,
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'absolute',
-              marginLeft: '50%',
-              marginRight: '50%',
-              bottom: 0,
-              zIndex: 100,
-            }}>
-            <Pressable style={styles.uploadBtn} onPress={moveToUpload}>
-              <WithLocalSvg width={50} height={50} asset={UploadBtn} />
-            </Pressable>
-          </View> */}
 
           <MapView
             style={styles.map}
             showsUserLocation={true}
             userLocationUpdateInterval={5000}
             showsMyLocationButton={false}
+            ref={mapRef}
             initialRegion={{
               latitude: latitude,
               longitude: longitude,
               latitudeDelta: 0.0175,
               longitudeDelta: 0.0175,
             }}
-            region={region}
-            onRegionChange={updatePosition}
+            // onRegionChange={updatePosition}
             renderCluster={cluster => {
               // 클러스터링 정보
               const {id, geometry, onPress, properties} = cluster;

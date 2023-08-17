@@ -15,6 +15,8 @@ import {useTheme} from '../hooks';
 import Medias from '../screens/Home/Medias';
 import Preview from '../screens/Home/Preview';
 import WriteContent from '../screens/Home/WriteContent';
+import FindingLocation from '../screens/Home/FindingLocation';
+import HeaderLeftButton from '../components/HeaderLeftButton';
 const Stack = createStackNavigator();
 
 // const HeaderLeftButton = ({onPress}) => {
@@ -35,6 +37,8 @@ const UploadPost = () => {
       screenOptions={{
         headerBackTitleVisible: true,
         presentation: 'card',
+        headerTitleStyle: {color: '#1A1E27'},
+        headerBackImage: () => <HeaderLeftButton />,
       }}>
       <Stack.Screen
         name={t('media.title')}
@@ -52,6 +56,11 @@ const UploadPost = () => {
         name="WriteContent"
         component={WriteContent}
         options={{headerBackTitleVisible: false, title: t('media.write')}}
+      />
+      <Stack.Screen
+        name="FindingLocation"
+        component={FindingLocation}
+        options={{headerBackTitleVisible: false, title: t('media.location')}}
       />
     </Stack.Navigator>
   );

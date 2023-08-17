@@ -28,83 +28,60 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import GpsAlert from '../../components/Content/GpsAlert';
 import axios from 'axios';
+
+// 동영상일 때는 썸네일 파일도 같이 넘겨줘야해서 수정 필요
+
 const WriteContent = ({navigation, route}) => {
   const [text, setText] = useState('');
-  const [texting, setTexting] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
-  const [locationName, setLocationName] = useState('');
-  const [submitAva, setSubmitAva] = useState(false);
-  const [rotation] = useState(new Animated.Value(0));
-  const [toValue, setToValue] = useState(45);
-  const [tagging, setTagging] = useState(false);
-  const [tagInput, setTagInput] = useState('');
-  const [tags, setTags] = useState([]);
-  const [images, setImages] = useState([]);
-  const [multiple, setMultiple] = useState(false);
   const [gpsPermission, setGpsPermission] = useState(false);
-
   const isFocused = useIsFocused();
-  // 사진 미니미 + 게시글 작성
-  // 위치 지정
-  // 함꼐한 친구 추가
-  // 작성 버튼
   const {t} = useTranslation('newPost');
-  const getLocationName = () => {
-    try {
-      if (route.params.locationName) {
-        setLocationName(route.params.locationName);
-        return route.params.locationName;
-      }
-    } catch {
-      return '';
-    }
-  };
+  const [media, setMeida] = useState(null);
+  const {mediaFiles, locationName} = route.params;
 
-  const check = () => {
-    if (text && locationName) {
-      setSubmitAva(false);
-    } else {
-      setSubmitAva(true);
-    }
-  };
+  useEffect(() => {
+    checkRefreshMediaFiles();
+  });
 
-  const moveToFindingLocation = () => {
-    navigation.navigate('FindingLocation');
+  const checkRefreshMediaFiles = () => {
+    if (mediaFiles && !locationName) {
+      setMeida(mediaFiles);
+    } else if (!mediaFiles && locationName) {
+      return;
+    }
   };
   // 포스트 제출
   // API_URL + "/post/create"
   // 동영상 기능 추가해야함
   const submitPost = async () => {
-    const latitude = parseFloat(await AsyncStorage.getItem('lat'));
-    const lontitude = parseFloat(await AsyncStorage.getItem('lon'));
-    const token = await AsyncStorage.getItem('token');
-    console.log(token);
-    const base64Images = await JSON.parse(await AsyncStorage.getItem('images'));
-    const base64Videos = await JSON.parse(await AsyncStorage.getItem('videos'));
-
-    //이미지 추가 및 섬네일 생성
-
-    const response = await fetch(API_URL + '/post/create', {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        content: text,
-        photoFiles: base64Images,
-        lat: latitude,
-        lon: lontitude,
-        locationName: locationName,
-        isPrivate: isPrivate,
-        tags: tags,
-      }),
-    });
-
-    if (response.status != 200) {
-      Alert('알 수 없는 에러가 발생했습니다.');
-    }
-    navigation.reset({routes: [{name: 'Home'}]});
+    // const latitude = parseFloat(await AsyncStorage.getItem('lat'));
+    // const lontitude = parseFloat(await AsyncStorage.getItem('lon'));
+    // const token = await AsyncStorage.getItem('token');
+    // console.log(token);
+    // const base64Images = await JSON.parse(await AsyncStorage.getItem('images'));
+    // const base64Videos = await JSON.parse(await AsyncStorage.getItem('videos'));
+    // //이미지 추가 및 섬네일 생성
+    // const response = await fetch(API_URL + '/post/create', {
+    //   method: 'POST',
+    //   headers: {
+    //     Authorization: 'Bearer ' + token,
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     content: text,
+    //     photoFiles: base64Images,
+    //     lat: latitude,
+    //     lon: lontitude,
+    //     locationName: locationName,
+    //     isPrivate: isPrivate,
+    //     tags: tags,
+    //   }),
+    // });
+    // if (response.status != 200) {
+    //   Alert('알 수 없는 에러가 발생했습니다.');
+    // }
+    // navigation.reset({routes: [{name: 'Home'}]});
   };
 
   const onChangeTyping = e => {
@@ -116,33 +93,18 @@ const WriteContent = ({navigation, route}) => {
       setTexting(false);
     }
   };
-  const rotateComponent = () => {
-    Animated.timing(rotation, {
-      toValue: toValue,
-      duration: 300, // Adjust the duration as per your preference
-      useNativeDriver: true,
-    }).start();
 
-    setToValue(toValue == 0 ? 45 : 0);
-    setTagging(!tagging);
-  };
-  const inputTag = () => {
-    let tagsVar = tags;
+  // const loadImages = async () => {
+  //   const storedImages = await AsyncStorage.getItem('images');
+  //   const parsedImages = JSON.parse(storedImages);
+  //   console.log('gg');
+  //   console.log(parsedImages);
 
-    tagsVar.push(tagInput);
-    setTags(tagsVar);
-    setTagInput('');
-  };
-  const loadImages = async () => {
-    const storedImages = await AsyncStorage.getItem('images');
-    const parsedImages = JSON.parse(storedImages);
-    console.log(parsedImages);
-
-    setImages(parsedImages);
-    if (parsedImages.length > 1) {
-      setMultiple(true);
-    }
-  };
+  //   setImages(parsedImages);
+  //   if (parsedImages.length > 1) {
+  //     setMultiple(true);
+  //   }
+  // };
 
   function generateBoundary() {
     let boundary = '--------------------------'; // Start with a common prefix
@@ -158,52 +120,39 @@ const WriteContent = ({navigation, route}) => {
     return boundary;
   }
 
-  const base64ToBlob = base64String => {
-    base64String.replace('data:image/jpeg;base64,', '');
-    // 패딩 추가
-    while (base64String.length % 4 !== 0) {
-      base64String += '=';
-    }
+  // const base64ToBlob = base64String => {
+  //   base64String.replace('data:image/jpeg;base64,', '');
+  //   // 패딩 추가
+  //   while (base64String.length % 4 !== 0) {
+  //     base64String += '=';
+  //   }
 
-    return new Blob([toByteArray(base64String)], {type: 'image/jpeg'});
-  };
-
-  useEffect(() => {
-    const t = async () => {
-      await loadImages();
-    };
-    check();
-    getLocationName();
-    t();
-  }, [isFocused, locationName, tags, isPrivate, texting]);
+  //   return new Blob([toByteArray(base64String)], {type: 'image/jpeg'});
+  // };
 
   return (
     <View style={{flex: 1}}>
       <View style={styles.inptContainer}>
-        {images && (
+        {media && media.length > 0 && (
           <View style={styles.imageContainer}>
-            {images.length > 1 && (
-              <View
-                style={{
-                  width: 23,
-                  height: 23,
-                  borderRadius: 100,
-                  backgroundColor: '#ececec',
-                  position: 'absolute',
-                  bottom: 15,
-                  right: 15,
-                  zIndex: 100,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text>
-                  {images.length < 10 ? '+' + (images.length - 1) : '+n'}
-                </Text>
-              </View>
-            )}
+            <View
+              style={{
+                width: 23,
+                height: 23,
+                borderRadius: 100,
+                backgroundColor: '#ececec',
+                position: 'absolute',
+                bottom: 15,
+                right: 15,
+                zIndex: 100,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text>{media.length < 10 ? '+' + (media.length - 1) : '+n'}</Text>
+            </View>
             <Image
               style={{width: '100%', height: '100%'}}
-              source={{uri: images[0]}}
+              source={{uri: media[0].uri}}
             />
           </View>
         )}
@@ -228,84 +177,16 @@ const WriteContent = ({navigation, route}) => {
       <View style={{flex: 1, padding: 10}}>
         <View style={styles.listContent}>
           <Text style={{fontSize: FontSize.medium}}>위치</Text>
-          <Text>{locationName}</Text>
+          {locationName && <Text>{locationName}</Text>}
 
-          <TouchableOpacity onPress={moveToFindingLocation}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('FindingLocation')}>
             <View>
               <WithLocalSvg asset={Plus} width={20} height={20} />
             </View>
           </TouchableOpacity>
         </View>
 
-        <View style={{width: '100%', flexDirection: 'column'}}>
-          <View style={styles.listContent}>
-            <Text style={{fontSize: FontSize.medium}}>태그</Text>
-            {/* {AsyncStorage.getItem('currentLocation') && (
-            <Text>{AsyncStorage.getItem('currentLocation')}</Text>
-          )} */}
-
-            <TouchableOpacity onPress={rotateComponent}>
-              <Animated.View
-                style={{
-                  transform: [
-                    {
-                      rotate: rotation.interpolate({
-                        inputRange: [0, 45],
-                        outputRange: ['0deg', '45deg'],
-                      }),
-                    },
-                  ],
-                }}>
-                <WithLocalSvg asset={Plus} width={20} height={20} />
-              </Animated.View>
-            </TouchableOpacity>
-          </View>
-          {tagging && (
-            <>
-              <View style={{width: '100%'}}>
-                <TextInput
-                  value={tagInput}
-                  onChangeText={e => setTagInput(e)}
-                  style={{width: '100%'}}
-                  placeholder="태그 입력(최대 20자)"
-                  onSubmitEditing={inputTag}
-                  maxLength={20}
-                />
-              </View>
-
-              {/* <View style={{width: '100%', marginTop: 20, marginBottom: 20}}>
-                <Text>
-                  {tags.map((item, idx) => {
-                    const colorSet = ['orange', 'red', 'blue', 'green'];
-                    return (
-                      <Tag
-                        key={idx}
-                        tagName={item}
-                        bgColor={colorSet[idx % colorSet.length]}
-                      />
-                    );
-                  })}
-                </Text>
-              </View> */}
-            </>
-          )}
-          {tags && tags.length >= 1 && (
-            <View style={{width: '100%', marginTop: 20, marginBottom: 20}}>
-              <Text>
-                {tags.map((item, idx) => {
-                  const colorSet = ['orange', 'red', 'blue', 'green'];
-                  return (
-                    <Tag
-                      key={idx}
-                      tagName={item}
-                      bgColor={colorSet[idx % colorSet.length]}
-                    />
-                  );
-                })}
-              </Text>
-            </View>
-          )}
-        </View>
         {/* 친구 기능 추가 후 생성 */}
         {/* <View style={styles.listContent}>
           <Text style={{fontSize: FontSize.medium}}>함꼐한 친구</Text>
@@ -335,7 +216,6 @@ const WriteContent = ({navigation, route}) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            disabled={submitAva}
             onPress={submitPost}>
             <Text style={{fontSize: FontSize.medium}}>
               {t('write.content.upload')}
