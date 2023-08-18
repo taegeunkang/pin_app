@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, Image, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  Pressable,
+} from 'react-native';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {useTheme} from '../../hooks';
 import {WithLocalSvg} from 'react-native-svg';
@@ -10,11 +17,11 @@ import LocationIconNot from '../../theme/assets/images/nav/loc.svg';
 import LocationIconNotIconNot from '../../theme/assets/images/nav/loc-not.svg';
 import {useState} from 'react';
 import {responsiveHeight, responsiveWidth} from '../Scale';
-const PostBox = () => {
+const PostBox = ({onPress}) => {
   const {Fonts} = useTheme();
   const [isLiked, setIsLiked] = useState(false);
   return (
-    <View style={styles.container}>
+    <Pressable style={styles.container} onPress={onPress}>
       <View style={styles.postContainer}>
         <View style={styles.writerBox}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -95,7 +102,7 @@ const PostBox = () => {
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

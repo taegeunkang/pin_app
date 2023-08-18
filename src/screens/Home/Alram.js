@@ -1,11 +1,33 @@
-import {Image, View, StyleSheet, Text} from 'react-native';
+import {Image, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useTheme} from '../../hooks';
 import {ScrollView} from 'react-native-gesture-handler';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-const Alram = () => {
+import {useEffect, useLayoutEffect} from 'react';
+const Alram = ({navigation}) => {
+  const {Images, Colors} = useTheme();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Setting');
+          }}>
+          <Image
+            source={Images.setting}
+            style={{
+              width: responsiveWidth(20),
+              height: responsiveHeight(20),
+              marginRight: responsiveWidth(10),
+            }}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  });
+
   return (
-    <ScrollView style={{backgroundColor: '#F2F4F6'}}>
+    <ScrollView style={{backgroundColor: '#FFFFFF'}}>
       <Notify
         image={Sample5}
         title={'mars2727 님이 새로운 게시글을 업로드 하였습니다.'}

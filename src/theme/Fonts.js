@@ -122,7 +122,7 @@ export default function ({FontSize, Colors}) {
       fontSize: responsiveWidth(14),
       lineHeight: responsiveHeight(24),
       letterSpacing: responsiveWidth(-0.6),
-      color: '#505866',
+      color: '#353C49',
     },
     contentSmallRegular: {
       fontFamily: 'SpoqaHanSansNeo-Regular',
@@ -130,6 +130,20 @@ export default function ({FontSize, Colors}) {
       lineHeight: responsiveHeight(18),
       letterSpacing: responsiveWidth(-0.6),
       color: '#6D7582',
+    },
+    contentSmallMedium: {
+      fontFamily: 'SpoqaHanSansNeo-Medium',
+      fontSize: responsiveWidth(10),
+      lineHeight: responsiveHeight(18),
+      letterSpacing: responsiveWidth(-0.6),
+      color: '#6D7582',
+    },
+    contentLargeBold: {
+      fontFamily: 'SpoqaHanSansNeo-Bold',
+      fontSize: responsiveWidth(20),
+      lineHeight: responsiveHeight(28),
+      letterSpacing: responsiveWidth(-0.6),
+      color: '#353C49',
     },
   });
 }

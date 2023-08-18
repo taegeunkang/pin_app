@@ -1,173 +1,317 @@
 import {
   View,
-  Dimensions,
   Text,
-  Preesable,
   StyleSheet,
   Image,
+  Dimensions,
   ScrollView,
-  Pressable,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
-import {useEffect, useState} from 'react';
+import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import Sample1 from '../../theme/assets/images/sample/sample1.png';
-import Comment from '../../theme/assets/images/comment-regular.svg';
-import Like from '../../theme/assets/images/heart-regular.svg';
-import ClickedLike from '../../theme/assets/images/heart-solid.svg';
-import Share from '../../theme/assets/images/paper-plane-regular.svg';
-import Tag from '../../components/Content/Tag';
+import Sample3 from '../../theme/assets/images/sample/sample3.png';
+import {useTheme} from '../../hooks';
 import {WithLocalSvg} from 'react-native-svg';
-import {BorderRadius, FontSize} from '../../theme/Variables';
-import {API_URL} from '../../utils/constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import SmaileIcon from '../../theme/assets/images/nav/smile.svg';
+import SmaileIconNot from '../../theme/assets/images/nav/smile-not.svg';
+import CommentIcon from '../../theme/assets/images/nav/comment.svg';
+import CommentIconNot from '../../theme/assets/images/nav/comment-not.svg';
+import LocationIconNot from '../../theme/assets/images/nav/loc.svg';
+import LocationIconNotIconNot from '../../theme/assets/images/nav/loc-not.svg';
+import {useState, useEffect} from 'react';
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Slider} from '../../components/Content/Slider';
-const Detail = ({route, navigation}) => {
-  const {id} = route.params;
-  const [nickName, setNickName] = useState('');
-  const [content, setContent] = useState('');
-  const [images, setImages] = useState([]);
-  const [videoes, setVideoes] = useState([]);
-  const [locationName, setLocationName] = useState('');
-  const [tags, setTags] = useState([]);
-  const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
-  const [commentsCount, setCommentsCount] = useState(0);
-  const [createdDate, setCreatedDate] = useState('');
-  const [medialFiles, setMediaFiles] = useState([]);
-  const clickLike = () => {
-    setLiked(!liked);
-    console.log('clicked');
+import Comment from '../../components/mypage/Comment';
+import CommentComment from '../../components/mypage/CommetComment';
+const screenWidth = Dimensions.get('screen').width;
+const Detail = () => {
+  const {Fonts} = useTheme();
+  const [isLiked, setIsLiked] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+
+    // 햅틱 피드백 발생
+    // const options = {
+    //   enableVibrateFallback: true,
+    //   ignoreAndroidSystemSettings: false,
+    // };
+    // RNHapticFeedback.trigger('impactMedium', options);
+
+    // 여기서 데이터를 새로 고치는 로직을 추가합니다.
+    // 예를 들면 아래와 같이 2초 후에 로딩을 중지할 수 있습니다.
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
   };
 
-  const parseDate = d => {
-    let timestamp = Date.parse(d);
-    let date = new Date(timestamp);
-    let year = date.getFullYear();
-    let month = date.getMonth();
-    if (month < 10) month = '0' + month;
-    let day = date.getDay();
-    if (day < 10) day = '0' + day;
-    return year + '•' + month + '•' + day;
-  };
+  const fetchData = async () => {
+    setLoading(true);
 
-  const load = async () => {
-    const response = await fetch(API_URL + '/post/find?id=' + id, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
-      },
-    });
-    switch (response.status) {
-      case 200:
-        const res = await response.json();
-        // 차후에 이미지, 동영상 하나로 합침
-        let p = res.videoFiles;
-        p = p.concat(res.photoFiles);
-        console.log(p);
-        setMediaFiles(p);
-        setNickName(res.nickName);
-        setContent(res.content);
-        setImages(res.photoFiles);
-        setVideoes(res.videoFiles);
-        setLocationName(res.locationName);
-        setTags(res.tags);
-        setLiked(res.liked);
-        setLikesCount(res.likesCount);
-        setCommentsCount(res.commentsCount);
-        setCreatedDate(res.createdDate);
-    }
-  };
+    // 예: API에서 데이터를 가져오는 코드
+    // const response = await fetch(`YOUR_API_URL?page=${page}`);
+    // const result = await response.json();
 
+    // setData(prevData => [...prevData, ...result]);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    // setLoading(false);
+  };
   useEffect(() => {
-    // load();
+    fetchData();
   }, []);
 
+  useEffect(() => {
+    fetchData();
+  }, [page]);
+
   return (
-    <View>
-      {/* <Image
-        source={Sample1}
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor="#4880EE"
+          colors={['#4880EE']}
+          style={{backgroundColor: '#FFFFFF'}}
+        />
+      }
+      onScroll={({nativeEvent}) => {
+        if (loading) return;
+
+        const isCloseToBottom =
+          nativeEvent.layoutMeasurement.height + nativeEvent.contentOffset.y >=
+          nativeEvent.contentSize.height - responsiveHeight(50);
+        if (isCloseToBottom) {
+          setPage(prevPage => prevPage + 1);
+        }
+      }}
+      scrollEventThrottle={400}>
+      <View style={styles.container}>
+        <View style={styles.postContainer}>
+          <View style={styles.writerBox}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image source={Sample5} style={styles.writerImage} />
+              <Text
+                style={[
+                  Fonts.contentMediumBold,
+                  {marginRight: responsiveWidth(5)},
+                ]}>
+                noisy_loud_dean
+              </Text>
+              <Text style={Fonts.contentRegualrMedium}>
+                {timeAgo('2023-08-06T12:00:00.000')}
+              </Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <Image source={Sample5} style={styles.writerImage} />
+              <Image source={Sample5} style={styles.writerImage} />
+              <MoreFriends count={3} />
+            </View>
+          </View>
+          {/* 본문 글 최대 250자 */}
+          <Text
+            style={[Fonts.contentMediumMedium, {width: responsiveWidth(370)}]}>
+            컨텐츠를 여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도
+            만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수
+            있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를
+            여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼
+            확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수 있습니다.
+            컨텐츠를 여기 까지. ... 더보기확보할 수 있습니다. 컨텐츠를 여기
+            이정도 만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수
+            있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를
+            여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼
+            확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수 있습니다.
+            컨텐츠를 여기 까지.
+          </Text>
+
+          {/* 첨부 파일*/}
+          <View
+            style={{width: responsiveWidth(370), height: responsiveWidth(370)}}>
+            <Slider media={[Sample5, Sample1, Sample3]} />
+          </View>
+          <View style={{marginBottom: responsiveHeight(20)}} />
+          {/* 좋아요, 댓글, 위치*/}
+          <View
+            style={{
+              flexDirection: 'row',
+              marginBottom: responsiveHeight(5),
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginRight: responsiveWidth(10),
+                marginBottom: responsiveHeight(5),
+              }}>
+              <WithLocalSvg
+                width={responsiveWidth(20)}
+                height={responsiveHeight(20)}
+                asset={isLiked ? SmaileIcon : SmaileIconNot}
+                style={{marginRight: responsiveWidth(5)}}
+                onPress={() => setIsLiked(!isLiked)}
+              />
+              <Text style={Fonts.contentMediumMedium}>
+                {formatNumber(14000)}
+              </Text>
+            </View>
+
+            <View
+              style={{flexDirection: 'row', marginRight: responsiveWidth(10)}}>
+              <WithLocalSvg
+                width={responsiveWidth(20)}
+                height={responsiveHeight(20)}
+                asset={CommentIconNot}
+                style={{marginRight: responsiveWidth(5)}}
+              />
+              <Text style={Fonts.contentMediumMedium}> {formatNumber(23)}</Text>
+            </View>
+
+            <View style={{flexDirection: 'row'}}>
+              <WithLocalSvg
+                width={responsiveWidth(20)}
+                height={responsiveHeight(20)}
+                asset={LocationIconNot}
+                style={{marginRight: responsiveWidth(5)}}
+              />
+              <Text style={Fonts.contentMediumMedium}>떼르미니 역</Text>
+            </View>
+          </View>
+        </View>
+
+        <Comment />
+        <CommentComment />
+
+        {loading && (
+          <View style={{marginVertical: responsiveHeight(20)}}>
+            <ActivityIndicator color={'#4880EE'} size={'large'} />
+          </View>
+        )}
+      </View>
+    </ScrollView>
+  );
+};
+
+const MoreFriends = ({count}) => {
+  return (
+    <View
+      style={{
+        width: responsiveWidth(25),
+        height: responsiveHeight(25),
+        borderRadius: responsiveWidth(8),
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#F2F3F4',
+      }}>
+      <Text
         style={{
-          width: Dimensions.get('window').width,
-          height: Dimensions.get('window').width,
-        }}
-      /> */}
-      {/* <View
-        style={{
-          width: Dimensions.get('window').width,
-          height: Dimensions.get('window').width,
-          alignItems: 'center',
-          justifyContent: 'center',
+          fontFamily: 'SpoqaHanSansNeo-Bold',
+          fontSize: responsiveWidth(12),
+          lineHeight: responsiveHeight(18),
+          letterSpacing: responsiveWidth(-0.6),
+          color: '#505866',
         }}>
-        <Slider media={medialFiles} />
-      </View> */}
-      {/* 
-      <View style={styles.infoBar}>
-        <View style={{flexDirection: 'row'}}>
-          <Pressable onPress={clickLike}>
-            <WithLocalSvg
-              asset={liked ? ClickedLike : Like}
-              width={25}
-              height={25}
-              style={{marginRight: 10}}
-            />
-          </Pressable>
-          <WithLocalSvg asset={Comment} width={25} height={25} />
-        </View>
-      </View> */}
-
-      {/* url로 앱 여는 기능 구현 후 추가  */}
-      {/* <View style={{flexDirection: 'row'}}>
-          <WithLocalSvg asset={Share} width={25} height={25} />
-        </View> */}
-
-      {/* <View style={styles.content}>
-        <Text
-          style={{
-            fontSize: FontSize.regular,
-            fontWeight: 600,
-            marginBottom: 10,
-          }}>
-          {likesCount} Likes..
-        </Text>
-
-        <Text style={{marginBottom: 10}}>
-          <Text style={{fontSize: FontSize.regular, fontWeight: 600}}>
-            {nickName}
-          </Text> */}
-      {/* 일정 글자수 늘어나면 ... 더보기로 content + comments 화면 따로 제작 */}
-      {/* {content} */}
-      {/* </Text>
-        <View style={styles.createdDateContainer}>
-          <Text>{parseDate(createdDate)}</Text>
-        </View>
-      </View> */}
-      {/*  댓글 0개일 때는 표시 안하고 0개 이상일 때만 댓글 개수 표시 -> 누르면 댓글 모달로 표시*/}
+        {'+' + count}
+      </Text>
     </View>
   );
 };
 
+const PostFiles = ({images}) => {
+  return (
+    <View style={{flexDirection: 'row'}}>
+      <Image source={Sample5} style={styles.media} />
+      <Image source={Sample5} style={styles.media} />
+      <View style={styles.media}>
+        <Text
+          style={{
+            fontFamily: 'SpoqaHanSansNeo-Bold',
+            fontSize: responsiveWidth(14),
+            lineHeight: responsiveHeight(24),
+            letterSpacing: responsiveWidth(-0.6),
+            color: '#505866',
+          }}>
+          +3
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+const formatNumber = num => {
+  if (num >= 1e9) {
+    // 1,000,000,000 이상 (십억 이상)
+    return (num / 1e9).toFixed(1) + 'b';
+  } else if (num >= 1e6) {
+    // 1,000,000 이상 (백만 이상)
+    return (num / 1e6).toFixed(1) + 'm';
+  } else if (num >= 1e3) {
+    // 1,000 이상
+    return (num / 1e3).toFixed(1) + 'k';
+  } else {
+    return num.toString();
+  }
+};
+
+const timeAgo = dateInput => {
+  const now = new Date();
+  const date = new Date(dateInput);
+  const seconds = Math.floor((now - date) / 1000); // 1초 = 1000밀리초
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (seconds < 60) {
+    return `${seconds}초전`;
+  } else if (minutes < 60) {
+    return `${minutes}분전`;
+  } else if (hours < 24) {
+    return `${hours}시간전`;
+  } else if (days <= 7) {
+    return `${days}일전`;
+  } else {
+    // mm.dd.YYYY 형식으로 반환
+    const year = date.getFullYear();
+    // 월은 0부터 시작하기 때문에 1을 더해줍니다.
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${month}.${day}.${year}`;
+  }
+};
+
 const styles = StyleSheet.create({
-  infoBar: {
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    marginBottom: responsiveHeight(10),
+  },
+  postContainer: {width: responsiveWidth(370)},
+  writerImage: {
+    width: responsiveWidth(25),
+    height: responsiveHeight(25),
+    borderRadius: responsiveWidth(8),
+    marginRight: responsiveWidth(5),
+  },
+  writerBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    width: '100%',
-    borderBottomWidth: 1,
-    borderColor: 'gray',
+    alignItems: 'center',
+    height: responsiveHeight(45),
   },
-
-  content: {
-    width: '100%',
-    height: '100%',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-  },
-  tagContainer: {flex: 1, flexDirection: 'row', flexWrap: 'wrap'},
-
-  createdDateContainer: {
-    width: '100%',
-    height: 45,
-    textAlign: 'left',
+  media: {
+    width: responsiveWidth(35),
+    height: responsiveHeight(35),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F2F3F4',
+    borderRadius: responsiveWidth(10),
+    marginRight: responsiveWidth(5),
   },
 });
 

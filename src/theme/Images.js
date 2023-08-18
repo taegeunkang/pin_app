@@ -13,5 +13,10 @@ export default function ({}) {
     leftChevron: require('./assets/images/nav/left-chevron.png'),
     close: require('./assets/images/nav/close.png'),
     plus: require('./assets/images/nav/plus.png'),
+    more: require('./assets/images/nav/more.png'),
+    upChevron: require('./assets/images/nav/up-chevron.png'),
+    downChevron: require('./assets/images/nav/down-chevron.png'),
+    pin: require('./assets/images/nav/pin.png'),
+    setting: require('./assets/images/nav/setting.png'),
   };
 }

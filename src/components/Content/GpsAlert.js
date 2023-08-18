@@ -1,71 +1,82 @@
-import {View, StyleSheet, Text, Pressable} from 'react-native';
-import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  SafeAreaView,
+  Animated,
+  Image,
+} from 'react-native';
 import {useTranslation} from 'react-i18next';
-const GpsAlert = () => {
+import {responsiveHeight, responsiveWidth} from '../Scale';
+import {useTheme, useState} from '../../hooks';
+import InactiveButton from './InactiveButton';
+import ActiveButton from './ActiveButton';
+const GpsAlert = ({onPress}) => {
   const {t} = useTranslation('content');
-
+  const {Fonts, Images} = useTheme();
   return (
-    <View style={styles.container}>
-      <View style={styles.popUp}>
-        <View style={styles.content}>
-          <Text
+    <SafeAreaView style={styles.container}>
+      <View
+        style={{
+          width: '100%',
+          alignItems: 'flex-end',
+          marginTop: responsiveHeight(10),
+        }}>
+        <Pressable onPress={onPress}>
+          <Image
+            source={Images.close}
             style={{
-              fontSize: FontSize.large,
-              fontWeight: '800',
-              marginBottom: 20,
-            }}>
-            {t('gps.alert')}
-          </Text>
-        </View>
+              width: responsiveWidth(20),
+              height: responsiveHeight(20),
+              marginRight: responsiveWidth(10),
+            }}
+          />
+        </Pressable>
       </View>
-    </View>
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1,
+        }}>
+        <Text style={[Fonts.contentLargeBold]}>Pin 이용에 필요한 기능을</Text>
+        <Text style={[Fonts.contentLargeBold]}>허용해 주세요.</Text>
+      </View>
+
+      <View
+        style={{
+          width: '100%',
+          height: responsiveHeight(230),
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+        <ActiveButton
+          title={'앨범 읽기/쓰기 허용'}
+          onPress={() => console.log('active')}
+        />
+        <ActiveButton
+          title={'카메라 엑세스 허용'}
+          onPress={() => console.log('active')}
+        />
+        <InactiveButton
+          title={'마이크 엑세스 허용'}
+          onPress={() => console.log('active')}
+        />
+        <InactiveButton
+          title={'GPS 엑세스 허용'}
+          onPress={() => console.log('active')}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0, 0.3)',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'flex-end',
-  },
-  popUp: {
-    width: '100%',
-    height: '70%',
-    backgroundColor: Colors.white,
-    borderTopLeftRadius: BorderRadius.xLarge,
-    borderTopRightRadius: BorderRadius.xLarge,
-  },
-  content: {
-    width: '100%',
-    height: '55%',
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-  },
-  buttonContainer: {
-    width: '100%',
-    height: '40%',
-    backgroundColor: Colors.transparent,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-  },
-  cancle: {
-    width: 170,
-    height: 60,
-    borderWidth: 0.2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: BorderRadius.small,
-  },
-  goBack: {
-    width: 170,
-    height: 60,
-    borderWidth: 0.2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: BorderRadius.small,
-    backgroundColor: Colors.DarkGray,
   },
 });
 

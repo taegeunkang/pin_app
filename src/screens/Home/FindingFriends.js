@@ -51,7 +51,7 @@ const FindingFriends = ({navigation}) => {
               fontSize: responsiveWidth(14),
               lineHeight: responsiveHeight(24),
               letterSpacing: responsiveWidth(-0.6),
-              color: '#1A1E27',
+              color: '#4880EE',
             }}>
             완료
           </Text>

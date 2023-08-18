@@ -9,7 +9,8 @@
     "home": "홈",
     "search": "검색",
     "mypage": "마이페이지",
-    "alram": "알림"
+    "alram": "알림",
+    "setting": "설정"
   },
   "search": {
     "user": "사용자 검색",

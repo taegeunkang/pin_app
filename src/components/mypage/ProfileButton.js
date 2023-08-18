@@ -1,11 +1,11 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {Text, StyleSheet, Pressable} from 'react-native';
 import {useTheme} from '../../hooks';
-const ProfileButton = ({title}) => {
+const ProfileButton = ({title, onPress}) => {
   const {Fonts} = useTheme();
   return (
-    <View style={styles.container}>
+    <Pressable style={styles.container} onPress={onPress}>
       <Text style={Fonts.contentRegularBold}>{title}</Text>
-    </View>
+    </Pressable>
   );
 };
 

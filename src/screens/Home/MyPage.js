@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   SafeAreaView,
   Pressable,
+  Modal,
 } from 'react-native';
 import Sample1 from '../../theme/assets/images/sample/sample1.png';
 import Sample2 from '../../theme/assets/images/sample/sample2.png';
@@ -17,7 +18,7 @@ import Sample4 from '../../theme/assets/images/sample/sample4.png';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {FontSize} from '../../theme/Variables';
 import Cells from '../../theme/assets/images/table-cells-solid.svg';
-
+import Edit from '../../components/Content/Edit';
 import {WithLocalSvg} from 'react-native-svg';
 import {useSSR, useTranslation} from 'react-i18next';
 import ProfileButton from '../../components/mypage/ProfileButton';
@@ -26,6 +27,7 @@ import PostBox from '../../components/mypage/PostBox';
 import {useState, useEffect} from 'react';
 import FollowButton from '../../components/mypage/FollowButton';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import GpsAlert from '../../components/Content/GpsAlert';
 // 게시글 없을 때 check
 
 const MyPage = ({navigation}) => {
@@ -34,6 +36,7 @@ const MyPage = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [modlaVisible, setModalVisible] = useState(false);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -77,9 +80,33 @@ const MyPage = ({navigation}) => {
 
   return (
     <SafeAreaView style={[styles.container]}>
+      <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
+        <Edit
+          setProfileImage={() => {
+            setModalVisible(false);
+            navigation.navigate('ProfileImage');
+          }}
+          setBackgroundImage={() => {
+            setModalVisible(false);
+            navigation.navigate('BackgroundImage');
+          }}
+          setNickname={() => {
+            setModalVisible(false);
+            navigation.navigate('Nickname');
+          }}
+          close={() => setModalVisible(false)}
+        />
+        {/* <GpsAlert onPress={() => setModalVisible(false)} /> */}
+      </Modal>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#4880EE"
+            colors={['#4880EE']}
+            style={{backgroundColor: '#FFFFFF'}}
+          />
         }
         onScroll={({nativeEvent}) => {
           if (loading) return;
@@ -113,7 +140,10 @@ const MyPage = ({navigation}) => {
                 marginBottom: responsiveHeight(5),
               }}>
               <Image source={Sample5} style={styles.profileImage} />
-              <ProfileButton title={t('profile.edit')} />
+              <ProfileButton
+                title={t('profile.edit')}
+                onPress={() => setModalVisible(true)}
+              />
               {/* <FollowButton title={'팔로잉'} /> */}
             </View>
             <Text style={[styles.nickname, Fonts.contentMediumBold]}>
@@ -132,12 +162,10 @@ const MyPage = ({navigation}) => {
                   justifyContent: 'flex-start',
                   marginRight: responsiveWidth(30),
                 }}>
-                <Text style={[{marginRight: 5}, Fonts.contentRegularBold]}>
+                <Text style={[{marginRight: 5}, Fonts.contentMediumRegular]}>
                   {t('profile.posts')}
                 </Text>
-                <Text style={Fonts.contentMediumMedium}>
-                  {formatNumber(13)}
-                </Text>
+                <Text style={Fonts.contentRegularBold}>{formatNumber(13)}</Text>
               </View>
 
               <Pressable
@@ -148,12 +176,10 @@ const MyPage = ({navigation}) => {
                   justifyContent: 'flex-start',
                   marginRight: responsiveWidth(30),
                 }}>
-                <Text style={[{marginRight: 5}, Fonts.contentRegularBold]}>
+                <Text style={[{marginRight: 5}, Fonts.contentMediumRegular]}>
                   {t('profile.follower')}
                 </Text>
-                <Text style={Fonts.contentMediumRegular}>
-                  {formatNumber(13)}
-                </Text>
+                <Text style={Fonts.contentRegularBold}>{formatNumber(13)}</Text>
               </Pressable>
               <Pressable
                 style={{
@@ -165,23 +191,25 @@ const MyPage = ({navigation}) => {
                 <Text
                   style={[
                     {marginRight: responsiveWidth(5)},
-                    Fonts.contentRegularBold,
+                    Fonts.contentMediumRegular,
                   ]}>
                   {t('profile.following')}
                 </Text>
-                <Text style={Fonts.contentMediumRegular}>
-                  {formatNumber(13)}
-                </Text>
+                <Text style={Fonts.contentRegularBold}>{formatNumber(13)}</Text>
               </Pressable>
             </View>
           </View>
         </View>
         <View style={{marginBottom: responsiveHeight(10)}} />
-        <PostBox />
+        <PostBox onPress={() => navigation.navigate('Detail')} />
         <PostBox />
         <PostBox />
 
-        {loading && <ActivityIndicator />}
+        {loading && (
+          <View style={{marginVertical: responsiveHeight(20)}}>
+            <ActivityIndicator color={'#4880EE'} size={'large'} />
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

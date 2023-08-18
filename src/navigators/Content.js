@@ -11,11 +11,14 @@ import {WithLocalSvg} from 'react-native-svg';
 import {useTheme} from '../hooks';
 import HeaderLeftButton from '../components/HeaderLeftButton';
 import {responsiveWidth, responsiveHeight} from '../components/Scale';
+import ProfileImage from '../screens/Home/ProfileImage';
+import BackgroundImage from '../screens/Home/BackgroundImage';
+import Nickname from '../screens/Home/Nickname';
 const Stack = createStackNavigator();
 
 // @refresh reset
 const Content = () => {
-  const {t} = useTranslation('mypage');
+  const {t} = useTranslation('myPage');
   return (
     <Stack.Navigator
       screenOptions={{
@@ -29,6 +32,20 @@ const Content = () => {
           letterSpacing: responsiveWidth(-0.6),
         },
         headerBackImage: () => <HeaderLeftButton />,
+        cardStyleInterpolator: ({current, next, layouts}) => {
+          return {
+            cardStyle: {
+              transform: [
+                {
+                  translateX: current.progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [layouts.screen.width, 0],
+                  }),
+                },
+              ],
+            },
+          };
+        },
       }}>
       <Stack.Screen
         name="MyPage"
@@ -40,7 +57,7 @@ const Content = () => {
         component={FollowerList}
         options={{
           headerShown: true,
-          headerTitle: '팔로워',
+          headerTitle: t('profile.follower'),
         }}
       />
       <Stack.Screen
@@ -48,13 +65,48 @@ const Content = () => {
         component={FollowingList}
         options={{
           headerShown: true,
-          headerTitle: '팔로잉',
+          headerTitle: t('profile.following'),
         }}
       />
       <Stack.Screen
         name="Detail"
         component={Detail}
-        options={{headerBackTitleVisible: false}}
+        options={{
+          headerBackTitleVisible: false,
+          headerTitle: t('profile.detail'),
+        }}
+      />
+      <Stack.Screen
+        name="ProfileImage"
+        component={ProfileImage}
+        options={{
+          headerBackTitleVisible: false,
+          headerTitle: t('profile.profileImage'),
+        }}
+      />
+      <Stack.Screen
+        name="BackgroundImage"
+        component={BackgroundImage}
+        options={{
+          headerBackTitleVisible: false,
+          headerTitle: t('profile.backgroundImage'),
+        }}
+      />
+      <Stack.Screen
+        name="Nickname"
+        component={Nickname}
+        options={{
+          headerBackTitleVisible: false,
+          headerTitle: t('profile.nickname'),
+        }}
+      />
+      <Stack.Screen
+        name="Setting"
+        component={Detail}
+        options={{
+          headerBackTitleVisible: false,
+          headerTitle: t('profile.setting'),
+        }}
       />
     </Stack.Navigator>
   );

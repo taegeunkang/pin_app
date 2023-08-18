@@ -5,7 +5,7 @@ import {WithLocalSvg} from 'react-native-svg';
 import UpBtn from '../../theme/assets/images/up-long-solid.svg';
 import {useTranslation} from 'react-i18next';
 import {useState} from 'react';
-import Detail from '../../screens/Home/Detail';
+import Detail from '../../screens/Home/Detail.js';
 const ListModal = ({moveToDetail, closeModal}) => {
   const {t} = useTranslation('content');
   const [modalHeight, setModalHeight] = useState(70);

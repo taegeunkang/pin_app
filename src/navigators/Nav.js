@@ -18,6 +18,7 @@ import {Image} from 'react-native';
 import Content from './Content';
 import UploadPost from './UploadPost';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
+import AlertNavigator from './AlertNavigator';
 const Tab = createBottomTabNavigator();
 const Nav = () => {
   const {t} = useTranslation('content');
@@ -141,7 +142,11 @@ const Nav = () => {
         component={Content}
         options={{headerShown: false}}
       />
-      <Tab.Screen name={t('nav.alram')} component={Alram} />
+      <Tab.Screen
+        name={t('nav.alram')}
+        component={AlertNavigator}
+        options={{headerShown: false}}
+      />
     </Tab.Navigator>
   );
 };

@@ -34,7 +34,24 @@ const ApplicationNavigator = () => {
     <View style={[Layout.fill, {backgroundColor: colors.card}]}>
       <NavigationContainer theme={NavigationTheme} ref={navigationRef}>
         <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} />
-        <Stack.Navigator screenOptions={{headerShown: true}}>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: true,
+            cardStyleInterpolator: ({current, next, layouts}) => {
+              return {
+                cardStyle: {
+                  transform: [
+                    {
+                      translateX: current.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [layouts.screen.width, 0],
+                      }),
+                    },
+                  ],
+                },
+              };
+            },
+          }}>
           <Stack.Screen
             name="Startup"
             component={Startup}

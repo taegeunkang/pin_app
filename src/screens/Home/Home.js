@@ -7,6 +7,7 @@ import {
   View,
   Animated,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
@@ -23,15 +24,38 @@ import MyPage from './MyPage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import Sample5 from '../../theme/assets/images/sample/sample5.png';
 const Home = ({navigation}) => {
   const [gpsPermission, setGpsPermission] = useState(false);
   const [image, setImage] = useState([]);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  const [contents, setContents] = useState([]);
+  const [contents, setContents] = useState([
+    {lat: 37.785834, lon: -122.40641},
+    {lat: 37.785834, lon: -122.40641},
+  ]);
   const mapRef = useRef(null);
 
-  const {Gutters} = useTheme();
+  const {Gutters, Images} = useTheme();
+
+  const scaleValue = useState(new Animated.Value(1))[0];
+
+  const onButtonPressIn = () => {
+    Animated.timing(scaleValue, {
+      toValue: 0.95,
+      duration: 100,
+      useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
+    }).start();
+  };
+
+  const onButtonPressOut = () => {
+    Animated.timing(scaleValue, {
+      toValue: 1,
+      duration: 150,
+      useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
+    }).start();
+  };
   const openCamera = async () => {
     let result = await launchCamera({
       mediaType: 'mixed',
@@ -142,7 +166,7 @@ const Home = ({navigation}) => {
       )}
       {latitude && longitude && (
         <>
-          <View
+          <Animated.View
             style={{
               width: responsiveWidth(45),
               height: responsiveHeight(45),
@@ -157,14 +181,14 @@ const Home = ({navigation}) => {
               shadowRadius: responsiveWidth(3),
               shadowColor: '#000000',
               elevation: 3,
+              alignItems: 'center',
+              justifyContent: 'center',
+              transform: [{scale: scaleValue}],
             }}>
             <Pressable
-              style={{
-                width: responsiveWidth(45),
-                height: responsiveHeight(45),
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              onPressIn={onButtonPressIn}
+              onPressOut={onButtonPressOut}
+              style={{}}
               onPress={returnCurrentLocation}>
               <WithLocalSvg
                 width={responsiveWidth(25)}
@@ -172,7 +196,7 @@ const Home = ({navigation}) => {
                 asset={CurrentLocationBtn}
               />
             </Pressable>
-          </View>
+          </Animated.View>
 
           <MapView
             style={styles.map}
@@ -212,8 +236,43 @@ const Home = ({navigation}) => {
                     longitude: content.lon,
                   }}
                   // 클릭 후 상세 페이지로 이동
-                  onPress={() => console.log('called')}
-                />
+                  onPress={() => console.log('called')}>
+                  <View
+                    {...content}
+                    style={{
+                      position: 'relative',
+                      width: responsiveWidth(100),
+                      height: responsiveHeight(100),
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={Sample5}
+                      style={{
+                        width: '91%',
+                        height: '85%',
+                        borderRadius: 300,
+                      }}
+                    />
+                    <Image
+                      source={Images.pin}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: 100,
+                        position: 'absolute',
+                        top: responsiveHeight(10),
+                        // left: '50%',
+                        // top: '50%',
+                        // transform: [
+                        //   {translateX: -50}, // Adjust these values accordingly
+                        //   {translateY: -12}, // For instance, -50% of your element width and height
+                        // ],
+                      }}
+                    />
+                  </View>
+                </Marker>
               ))}
           </MapView>
         </>

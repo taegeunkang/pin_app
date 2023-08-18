@@ -7,6 +7,10 @@
     "block": "차단하기",
     "posts": "게시글",
     "following": "팔로잉",
-    "follower": "팔로워"
+    "follower": "팔로워",
+    "detail": "게시글",
+    "profileImage": "프로필 이미지 설정",
+    "backgroundImage": "배경 이미지 설정",
+    "nickname": "닉네임 설정"
   }
 }

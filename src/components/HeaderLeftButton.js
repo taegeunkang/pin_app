@@ -8,8 +8,8 @@ const HeaderLeftButton = () => {
       source={Images.leftChevron}
       style={{
         marginLeft: responsiveWidth(5),
-        width: responsiveWidth(25),
-        height: responsiveHeight(25),
+        width: responsiveWidth(20),
+        height: responsiveHeight(20),
       }}
     />
   );
