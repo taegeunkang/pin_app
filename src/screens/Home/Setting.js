@@ -9,9 +9,16 @@ import {
 import {useTheme} from '../../hooks';
 import {ScrollView} from 'react-native-gesture-handler';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Setting = ({navigation}) => {
   const {Fonts, Images} = useTheme();
+
+  const logout = () => {
+    AsyncStorage.removeItem('token');
+    AsyncStorage.removeItem('refreshToken');
+    navigation.reset({routes: [{name: 'Login'}]});
+  };
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -44,7 +51,8 @@ const Setting = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <View
+          <Pressable
+            onPress={logout}
             style={{
               width: responsiveWidth(370),
               height: responsiveHeight(55),
@@ -55,7 +63,7 @@ const Setting = ({navigation}) => {
               borderBottomColor: '#F2F4F6',
             }}>
             <Text style={Fonts.contentMediumMedium}>로그아웃</Text>
-          </View>
+          </Pressable>
         </Pressable>
 
         <Pressable

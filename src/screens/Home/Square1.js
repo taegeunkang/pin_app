@@ -9,9 +9,6 @@ import {
 } from 'react-native';
 
 const Square1 = ({image, scale, setScale}) => {
-  const [previousDistance, setPreviousDistance] = useState(null);
-  const [imgWidth, setImgWidth] = useState(0);
-  const [imgHeight, setImgHeight] = useState(0);
   const animatedTranslationX = useRef(new Animated.Value(0)).current;
   const animatedTranslationY = useRef(new Animated.Value(0)).current;
   const lastTap = useRef(null);

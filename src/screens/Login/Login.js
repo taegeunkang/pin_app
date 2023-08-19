@@ -37,6 +37,7 @@ const Login = ({navigation}) => {
   const {Common, Fonts, Gutters, Layout, Images} = useTheme();
 
   const inputRef = useRef(null);
+
   const loginSubmit = async () => {
     if (!id && !password) {
       return;
@@ -60,12 +61,11 @@ const Login = ({navigation}) => {
       let status = response['status'];
       response = await response.json();
       if (status == 200) {
-        AsyncStorage.setItem('token', response['token']);
-        AsyncStorage.setItem('refreshToken', response['refreshToken']);
-        AsyncStorage.setItem('emailAddress', response['emailAddress']);
+        await AsyncStorage.setItem('token', response['token']);
+        await AsyncStorage.setItem('refreshToken', response['refreshToken']);
+        await AsyncStorage.setItem('emailAddress', response['emailAddress']);
         navigation.reset({routes: [{name: 'Home'}]});
       } else {
-        console.log(response['code']);
         switch (response['code']) {
           case 'U01':
             setWrongRes(true);
@@ -79,6 +79,7 @@ const Login = ({navigation}) => {
       }
     }
   };
+
   // oauth 로그인 기능 -> 추가 예정
 
   // const kakaoSignin = async () => {

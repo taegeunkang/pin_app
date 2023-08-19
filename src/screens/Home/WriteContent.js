@@ -319,7 +319,8 @@ const WriteContent = ({navigation, route}) => {
               setTimeout(() => {
                 setLoading(false);
                 // navigation.popToTop();
-                navigation.reset({index: 0, routes: [{name: 'Home'}]});
+                navigation.reset({routes: [{name: 'Home'}]});
+                // navigation.reset({index: 0, routes: [{name: 'Home'}]});
               }, 3000);
             }}
             loading={loading}
@@ -331,7 +332,6 @@ const WriteContent = ({navigation, route}) => {
         <GpsAlert />
       </Modal>
     </View>
-    
   );
 };
 

@@ -46,7 +46,7 @@ const Upload = () => {
     const params = {
       //이미지를 불러올 개수 (최신순으로)
       first: 50,
-      assetType: 'Photos',
+      assetType: 'All',
       ...(galleryCursor && {after: galleryCursor}),
     };
 
@@ -64,8 +64,11 @@ const Upload = () => {
       react-native-fs의 파일 시스템을 이용하여 변환 시켜줍니다.*/
       if (Platform.OS === 'ios') {
         for await (const item of edges) {
-          const fileName = item.node.image.uri.replace('ph://', '');
-          const result = await phPathToFilePath(item.node.image.uri);
+          // const fileName = item.node.image.uri.replace('ph://', '');
+          const result = await phPathToFilePath(
+            item.node.image.uri,
+            item.node.type,
+          );
           // await uploadFileToServer(result);
           item.node.image.uri = result;
         }
@@ -81,18 +84,22 @@ const Upload = () => {
     }
   };
 
-  const phPathToFilePath = async uri => {
-    let fileURI = encodeURI(uri);
+  const phPathToFilePath = async (uri, type) => {
+    let fileURI = '';
 
     if (uri.startsWith('ph://')) {
-      const copyPath = `${
+      let fileName = `${
         RNFS.DocumentDirectoryPath
-      }/${new Date().toISOString()}.jpg`.replace(/:/g, '-');
+      }/${new Date().toISOString()}`;
+      fileName += type === 'video' ? `.mp4` : `.png`;
+
+      const copyPath = fileName.replace(/:/g, '-');
 
       // ph경로의 이미지를 file로 옮기는 작업
-      fileURI = await RNFS.copyAssetsFileIOS(uri, copyPath, 360, 360);
+      // 2048 * 2048 -> 가져올 이미지 해상도
+      fileURI = await RNFS.copyAssetsFileIOS(uri, copyPath, 3024, 3024);
     }
-
+    console.log(fileURI);
     return fileURI;
   };
 
@@ -106,6 +113,7 @@ const Upload = () => {
     return false;
   };
 
+  // 이미지, 동영상 테스트
   const uploadFileToServer = async uri => {
     console.log('called');
     let formData = new FormData();

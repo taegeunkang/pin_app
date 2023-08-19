@@ -36,9 +36,7 @@ const Startup = ({navigation}) => {
         navigation.reset({routes: [{name: 'Home'}]});
       } else {
         // 기존 토큰으로 로그인 실패 후 리프레시 토큰으로 토큰 재발급 시도
-        console.log('토큰 만료 재발급 시도 ');
         const result = await reIssue(token, refreshToken);
-        console.log(result);
         if (!result) {
           navigation.reset({
             index: 0,
@@ -74,20 +72,22 @@ const Startup = ({navigation}) => {
   };
 
   // 토큰 재발급에도 실패하면 로그인 홈으로 이동
+
   const reIssue = async (token, refreshToken) => {
     let response = await fetch(API_URL + '/user/refresh', {
       method: 'POST',
-      body: JSON.stringify({token: token, refreshToken: refreshToken}),
+      body: JSON.stringify({
+        token: 'Bearer ' + token,
+        refreshToken: 'Bearer ' + refreshToken,
+      }),
       headers: {
         Authorization: 'Bearer ' + refreshToken,
         'Content-Type': 'Application/json',
       },
     });
-    console.log('재발급 response');
-    console.log(response);
     const result = await response.json();
     if (response.status == 200) {
-      console.log('성공');
+      alert('재발금 성공');
       await AsyncStorage.setItem('token', result['token']);
       await AsyncStorage.setItem('refreshToken', result['refreshToken']);
       return true;
