@@ -332,7 +332,7 @@ PODS:
   - React-jsinspector (0.71.7)
   - React-logger (0.71.7):
     - glog
-  - react-native-cameraroll (5.6.0):
+  - react-native-cameraroll (5.7.2):
     - React-Core
   - react-native-flipper (0.189.0):
     - React-Core
@@ -341,7 +341,7 @@ PODS:
   - react-native-image-editor (2.3.0):
     - React
     - React-RCTImage
-  - react-native-image-picker (5.3.1):
+  - react-native-image-picker (5.6.1):
     - React-Core
   - react-native-maps (1.4.0):
     - React-Core
@@ -725,11 +725,11 @@ SPEC CHECKSUMS:
   React-jsiexecutor: eaa5f71eb8f6861cf0e57f1a0f52aeb020d9e18e
   React-jsinspector: 9885f6f94d231b95a739ef7bb50536fb87ce7539
   React-logger: 3f8ebad1be1bf3299d1ab6d7f971802d7395c7ef
-  react-native-cameraroll: 755bcc628148a90a7c9cf3f817a252be3a601bc5
+  react-native-cameraroll: 134805127580aed23403b8c2cb1548920dd77b3a
   react-native-flipper: e0e154c742a3c5020ec97362de664880b608dab1
   react-native-geolocation: 7383cbe9fa75b168bbbe40b566070fd0b44d30d6
   react-native-image-editor: 9361a215c3991cafbe5e7f28cbbad6e72c9c2705
-  react-native-image-picker: ec9b713e248760bfa0f879f0715391de4651a7cb
+  react-native-image-picker: 5fcac5a5ffcb3737837f0617d43fd767249290de
   react-native-maps: 7135a33610202745d08fdf151ce6b0d01952a99c
   react-native-mmkv: 7da5e18e55c04a9af9a7e0ab9792a1e8d33765a1
   react-native-safe-area-context: f5549f36508b1b7497434baa0cd97d7e470920d4

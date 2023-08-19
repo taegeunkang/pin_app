@@ -8,10 +8,6 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack';
 import {useTranslation} from 'react-i18next';
-import Detail from '../screens/Home/Detail';
-import {Colors} from '../theme/Variables';
-import {WithLocalSvg} from 'react-native-svg';
-import {useTheme} from '../hooks';
 import Medias from '../screens/Home/Medias';
 import Preview from '../screens/Home/Preview';
 import WriteContent from '../screens/Home/WriteContent';
@@ -19,7 +15,6 @@ import FindingLocation from '../screens/Home/FindingLocation';
 import HeaderLeftButton from '../components/HeaderLeftButton';
 import FindingFriends from '../screens/Home/FindingFriends';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
-import Home from '../screens/Home/Home';
 // import Nav from './Nav';
 const Stack = createStackNavigator();
 

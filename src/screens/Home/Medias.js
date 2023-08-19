@@ -21,6 +21,13 @@ import {useTheme} from '../../hooks';
 import SubmitButton from '../../components/SubmitButton';
 import {useNavigation} from '@react-navigation/native';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import {Card} from 'react-native-paper';
+
+// ios 일 떄 파일 형식 변경을 해야지 정상적으로 불러오기 및 저장 가능
+const convertLocalIdentifierToAssetLibrary = (localIdentifier, ext) => {
+  const hash = localIdentifier.split('/')[0];
+  return `assets-library://asset/asset.${ext}?id=${hash}&ext=${ext}`;
+};
 const Upload = () => {
   const [scale, setScale] = useState(1);
   const [photos, setPhotos] = useState([]);
@@ -52,6 +59,7 @@ const Upload = () => {
 
     try {
       //사진을 불러옵니다. edges는 gallery photo에 대한 정보
+      CameraRoll.getAlbums();
       const {edges, page_info} = await CameraRoll.getPhotos(params);
       if (page_info.has_next_page === false) {
         setGalleryCursor(null);
@@ -60,18 +68,17 @@ const Upload = () => {
       }
 
       /*ios인 경우는 ph:// 형식으로 사진이 저장됩니다.
-      이미지를 읽을 수 없는 오류가 생기기 때문에
-      react-native-fs의 파일 시스템을 이용하여 변환 시켜줍니다.*/
+      이미지를 읽을 수 없는 오류가 생기기 때문에 변환 시켜줍니다.*/
       if (Platform.OS === 'ios') {
         for await (const item of edges) {
-          // const fileName = item.node.image.uri.replace('ph://', '');
-          console.log(item.node.image.uri);
-          const result = await phPathToFilePath(
-            item.node.image.uri,
-            item.node.type,
+          if (item.node.type === 'video') {
+            phPathToFilePath(item.node.image.uri, item.node.type);
+          }
+          item.node.image.uri = convertLocalIdentifierToAssetLibrary(
+            item.node.image.uri.replace('ph://', ''),
+            item.node.type === 'image' ? 'png' : 'mp4',
           );
-          // await uploadFileToServer(result);
-          item.node.image.uri = result;
+          console.log(item.node.image.uri);
         }
       }
       let arr = [];
@@ -100,8 +107,18 @@ const Upload = () => {
       // 2048 * 2048 -> 가져올 이미지 해상도
       fileURI = await RNFS.copyAssetsFileIOS(uri, copyPath, 3024, 3024);
     }
-    console.log(fileURI);
-    return fileURI;
+
+    let formData = new FormData();
+    formData.append('video', {
+      uri: 'file://' + fileURI,
+      name: 'v.mp4',
+      type: 'video/mp4',
+    });
+    fetch('http://localhost:8080/post/v', {
+      method: 'POST',
+      body: formData,
+    });
+    // return fileURI;
   };
 
   const isArrayContain = target => {
@@ -116,7 +133,6 @@ const Upload = () => {
 
   // 이미지, 동영상 테스트
   const uploadFileToServer = async uri => {
-    console.log('called');
     let formData = new FormData();
 
     let files = [
@@ -156,17 +172,6 @@ const Upload = () => {
     for (let i = 0; i < imagesArray.length; i++) {
       try {
         let imageUrl = imagesArray[i].uri;
-        // Fetch the image data
-        // const response = await fetch(imageUrl);
-        // const imageData = await response.blob();
-
-        // // Convert the image data to a base64 string
-        // const base64Image = await new Promise((resolve, reject) => {
-        //   const reader = new FileReader();
-        //   reader.onloadend = () => resolve(reader.result);
-        //   reader.onerror = reject;
-        //   reader.readAsDataURL(imageData);
-        // });
         arr.push(imageUrl);
       } catch (error) {
         console.log('Error saving image:', error);

@@ -49,6 +49,11 @@
 	<string>카메라 사용 권한은 이미지 촬영 및 첨부를 위해 필요합니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>카메라 사용 권한은 이미지 촬영 및 첨부를 위해 필요합니다.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>App needs access to your microphone</string>
+	<key>NSCameraUsageDescription</key>
+	<string>App needs access to your camera</string>
+
 	<key>UIAppFonts</key>
 	<array>
 		<string>Fonts/SpoqaHanSansNeo-Bold.ttf</string>

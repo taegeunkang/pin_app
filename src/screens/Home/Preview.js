@@ -1,55 +1,16 @@
 import {useEffect, useState, useLayoutEffect} from 'react';
-import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  StyleSheet,
+} from 'react-native';
 import {Slider} from '../../components/Content/Slider';
 import {useTheme} from '../../hooks';
 import Square1 from './Square1';
 import VideoPlayer from 'react-native-video-controls';
-
-const videoHtml = uri => {
-  return ` <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <style>
-        body {
-          width: 100vw;
-          height: 100vh;
-          margin: 0;
-          padding: 0;
-          background-color: black;
-        }
-        .video-container {
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .video-player {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="video-container">
-        <video
-          src="http://localhost:8080/post/streaming?watch=sampleVideo.mp4"
-          poster="http://localhost:8080/post/image?watch=a2874a19-3618-485a-98f0-100873bd9250.png"
-          controls
-          muted
-          playsinline
-          class="video-player"
-        ></video>
-      </div>
-    </body>
-  </html>
-  `;
-};
 
 const Preview = ({navigation, route}) => {
   const item = route.params.item;
@@ -57,9 +18,22 @@ const Preview = ({navigation, route}) => {
   const [b, setB] = useState(null);
   const screenWidth = Dimensions.get('window').width;
 
-  useEffect(() => {
+  const upload = async () => {
     console.log(item);
-    console.log('file://' + item);
+
+    const response = await fetch(item);
+    console.log(response);
+    let formData = new FormData();
+
+    formData.append('video', {uri: item, name: 'v.mp4', type: 'video/mp4'});
+    fetch('http://localhost:8080/post/v', {
+      method: 'POST',
+      body: formData,
+    });
+  };
+  useEffect(() => {
+    console.log('동영상 업로드');
+    upload();
   }, []);
 
   return (
@@ -73,8 +47,11 @@ const Preview = ({navigation, route}) => {
       {item && item.substring(item.length - 3) === 'mp4' && (
         <VideoPlayer
           source={{
-            uri: 'file://' + item,
+            uri: item,
           }}
+          paused={false}
+          resizeMode={'contain'}
+          // style={styles.fullScreen}
           onError={e => console.log(e)}
         />
       )}
@@ -82,5 +59,15 @@ const Preview = ({navigation, route}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  fullScreen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+});
 
 export default Preview;

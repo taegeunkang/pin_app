@@ -1481,10 +1481,10 @@
   dependencies:
     merge-options "^3.0.4"
 
-"@react-native-camera-roll/camera-roll@^5.3.1":
-  version "5.6.0"
-  resolved "https://registry.npmjs.org/@react-native-camera-roll/camera-roll/-/camera-roll-5.6.0.tgz"
-  integrity sha512-a/GYwnBTxj1yKWB9m/qy8GzjowSocML8NbLT81wdMh0JzZYXCLze51BR2cb8JNDgRPzA9xe7KpD3j9qQOSOjag==
+"@react-native-camera-roll/camera-roll@^5.7.2":
+  version "5.7.2"
+  resolved "https://registry.yarnpkg.com/@react-native-camera-roll/camera-roll/-/camera-roll-5.7.2.tgz#db11525ae26c8a61630c424aebd323a7c784a921"
+  integrity sha512-s8VAUG1Kvi+tEJkLHObmOJdXAL/uclnXJ/IdnJtx2fCKiWA3Ho0ln9gDQqCYHHHHu+sXk7wovsH/I2/AYy0brg==
 
 "@react-native-community/cli-clean@^10.1.1":
   version "10.1.1"
@@ -6258,10 +6258,10 @@ react-native-gradle-plugin@^0.71.17:
   resolved "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.17.tgz"
   integrity sha512-OXXYgpISEqERwjSlaCiaQY6cTY5CH6j73gdkWpK0hedxtiWMWgH+i5TOi4hIGYitm9kQBeyDu+wim9fA8ROFJA==
 
-react-native-image-picker@5.3.1:
-  version "5.3.1"
-  resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-5.3.1.tgz"
-  integrity sha512-zRCjtlE3KOeaWDM8gXzTwXfvo3ZeF2XMkHceU7CVCtKRleKxna/E4XWIPu/lXO2qlMdnSx1WvfPSbqzAX0qxpA==
+react-native-image-picker@^5.6.1:
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-5.6.1.tgz#34ec5e26c48d5caa88ae7b273663c59d1793eecc"
+  integrity sha512-LPPlgJi97EzCDY4NWp7z0oUWmCbagnB6HSoKcLJHJD/DaFYN/dJPrqjqKaqqw8K/5Ze6DIsNg9PZohjNEYQQWQ==
 
 react-native-map-clustering@^3.4.2:
   version "3.4.2"
