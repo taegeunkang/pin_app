@@ -31,6 +31,7 @@ import GpsAlert from '../../components/Content/GpsAlert';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import SubmitButton from '../../components/SubmitButton';
 import {useTheme} from '../../hooks';
+import * as RNFS from 'react-native-fs';
 // 동영상일 때는 썸네일 파일도 같이 넘겨줘야해서 수정 필요
 
 const WriteContent = ({navigation, route}) => {
@@ -45,18 +46,14 @@ const WriteContent = ({navigation, route}) => {
   const {mediaFiles, locationName, friends} = route.params;
   const {Images} = useTheme();
   const [loading, setLoading] = useState(false);
+  const [lat, setLat] = useState(null);
+  const [lon, setLon] = useState(null);
   useEffect(() => {
     checkRefreshMediaFiles();
+    getCurrentLocation();
   });
 
   const checkRefreshMediaFiles = () => {
-    // if (mediaFiles && !locationName) {
-    //   setMeida(mediaFiles);
-    // } else if (!mediaFiles && locationName) {
-    //   return;
-    // } else if (!mediaFiles && friends) {
-    //   return;
-    // }
     if (mediaFiles) {
       setMeida(mediaFiles);
     }
@@ -67,74 +64,98 @@ const WriteContent = ({navigation, route}) => {
       setF(friends);
     }
   };
+
+  const getAbsolutePath = async assetPath => {
+    const destination = `${RNFS.TemporaryDirectoryPath}${Math.random()
+      .toString(36)
+      .substring(7)}.mp4`;
+    try {
+      let absolutePath = await RNFS.copyAssetsVideoIOS(
+        assetPath,
+        destination,
+        0,
+        0,
+      );
+      return absolutePath;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCurrentLocation = async () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        setLat(position['coords']['latitude']);
+        setLon(position['coords']['longitude']);
+      },
+      error => {
+        switch (error['code']) {
+          case 1:
+            setGpsPermission(true);
+            break;
+        }
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+    );
+  };
+
   // 포스트 제출
   // API_URL + "/post/create"
   // 동영상 기능 추가해야함
   const submitPost = async () => {
-    // const latitude = parseFloat(await AsyncStorage.getItem('lat'));
-    // const lontitude = parseFloat(await AsyncStorage.getItem('lon'));
-    // const token = await AsyncStorage.getItem('token');
-    // console.log(token);
-    // const base64Images = await JSON.parse(await AsyncStorage.getItem('images'));
-    // const base64Videos = await JSON.parse(await AsyncStorage.getItem('videos'));
-    // //이미지 추가 및 섬네일 생성
-    // const response = await fetch(API_URL + '/post/create', {
-    //   method: 'POST',
-    //   headers: {
-    //     Authorization: 'Bearer ' + token,
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     content: text,
-    //     photoFiles: base64Images,
-    //     lat: latitude,
-    //     lon: lontitude,
-    //     locationName: locationName,
-    //     isPrivate: isPrivate,
-    //     tags: tags,
-    //   }),
-    // });
-    // if (response.status != 200) {
-    //   Alert('알 수 없는 에러가 발생했습니다.');
-    // }
-    // navigation.reset({routes: [{name: 'Home'}]});
-  };
-
-  // const loadImages = async () => {
-  //   const storedImages = await AsyncStorage.getItem('images');
-  //   const parsedImages = JSON.parse(storedImages);
-  //   console.log('gg');
-  //   console.log(parsedImages);
-
-  //   setImages(parsedImages);
-  //   if (parsedImages.length > 1) {
-  //     setMultiple(true);
-  //   }
-  // };
-
-  function generateBoundary() {
-    let boundary = '--------------------------'; // Start with a common prefix
-    const possibleCharacters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < 20; i++) {
-      // Append random characters to the prefix
-      const randomIndex = Math.floor(Math.random() * possibleCharacters.length);
-      boundary += possibleCharacters.charAt(randomIndex);
+    setLoading(true);
+    const token = await AsyncStorage.getItem('token');
+    const formData = new FormData();
+    let m = []; // 미디어 파일들
+    let thumbnails = [];
+    for (let i = 0; i < media.length; i++) {
+      const med = media[i];
+      if (med.accessUri.substring(med.accessUri.length - 3) === 'mp4') {
+        const absolutePath = await getAbsolutePath(med.uri);
+        m.push({uri: absolutePath, type: 'video/mp4', name: `video${i}`});
+        thumbnails.push({
+          uri: med.accessUri,
+          typ: 'image/png',
+          name: `thumbnailFiles${i}`,
+        });
+      } else {
+        m.push({uri: med.accessUri, type: 'image/png', name: `image${i}`});
+      }
     }
 
-    return boundary;
-  }
+    formData.append('content', text); // 글 내용
 
-  // const base64ToBlob = base64String => {
-  //   base64String.replace('data:image/jpeg;base64,', '');
-  //   // 패딩 추가
-  //   while (base64String.length % 4 !== 0) {
-  //     base64String += '=';
-  //   }
+    m.forEach((mm, index) => {
+      formData.append('mediaFiles', mm);
+    });
 
-  //   return new Blob([toByteArray(base64String)], {type: 'image/jpeg'});
-  // };
+    thumbnails.forEach((t, index) => {
+      formData.append('thumbnailFiles', t);
+    });
+
+    formData.append('lat', lat); // latitude;
+    formData.append('lon', lon); // lontitude;
+    formData.append('locationName', loc);
+    formData.append('isPrivate', isPrivate);
+    console.log(formData);
+    console.log(token);
+    const response = await fetch(API_URL + '/post/create', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+      body: formData,
+    });
+    console.log(response.status);
+    if (response.status == 200) {
+      navigation.reset({routes: [{name: 'Home'}]});
+    } else {
+      const r = await response.json();
+      
+    }
+
+    setLoading(false);
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
@@ -150,7 +171,7 @@ const WriteContent = ({navigation, route}) => {
                 paddingVertical: responsiveHeight(5),
               }}>
               {media.map((m, index) => (
-                <View style={styles.imageContainer}>
+                <View key={index} style={styles.imageContainer}>
                   <Image
                     style={{
                       width: responsiveWidth(100),
@@ -312,19 +333,7 @@ const WriteContent = ({navigation, route}) => {
             justifyContent: 'flex-end',
             marginBottom: responsiveHeight(10),
           }}>
-          <SubmitButton
-            title={'완료'}
-            onPress={async () => {
-              setLoading(true);
-              setTimeout(() => {
-                setLoading(false);
-                // navigation.popToTop();
-                navigation.reset({routes: [{name: 'Home'}]});
-                // navigation.reset({index: 0, routes: [{name: 'Home'}]});
-              }, 3000);
-            }}
-            loading={loading}
-          />
+          <SubmitButton title={'완료'} onPress={submitPost} loading={loading} />
         </View>
       </View>
 

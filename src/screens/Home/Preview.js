@@ -1,40 +1,27 @@
-import {useEffect, useState, useLayoutEffect} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
-} from 'react-native';
-import {Slider} from '../../components/Content/Slider';
-import {useTheme} from '../../hooks';
+import {useState, useRef} from 'react';
+import {View, TouchableWithoutFeedback} from 'react-native';
 import Square1 from './Square1';
-import VideoPlayer from 'react-native-video-controls';
-
-const Preview = ({navigation, route}) => {
+import Video from 'react-native-video';
+const Preview = ({route}) => {
   const item = route.params.item;
   const [scale, setScale] = useState(1);
-  const [b, setB] = useState(null);
-  const screenWidth = Dimensions.get('window').width;
+  const [paused, setPaused] = useState(false);
+  const lastTap = useRef(null);
 
-  const upload = async () => {
-    console.log(item);
+  const handleDoubleTap = () => {
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300;
 
-    const response = await fetch(item);
-    console.log(response);
-    let formData = new FormData();
-
-    formData.append('video', {uri: item, name: 'v.mp4', type: 'video/mp4'});
-    fetch('http://localhost:8080/post/v', {
-      method: 'POST',
-      body: formData,
-    });
+    if (lastTap.current && now - lastTap.current < DOUBLE_PRESS_DELAY) {
+      setPaused(prevPaused => !prevPaused); // 동영상의 정지/재생 상태를 전환
+    } else {
+      if (paused) {
+        // 동영상이 정지 상태라면
+        setPaused(false); // 동영상을 재생
+      }
+      lastTap.current = now;
+    }
   };
-  useEffect(() => {
-    console.log('동영상 업로드');
-    upload();
-  }, []);
 
   return (
     <View
@@ -45,29 +32,26 @@ const Preview = ({navigation, route}) => {
         justifyContent: 'center',
       }}>
       {item && item.substring(item.length - 3) === 'mp4' && (
-        <VideoPlayer
-          source={{
-            uri: item,
-          }}
-          paused={false}
-          resizeMode={'contain'}
-          // style={styles.fullScreen}
-          onError={e => console.log(e)}
-        />
+        <TouchableWithoutFeedback onPress={handleDoubleTap}>
+          <Video
+            source={{uri: item}}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+            }}
+            resizeMode="contain"
+            paused={paused} // 비디오의 정지/재생 상태를 제어
+          />
+        </TouchableWithoutFeedback>
       )}
-      {/* {item && <Square1 image={item} scale={scale} setScale={setScale} />} */}
+      {item && item.substring(item.length - 3) === 'png' && (
+        <Square1 image={item} scale={scale} setScale={setScale} />
+      )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  fullScreen: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-  },
-});
 
 export default Preview;

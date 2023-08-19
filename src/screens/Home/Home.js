@@ -100,13 +100,6 @@ const Home = ({navigation}) => {
   // };
 
   const returnCurrentLocation = () => {
-    // setRegion({
-    //   latitude: latitude,
-    //   longitude: longitude,
-    //   latitudeDelta: 0.0175,
-    //   longitudeDelta: 0.0175,
-    // });
-
     mapRef.current.animateToRegion({
       latitude: latitude,
       longitude: longitude,
@@ -138,8 +131,9 @@ const Home = ({navigation}) => {
   useEffect(() => {
     const t = async () => {
       await getCurrentLocation();
-      // getMyPosts();
     };
+    getMyPosts();
+
     const intervalId = setInterval(t, 5000);
     return () => {
       clearInterval(intervalId);
@@ -230,13 +224,13 @@ const Home = ({navigation}) => {
             {contents &&
               contents.map((content, index) => (
                 <Marker
-                  key={index}
+                  key={content.contentId}
                   coordinate={{
                     latitude: content.lat,
                     longitude: content.lon,
                   }}
                   // 클릭 후 상세 페이지로 이동
-                  onPress={() => console.log('called')}>
+                  onPress={() => console.log(content.contentId)}>
                   <View
                     {...content}
                     style={{
@@ -248,7 +242,9 @@ const Home = ({navigation}) => {
                       justifyContent: 'center',
                     }}>
                     <Image
-                      source={Sample5}
+                      source={{
+                        uri: API_URL + '/post/image?watch=' + content.thumbnail,
+                      }}
                       style={{
                         width: '91%',
                         height: '85%',

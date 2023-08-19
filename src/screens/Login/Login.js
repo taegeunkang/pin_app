@@ -171,11 +171,11 @@ const Login = ({navigation}) => {
             <Text style={styles.wrongInput}>{t('wrongPassword')}</Text>
           )}
           <Text style={styles.forgetSentence}>{t('forget')}</Text>
-          {/* <SubmitButton onPress={loginSubmit} title={t('loginBtn')} /> */}
-          <SubmitButton
+          <SubmitButton onPress={loginSubmit} title={t('loginBtn')} />
+          {/* <SubmitButton
             onPress={() => navigation.reset({routes: [{name: 'Home'}]})}
             title={t('loginBtn')}
-          />
+          /> */}
 
           {/* <Text style={styles.snsLoginSenetence}>{t('snsLogin')}</Text>
         <Sns googleSigin={googleSigin} kakaoSignin={kakaoSignin} /> */}

@@ -22,12 +22,8 @@ import SubmitButton from '../../components/SubmitButton';
 import {useNavigation} from '@react-navigation/native';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Card} from 'react-native-paper';
-
 // ios 일 떄 파일 형식 변경을 해야지 정상적으로 불러오기 및 저장 가능
-const convertLocalIdentifierToAssetLibrary = (localIdentifier, ext) => {
-  const hash = localIdentifier.split('/')[0];
-  return `assets-library://asset/asset.${ext}?id=${hash}&ext=${ext}`;
-};
+
 const Upload = () => {
   const [scale, setScale] = useState(1);
   const [photos, setPhotos] = useState([]);
@@ -43,11 +39,9 @@ const Upload = () => {
     t();
   }, [array]);
 
-  // 구현 해야하는 기능
-  // 이미지에서 인스가르매처럼 드래그 줌 아웃 후 값 임시 저장 후 다음 페에지 넘어갈 때
-  // 크롭해서 저장 후 사용
-  const cropImg = () => {
-    setScale(scale == 1 ? 2 : 1);
+  const convertLocalIdentifierToAssetLibrary = (localIdentifier, ext) => {
+    const hash = localIdentifier.split('/')[0];
+    return `assets-library://asset/asset.${ext}?id=${hash}&ext=${ext}`;
   };
   const getGalleryPhotos = async () => {
     const params = {
@@ -59,7 +53,6 @@ const Upload = () => {
 
     try {
       //사진을 불러옵니다. edges는 gallery photo에 대한 정보
-      CameraRoll.getAlbums();
       const {edges, page_info} = await CameraRoll.getPhotos(params);
       if (page_info.has_next_page === false) {
         setGalleryCursor(null);
@@ -70,55 +63,27 @@ const Upload = () => {
       /*ios인 경우는 ph:// 형식으로 사진이 저장됩니다.
       이미지를 읽을 수 없는 오류가 생기기 때문에 변환 시켜줍니다.*/
       if (Platform.OS === 'ios') {
-        for await (const item of edges) {
-          if (item.node.type === 'video') {
-            phPathToFilePath(item.node.image.uri, item.node.type);
-          }
-          item.node.image.uri = convertLocalIdentifierToAssetLibrary(
-            item.node.image.uri.replace('ph://', ''),
-            item.node.type === 'image' ? 'png' : 'mp4',
-          );
-          console.log(item.node.image.uri);
-        }
       }
       let arr = [];
       for (let e = 0; e < edges.length; e++) {
-        let a = {id: e + 1, uri: edges[e].node.image.uri};
+        let a = {
+          id: e + 1,
+          uri: edges[e].node.image.uri,
+          // 기기 내부에서 접근 하기 위한 uri 생성
+          accessUri:
+            Platform.OS === 'ios'
+              ? convertLocalIdentifierToAssetLibrary(
+                  edges[e].node.image.uri.replace('ph://', ''),
+                  edges[e].node.type === 'image' ? 'png' : 'mp4',
+                )
+              : '',
+        };
         arr.push(a);
       }
       setPhotos(arr);
     } catch (error) {
       console.log('[takeStore getPhotos error occured] ', error);
     }
-  };
-
-  const phPathToFilePath = async (uri, type) => {
-    let fileURI = '';
-
-    if (uri.startsWith('ph://')) {
-      let fileName = `${
-        RNFS.DocumentDirectoryPath
-      }/${new Date().toISOString()}`;
-      fileName += type === 'video' ? `.mp4` : `.png`;
-
-      const copyPath = fileName.replace(/:/g, '-');
-
-      // ph경로의 이미지를 file로 옮기는 작업
-      // 2048 * 2048 -> 가져올 이미지 해상도
-      fileURI = await RNFS.copyAssetsFileIOS(uri, copyPath, 3024, 3024);
-    }
-
-    let formData = new FormData();
-    formData.append('video', {
-      uri: 'file://' + fileURI,
-      name: 'v.mp4',
-      type: 'video/mp4',
-    });
-    fetch('http://localhost:8080/post/v', {
-      method: 'POST',
-      body: formData,
-    });
-    // return fileURI;
   };
 
   const isArrayContain = target => {
@@ -131,61 +96,11 @@ const Upload = () => {
     return false;
   };
 
-  // 이미지, 동영상 테스트
-  const uploadFileToServer = async uri => {
-    let formData = new FormData();
-
-    let files = [
-      {
-        uri,
-        name: 'image.jpg',
-        type: 'image/jpg',
-      },
-      {
-        uri,
-        name: 'image.jpg',
-        type: 'image/jpg',
-      },
-      {
-        uri,
-        name: 'image.jpg',
-        type: 'image/jpg',
-      },
-    ];
-    files.forEach((file, index) => {
-      formData.append('file', file);
-    });
-    formData.append('id', '14');
-    formData.append('content', '하하하하하하하 이미지 테스트');
-    console.log(formData);
-    const result = await fetch(API_URL + '/post/image/test', {
-      method: 'POST',
-      body: formData,
-    });
-    console.log('요청 끝');
-    console.log(result.status);
-    console;
-  };
-
-  const saveImageToLocalStorage = async imagesArray => {
-    let arr = [];
-    for (let i = 0; i < imagesArray.length; i++) {
-      try {
-        let imageUrl = imagesArray[i].uri;
-        arr.push(imageUrl);
-      } catch (error) {
-        console.log('Error saving image:', error);
-      }
-    }
-    await AsyncStorage.setItem('images', JSON.stringify(arr));
-  };
-
   const addArray = async target => {
     let arr = array;
     if (!isArrayContain(target) && arr.length <= 10) {
       arr.push(target);
       setArray(arr);
-      saveImageToLocalStorage(arr);
     }
     setTarget(target.uri); // viewer에 표시
   };
@@ -205,7 +120,6 @@ const Upload = () => {
       }
     }
     let newArr = arr.slice(0, i).concat(arr.slice(i + 1));
-    saveImageToLocalStorage(newArr);
     setArray(newArr);
   };
   // 프리뷰로 이동 및 재생(사진 동영상 둘다)
@@ -221,9 +135,12 @@ const Upload = () => {
         data={photos}
         renderItem={({item}) => (
           <View>
-            <Pressable onPress={() => watchPreview(item.uri)}>
+            <Pressable
+              onPress={() =>
+                watchPreview(Platform.OS === 'ios' ? item.accessUri : item.uri)
+              }>
               <Image
-                source={{uri: item.uri}}
+                source={{uri: item.accessUri}}
                 style={{
                   width: Dimensions.get('window').width / 4,
                   height: Dimensions.get('window').width / 4,
