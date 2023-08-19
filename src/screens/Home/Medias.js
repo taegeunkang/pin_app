@@ -65,6 +65,7 @@ const Upload = () => {
       if (Platform.OS === 'ios') {
         for await (const item of edges) {
           // const fileName = item.node.image.uri.replace('ph://', '');
+          console.log(item.node.image.uri);
           const result = await phPathToFilePath(
             item.node.image.uri,
             item.node.type,
