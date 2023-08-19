@@ -3,7 +3,8 @@ import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
 import {Slider} from '../../components/Content/Slider';
 import {useTheme} from '../../hooks';
 import Square1 from './Square1';
-import Video
+import * as Video from 'react-native-video';
+
 const videoHtml = uri => {
   return ` <!DOCTYPE html>
   <html lang="en">
@@ -78,7 +79,7 @@ const Preview = ({navigation, route}) => {
         //   resizeMode={'cover'}
         // />
       )} */}
-      {/* {item && <Square1 image={item} scale={scale} setScale={setScale} />} */}
+      {item && <Square1 image={item} scale={scale} setScale={setScale} />}
     </View>
   );
 };

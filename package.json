@@ -31,9 +31,7 @@
     "react-native-flipper": "^0.189.0",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.11.0",
-    "react-native-image-crop-picker": "^0.39.0",
     "react-native-image-picker": "5.3.1",
-    "react-native-instagram-like-image-cropper": "^1.0.6",
     "react-native-map-clustering": "^3.4.2",
     "react-native-maps": "1.4.0",
     "react-native-mmkv": "^2.6.2",
@@ -44,7 +42,6 @@
     "react-native-screens": "^3.20.0",
     "react-native-svg": "^13.9.0",
     "react-native-swiper": "^1.6.0",
-    "react-native-video": "^6.0.0-alpha.7",
     "react-native-webview": "^13.2.2",
     "react-redux": "^8.0.5",
     "redux-persist": "^6.0.0"
