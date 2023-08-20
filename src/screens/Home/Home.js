@@ -26,17 +26,14 @@ import {API_URL} from '../../utils/constants';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
+import Permission from './Permission';
+import {check, PERMISSIONS} from 'react-native-permissions';
 const Home = ({navigation}) => {
-  const [gpsPermission, setGpsPermission] = useState(false);
-  const [image, setImage] = useState([]);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  const [contents, setContents] = useState([
-    {lat: 37.785834, lon: -122.40641},
-    {lat: 37.785834, lon: -122.40641},
-  ]);
+  const [contents, setContents] = useState([]);
+  const [permission, setPermission] = useState(false);
   const mapRef = useRef(null);
-
   const {Gutters, Images} = useTheme();
 
   const scaleValue = useState(new Animated.Value(1))[0];
@@ -56,19 +53,6 @@ const Home = ({navigation}) => {
       useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
     }).start();
   };
-  const openCamera = async () => {
-    let result = await launchCamera({
-      mediaType: 'mixed',
-      quality: 1,
-      includeBase64: true,
-    });
-    console.log(result);
-    let tmp = image;
-    tmp.push('data:image/png;base64,' + result.assets[0].base64);
-    setImage(tmp);
-    // setImage('data:image/png;base64,' + result.assets[0].base64);
-    // 캔슬할 때 에러 처리
-  };
 
   const getCurrentLocation = async () => {
     Geolocation.getCurrentPosition(
@@ -84,20 +68,46 @@ const Home = ({navigation}) => {
         setLongitude(position['coords']['longitude']);
       },
       error => {
-        switch (error['code']) {
-          case 1:
-            setGpsPermission(true);
-            break;
-        }
+        console.log(error['code']);
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
   };
 
-  // const updatePosition = region => {
-  //   setRegion(region);
-  //   console.log(region);
-  // };
+  const checkPermissions = async () => {
+    if (Platform.OS == 'ios') {
+      // const camera = await check(PERMISSIONS.IOS.CAMERA);
+      // const microphone = await check(PERMISSIONS.IOS.MICROPHONE);
+      const photo = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+      const location = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE); // 혹은 LOCATION_ALWAYS
+
+      setPermission(
+        // camera === RESULTS.GRANTED &&
+        // microphone === RESULTS.GRANTED &&
+        photo === RESULTS.GRANTED && location === RESULTS.GRANTED,
+      );
+    } else {
+      // const camera = await check(PERMISSIONS.ANDROID.CAMERA);
+      // const microphone = await check(PERMISSIONS.ANDROID.MICROPHONE);
+      const photo = await check(PERMISSIONS.ANDROID.PHOTO_LIBRARY);
+      const location = await check(PERMISSIONS.ANDROID.LOCATION_WHEN_IN_USE); // 혹은 LOCATION_ALWAYS
+
+      setPermission(
+        // camera === RESULTS.GRANTED &&
+        // microphone === RESULTS.GRANTED &&
+        photo === RESULTS.GRANTED && location === RESULTS.GRANTED,
+      );
+    }
+
+    if (
+      // permissions.camera == true &&
+      // permissions.microphone == true &&
+      permissions.photo == true &&
+      permissions.location == true
+    ) {
+      close();
+    }
+  };
 
   const returnCurrentLocation = () => {
     mapRef.current.animateToRegion({
@@ -132,8 +142,8 @@ const Home = ({navigation}) => {
     const t = async () => {
       await getCurrentLocation();
     };
+    checkPermissions();
     getMyPosts();
-
     const intervalId = setInterval(t, 5000);
     return () => {
       clearInterval(intervalId);
@@ -276,8 +286,8 @@ const Home = ({navigation}) => {
 
       {/*  GPS허용 모달*/}
 
-      <Modal visible={gpsPermission} animationType={'fade'} transparent={true}>
-        <GpsAlert />
+      <Modal visible={!permission} animationType={'slide'} transparent={true}>
+        <Permission close={() => setPermission(false)} />
       </Modal>
     </View>
   );

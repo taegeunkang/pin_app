@@ -22,6 +22,7 @@ import Register from '../screens/Login/Register';
 import Congraturation from '../screens/Login/Congraturation';
 import {useTranslation} from 'react-i18next';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
+import ProfileInitialSetting from '../screens/Login/ProfileInitialSetting';
 const Stack = createStackNavigator();
 // @refresh reset
 const ApplicationNavigator = () => {
@@ -37,6 +38,15 @@ const ApplicationNavigator = () => {
         <Stack.Navigator
           screenOptions={{
             headerShown: true,
+            headerTintColor: '#1A1E27',
+            headerTitleStyle: {
+              color: '#1A1E27',
+              fontFamily: 'SpoqaHanSansNeo-Bold',
+              fontSize: responsiveWidth(14),
+              lineHeight: responsiveHeight(24),
+              letterSpacing: responsiveWidth(-0.6),
+            },
+            headerBackTitleVisible: false,
             cardStyleInterpolator: ({current, next, layouts}) => {
               return {
                 cardStyle: {
@@ -65,15 +75,6 @@ const ApplicationNavigator = () => {
             component={Register}
             options={{
               title: t('header.register'),
-              headerTintColor: '#353C49',
-              headerTitleStyle: {
-                color: '#1A1E27',
-                fontFamily: 'SpoqaHanSansNeo-Bold',
-                fontSize: responsiveWidth(14),
-                lineHeight: responsiveHeight(24),
-                letterSpacing: responsiveWidth(-0.6),
-              },
-              headerBackTitleVisible: false,
             }}
           />
           <Stack.Screen
@@ -83,6 +84,15 @@ const ApplicationNavigator = () => {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="ProfileInitialSetting"
+            component={ProfileInitialSetting}
+            options={{
+              headerShown: true,
+              headerTitle: t('profileSetting'),
+            }}
+          />
+
           <Stack.Screen
             name="Home"
             component={NavNavigator}

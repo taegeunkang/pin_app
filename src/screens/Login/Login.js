@@ -1,4 +1,4 @@
-import {useTranslation} from 'react-i18next';
+import {composeInitialProps, useTranslation} from 'react-i18next';
 import {
   Text,
   View,
@@ -61,9 +61,14 @@ const Login = ({navigation}) => {
       let status = response['status'];
       response = await response.json();
       if (status == 200) {
-        await AsyncStorage.setItem('token', response['token']);
-        await AsyncStorage.setItem('refreshToken', response['refreshToken']);
-        await AsyncStorage.setItem('emailAddress', response['emailAddress']);
+        await AsyncStorage.setItem('token', response.token);
+        await AsyncStorage.setItem('refreshToken', response.refreshToken);
+        await AsyncStorage.setItem('emailAddress', response.emailAddress);
+        if (response.isFirstLogin) {
+          navigation.navigate('ProfileInitialSetting');
+          return;
+        }
+
         navigation.reset({routes: [{name: 'Home'}]});
       } else {
         switch (response['code']) {
@@ -172,10 +177,8 @@ const Login = ({navigation}) => {
           )}
           <Text style={styles.forgetSentence}>{t('forget')}</Text>
           <SubmitButton onPress={loginSubmit} title={t('loginBtn')} />
-          {/* <SubmitButton
-            onPress={() => navigation.reset({routes: [{name: 'Home'}]})}
-            title={t('loginBtn')}
-          /> */}
+
+          {/* SNS 로그인*/}
 
           {/* <Text style={styles.snsLoginSenetence}>{t('snsLogin')}</Text>
         <Sns googleSigin={googleSigin} kakaoSignin={kakaoSignin} /> */}
