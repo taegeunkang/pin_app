@@ -43,6 +43,10 @@
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>YOUR TEXT</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>이 앱에서 위치 서비스를 사용하려면 허용해 주세요.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>YOUR TEXT</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>UIAppFonts</key>

@@ -18,7 +18,10 @@ import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 const Permission = ({close}) => {
   const {t} = useTranslation('content');
   const {Fonts, Images} = useTheme();
-  const [permissions, setPermissions] = useState({});
+  const [permissions, setPermissions] = useState({
+    photo: false,
+    location: false,
+  });
 
   // const getCameraPermission = async () => {
   //   if (Platform.OS == 'ios') {
@@ -37,17 +40,17 @@ const Permission = ({close}) => {
       const result = await request(PERMISSIONS.ANDROID.PHOTO_LIBRARY);
       setPermissions({...permissions, photo: result == RESULTS.GRANTED});
     }
+    modalClose();
   };
   const getLocationPermission = async () => {
     if (Platform.OS == 'ios') {
       const result = await request(PERMISSIONS.IOS.LOCATION_ALWAYS);
-      console.log('앱 사용시에만도 그란트 되는지 체크');
       setPermissions({...permissions, location: result == RESULTS.GRANTED});
     } else {
       const result = await request(PERMISSIONS.ANDROID.LOCATION_ALWAYS);
-      console.log('앱 사용시에만도 그란트 되는지 체크');
       setPermissions({...permissions, location: result == RESULTS.GRANTED});
     }
+    modalClose();
   };
 
   // const getMicrophonePermission = async () => {
@@ -60,45 +63,50 @@ const Permission = ({close}) => {
   //   }
   // };
 
-  const checkPermissions = async () => {
-    if (Platform.OS == 'ios') {
-      // const camera = await check(PERMISSIONS.IOS.CAMERA);
-      // const microphone = await check(PERMISSIONS.IOS.MICROPHONE);
-      const photo = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
-      const location = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE); // 혹은 LOCATION_ALWAYS
+  // const checkPermissions = async () => {
+  //   console.log('?');
+  //   if (Platform.OS == 'ios') {
+  //     // const camera = await check(PERMISSIONS.IOS.CAMERA);
+  //     // const microphone = await check(PERMISSIONS.IOS.MICROPHONE);
+  //     const photo = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+  //     const location = await check(PERMISSIONS.IOS.LOCATION_ALWAYS); // 혹은 LOCATION_ALWAYS
 
-      setPermissions({
-        // camera: camera === RESULTS.GRANTED,
-        // microphone: microphone === RESULTS.GRANTED,
-        photo: photo === RESULTS.GRANTED,
-        location: location === RESULTS.GRANTED,
-      });
-    } else {
-      // const camera = await check(PERMISSIONS.ANDROID.CAMERA);
-      // const microphone = await check(PERMISSIONS.ANDROID.MICROPHONE);
-      const photo = await check(PERMISSIONS.ANDROID.PHOTO_LIBRARY);
-      const location = await check(PERMISSIONS.ANDROID.LOCATION_WHEN_IN_USE); // 혹은 LOCATION_ALWAYS
+  //     setPermissions({
+  //       // camera: camera === RESULTS.GRANTED,
+  //       // microphone: microphone === RESULTS.GRANTED,
+  //       photo: photo === RESULTS.GRANTED,
+  //       location: location === RESULTS.GRANTED,
+  //     });
+  //   } else {
+  //     // const camera = await check(PERMISSIONS.ANDROID.CAMERA);
+  //     // const microphone = await check(PERMISSIONS.ANDROID.MICROPHONE);
+  //     const photo = await check(PERMISSIONS.ANDROID.PHOTO_LIBRARY);
+  //     const location = await check(PERMISSIONS.ANDROID.LOCATION_ALWAYS); // 혹은 LOCATION_ALWAYS
 
-      setPermissions({
-        // camera: camera === RESULTS.GRANTED,
-        // microphone: microphone === RESULTS.GRANTED,
-        photo: photo === RESULTS.GRANTED,
-        location: location === RESULTS.GRANTED,
-      });
-    }
+  //     setPermissions({
+  //       // camera: camera === RESULTS.GRANTED,
+  //       // microphone: microphone === RESULTS.GRANTED,
+  //       photo: photo === RESULTS.GRANTED,
+  //       location: location === RESULTS.GRANTED,
+  //     });
+  //   }
+  // };
 
+  const modalClose = async () => {
+    const photo = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+    const location = await check(PERMISSIONS.IOS.LOCATION_ALWAYS);
+    const locationUsage = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
     if (
-      // permissions.camera == true &&
-      // permissions.microphone == true &&
-      permissions.photo == true &&
-      permissions.location == true
+      photo == RESULTS.GRANTED &&
+      (location == RESULTS.GRANTED || locationUsage == RESULTS.GRANTED)
     ) {
       close();
     }
   };
 
   useEffect(() => {
-    checkPermissions();
+    // checkPermissions();
+    // modalClose();
   }, []);
   return (
     <SafeAreaView style={styles.container}>
@@ -116,13 +124,17 @@ const Permission = ({close}) => {
         style={{
           width: '100%',
           height: responsiveHeight(230),
-          justifyContent: 'space-between',
+          justifyContent: 'flex-end',
           alignItems: 'center',
         }}>
-        <ActiveButton
-          title={'앨범 읽기/쓰기 허용'}
-          onPress={getAlbumPermission}
-        />
+        {permissions.photo == false ? (
+          <ActiveButton
+            title={'앨범 읽기/쓰기 허용'}
+            onPress={getAlbumPermission}
+          />
+        ) : (
+          <InactiveButton title={'앨범 읽기/쓰기 허용'} />
+        )}
         {/* <ActiveButton
           title={'카메라 엑세스 허용'}
           onPress={getCameraPermission}
@@ -131,10 +143,16 @@ const Permission = ({close}) => {
           title={'마이크 엑세스 허용'}
           onPress={getMicrophonePermission}
         /> */}
-        <InactiveButton
-          title={'GPS 엑세스 허용'}
-          onPress={getLocationPermission}
-        />
+        <View style={{marginTop: responsiveHeight(10)}} />
+        {permissions.location == false ? (
+          <ActiveButton
+            title={'GPS 엑세스 허용'}
+            onPress={getLocationPermission}
+          />
+        ) : (
+          <InactiveButton title={'GPS 엑세스 허용'} />
+        )}
+        <View style={{marginTop: responsiveHeight(20)}} />
       </View>
     </SafeAreaView>
   );

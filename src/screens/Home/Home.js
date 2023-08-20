@@ -27,12 +27,13 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import Permission from './Permission';
-import {check, PERMISSIONS} from 'react-native-permissions';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {check_email} from '../../utils/email';
 const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [contents, setContents] = useState([]);
-  const [permission, setPermission] = useState(false);
+  const [permission, setPermission] = useState(true);
   const mapRef = useRef(null);
   const {Gutters, Images} = useTheme();
 
@@ -55,23 +56,27 @@ const Home = ({navigation}) => {
   };
 
   const getCurrentLocation = async () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        console.log(
-          'latitude : ' +
-            position['coords']['latitude'] +
-            '  ' +
-            'longtitude : ' +
-            position['coords']['longitude'],
-        );
-        setLatitude(position['coords']['latitude']);
-        setLongitude(position['coords']['longitude']);
-      },
-      error => {
-        console.log(error['code']);
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
+    const location = await check(PERMISSIONS.IOS.LOCATION_ALWAYS); // 혹은 LOCATION_ALWAYS
+    const locationUsage = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+    if (location == RESULTS.GRANTED || locationUsage == RESULTS.GRANTED) {
+      Geolocation.getCurrentPosition(
+        position => {
+          console.log(
+            'latitude : ' +
+              position['coords']['latitude'] +
+              '  ' +
+              'longtitude : ' +
+              position['coords']['longitude'],
+          );
+          setLatitude(position['coords']['latitude']);
+          setLongitude(position['coords']['longitude']);
+        },
+        error => {
+          console.log(error['code']);
+        },
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+      );
+    }
   };
 
   const checkPermissions = async () => {
@@ -79,33 +84,29 @@ const Home = ({navigation}) => {
       // const camera = await check(PERMISSIONS.IOS.CAMERA);
       // const microphone = await check(PERMISSIONS.IOS.MICROPHONE);
       const photo = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
-      const location = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE); // 혹은 LOCATION_ALWAYS
+      const location = await check(PERMISSIONS.IOS.LOCATION_ALWAYS); // 혹은 LOCATION_ALWAYS
+      const locationUsage = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+      // console.log('사진 : ' + photo);
+      // console.log('위치 정보 항상 : ' + location);
+      // console.log('사용할 때만 위치 : ' + locationUsage);
 
       setPermission(
         // camera === RESULTS.GRANTED &&
         // microphone === RESULTS.GRANTED &&
-        photo === RESULTS.GRANTED && location === RESULTS.GRANTED,
+        photo === RESULTS.GRANTED &&
+          (location === RESULTS.GRANTED || locationUsage === RESULTS.GRANTED),
       );
     } else {
       // const camera = await check(PERMISSIONS.ANDROID.CAMERA);
       // const microphone = await check(PERMISSIONS.ANDROID.MICROPHONE);
       const photo = await check(PERMISSIONS.ANDROID.PHOTO_LIBRARY);
-      const location = await check(PERMISSIONS.ANDROID.LOCATION_WHEN_IN_USE); // 혹은 LOCATION_ALWAYS
+      const location = await check(PERMISSIONS.ANDROID.LOCATION_ALWAYS); // 혹은 LOCATION_ALWAYS
 
       setPermission(
         // camera === RESULTS.GRANTED &&
         // microphone === RESULTS.GRANTED &&
         photo === RESULTS.GRANTED && location === RESULTS.GRANTED,
       );
-    }
-
-    if (
-      // permissions.camera == true &&
-      // permissions.microphone == true &&
-      permissions.photo == true &&
-      permissions.location == true
-    ) {
-      close();
     }
   };
 
@@ -135,7 +136,7 @@ const Home = ({navigation}) => {
     );
     const res = await response.json();
     setContents(res['contents']);
-    console.log(res['contents']);
+    // console.log(res['contents']);
   };
 
   useEffect(() => {
@@ -144,7 +145,7 @@ const Home = ({navigation}) => {
     };
     checkPermissions();
     getMyPosts();
-    const intervalId = setInterval(t, 5000);
+    const intervalId = setInterval(t, 2000);
     return () => {
       clearInterval(intervalId);
     };
@@ -205,7 +206,7 @@ const Home = ({navigation}) => {
           <MapView
             style={styles.map}
             showsUserLocation={true}
-            userLocationUpdateInterval={5000}
+            userLocationUpdateInterval={1000}
             showsMyLocationButton={false}
             ref={mapRef}
             initialRegion={{
@@ -287,7 +288,12 @@ const Home = ({navigation}) => {
       {/*  GPS허용 모달*/}
 
       <Modal visible={!permission} animationType={'slide'} transparent={true}>
-        <Permission close={() => setPermission(false)} />
+        <Permission
+          close={() => {
+            console.log('완료');
+            setPermission(true);
+          }}
+        />
       </Modal>
     </View>
   );

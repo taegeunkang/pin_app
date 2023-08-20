@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
 import {check_email as checkEmail} from '../../utils/email';
@@ -258,7 +259,7 @@ const Register = ({navigation}) => {
   });
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {backButton && (
         <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
           <BackAlert cancle={cancle} go_back={goBack} />
@@ -580,11 +581,11 @@ const Register = ({navigation}) => {
           flex: 1,
           alignItems: 'center',
           justifyContent: 'flex-end',
-          marginBottom: responsiveHeight(50),
         }}>
         <SubmitButton onPress={submit} title={t('button.register')} />
       </View>
-    </View>
+      <View style={{marginTop: responsiveHeight(20)}} />
+    </SafeAreaView>
   );
 };
 
