@@ -1,11 +1,18 @@
-import {View, StyleSheet, Image, Text} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import {useTheme} from '../../hooks';
 import {responsiveHeight, responsiveWidth} from '../Scale';
-const UserCell = ({profileImage, name, closeAvailable, onPress}) => {
+const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
   const {Images} = useTheme();
 
   return (
-    <View style={styles.container}>
+    <Pressable onPress={onPress} style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <View
           style={{
@@ -14,20 +21,24 @@ const UserCell = ({profileImage, name, closeAvailable, onPress}) => {
             borderRadius: responsiveWidth(12),
             backgroundColor: 'black',
           }}></View>
-        <Text style={styles.nickname}>mars2727</Text>
+        <Text style={styles.nickname}>{name}</Text>
       </View>
       {closeAvailable ? (
-        <Image
-          source={Images.close}
-          style={{width: responsiveWidth(15), height: responsiveHeight(15)}}
-        />
+        <TouchableOpacity onPress={onClose}>
+          <Image
+            source={Images.close}
+            style={{width: responsiveWidth(15), height: responsiveHeight(15)}}
+          />
+        </TouchableOpacity>
       ) : (
-        <Image
-          source={Images.rightChevron}
-          style={{width: responsiveWidth(8.75), height: responsiveHeight(15)}}
-        />
+        <TouchableOpacity>
+          <Image
+            source={Images.rightChevron}
+            style={{width: responsiveWidth(8.75), height: responsiveHeight(15)}}
+          />
+        </TouchableOpacity>
       )}
-    </View>
+    </Pressable>
   );
 };
 
