@@ -4,20 +4,28 @@ import {
   StyleSheet,
   TouchableOpacity,
   Pressable,
+  Image,
+  Modal,
+  Alert,
 } from 'react-native';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import {useLayoutEffect, useState} from 'react';
+import {useEffect, useLayoutEffect, useState} from 'react';
 import {useTheme} from '../../hooks';
 import SubmitButton from '../../components/SubmitButton';
-const ProfileImage = ({navigation}) => {
+import {API_URL} from '../../utils/constants';
+import ChoosePic from '../../components/Content/ChoosePic';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const ProfileImage = ({navigation, route}) => {
+  const {profileImg} = route.params;
+  const [pressed, setPressed] = useState(false);
+  const [pic, setPic] = useState(null);
+  const [defaultPic, setDefaultPic] = useState(false);
   const {Fonts, Colors} = useTheme();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
-          onPress={() => {
-            navigation.pop();
-          }}
+          onPress={submit}
           style={{
             backgroundColor: Colors.transparent,
             width: responsiveWidth(60),
@@ -39,8 +47,60 @@ const ProfileImage = ({navigation}) => {
       ),
     });
   });
+  const showPic = () => {
+    if (pic && !defaultPic) return pic.accessUri;
+
+    return defaultPic
+      ? API_URL + `/user/profile/image?watch=default-profile.png`
+      : API_URL + `/user/profile/image?watch=${profileImg}`;
+  };
+
+  const closeModal = item => {
+    console.log(item);
+    setPic(item);
+    setDefaultPic(false);
+    setPressed(false);
+  };
+  const submit = async () => {
+    console.log(defaultPic);
+    console.log(pic);
+
+    if (!pic && !defaultPic) {
+      Alert.alert('사진을 선택해 주세요.');
+      return;
+    }
+    const formData = new FormData();
+    if (pic) {
+      formData.append('profileImage', {
+        uri: pic.uri,
+        name: 'profileImage.png',
+        type: 'image/png',
+      });
+    }
+
+    const response = await fetch(
+      API_URL + '/user/profile/update/profileImage',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        },
+        body: formData,
+      },
+    );
+
+    switch (response.status) {
+      case 200:
+        navigation.pop();
+        return;
+    }
+  };
+
   return (
     <View style={{flex: 1, alignItems: 'center'}}>
+      <Modal visible={pressed} animationType={'slide'} transparent={true}>
+        <ChoosePic onPress={closeModal} cancel={() => setPressed(false)} />
+      </Modal>
       <View
         style={{
           width: '100%',
@@ -48,19 +108,27 @@ const ProfileImage = ({navigation}) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <View
+        <Image
+          source={{
+            uri: showPic(),
+          }}
           style={{
             width: responsiveWidth(100),
             height: responsiveHeight(100),
             borderRadius: responsiveWidth(12),
             backgroundColor: 'black',
-          }}></View>
+          }}
+        />
       </View>
 
-      <SubmitButton title={'사진 선택하기'} />
+      <SubmitButton title={'사진 선택하기'} onPress={() => setPressed(true)} />
       <View
         style={{width: responsiveWidth(370), marginTop: responsiveHeight(10)}}>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setDefaultPic(true);
+            setPic(null);
+          }}>
           <Text
             style={{
               fontFamily: 'SpoqaHanSansNeo-Medium',

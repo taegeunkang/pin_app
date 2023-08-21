@@ -8,19 +8,21 @@ import {
 } from 'react-native';
 import {useTheme} from '../../hooks';
 import {responsiveHeight, responsiveWidth} from '../Scale';
+import {API_URL} from '../../utils/constants';
 const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
   const {Images} = useTheme();
 
   return (
     <Pressable onPress={onPress} style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <View
+        <Image
+          source={{uri: API_URL + `/user/profile/image?watch=${profileImage}`}}
           style={{
             width: responsiveWidth(35),
             height: responsiveHeight(35),
             borderRadius: responsiveWidth(12),
             backgroundColor: 'black',
-          }}></View>
+          }}></Image>
         <Text style={styles.nickname}>{name}</Text>
       </View>
       {closeAvailable ? (

@@ -24,7 +24,7 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Card} from 'react-native-paper';
 // ios 일 떄 파일 형식 변경을 해야지 정상적으로 불러오기 및 저장 가능
 
-const Upload = () => {
+const Medias = () => {
   const [scale, setScale] = useState(1);
   const [photos, setPhotos] = useState([]);
   const [target, setTarget] = useState(null);
@@ -256,4 +256,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Upload;
+export default Medias;

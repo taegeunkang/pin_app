@@ -12,17 +12,119 @@ import {Colors} from '../../theme/Variables';
 import SearchIcon from '../../theme/assets/images/nav/search.svg';
 import SearchIconNot from '../../theme/assets/images/nav/search-not.svg';
 import {useTranslation} from 'react-i18next';
-import {useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import {WithLocalSvg} from 'react-native-svg';
 import UserCell from '../../components/Content/UserCell';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {API_URL} from '../../utils/constants';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
-const FollowerList = () => {
+const FollowerList = ({navigation, route}) => {
+  const {userId} = route.params;
   const {t} = useTranslation('content');
   const [inpt, setInpt] = useState('');
   const inputRef = useRef(null);
+  const [page, setPage] = useState(0);
+  const [userList, setUserList] = useState([]);
+  const [loading, setLoading] = useState([]);
+  const search = async () => {
+    if (inpt && inpt.trim().length > 0) {
+      const response = await fetch(
+        API_URL +
+          `/user/follower/list?userId=${userId}&word=${inpt}&page=${0}&size=${20}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      if (response.status == 200) {
+        const r = await response.json();
+        setUserList(r);
+      }
+    } else {
+      setUserList([]);
+    }
+    setPage(0);
+  };
+
+  const findFolowerAll = async () => {
+    const response = await fetch(
+      API_URL + `/user/follower/list?userId=${userId}&page=${0}&size=${20}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    if (response.status == 200) {
+      const r = await response.json();
+      console.log(r);
+      setUserList(r);
+    }
+    setPage(0);
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    const response = await fetch(
+      API_URL + `/user/follower/list?userId=${userId}&page=${page}&size=${20}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    if (response.status == 200) {
+      const r = await response.json();
+      let a = userList;
+      a = a.concat(r);
+      setUserList(a);
+    }
+    setLoading(false);
+  };
+
+  const fetchDataContainingWord = async () => {
+    setLoading(true);
+    const response = await fetch(
+      API_URL +
+        `/user/follower/list?userId=${userId}&word=${inpt}&page=${page}&size=${20}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    if (response.status == 200) {
+      const r = await response.json();
+      let a = userList;
+      a = a.concat(r);
+      setUserList(a);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (inpt && inpt.trim().length > 0) {
+      search();
+    } else {
+      findFolowerAll();
+    }
+  }, [inpt]);
+
+  useEffect(() => {
+    if (inpt && inpt.trim().length > 0) {
+      fetchDataContainingWord();
+    } else {
+      fetchData();
+    }
+  }, [page]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -38,7 +140,10 @@ const FollowerList = () => {
           style={{flex: 1, textAlign: 'left', marginLeft: responsiveWidth(10)}}
           placeholder={t('search.user')}
           placeholderTextColor={'#6D7582'}
-          onChangeText={e => setInpt(e)}
+          onChangeText={e => {
+            setInpt(e);
+            setPage(0);
+          }}
           value={inpt}
         />
       </View>
@@ -48,25 +153,29 @@ const FollowerList = () => {
       {/* <View style={{flex: 1, backgroundColor: Colors.white}}></View> */}
 
       {/* 검색 결과가 있을 때*/}
-      <ScrollView>
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
-        <UserCell />
+      <ScrollView
+        onScroll={({nativeEvent}) => {
+          if (loading) return;
+
+          const isCloseToBottom =
+            nativeEvent.layoutMeasurement.height +
+              nativeEvent.contentOffset.y >=
+            nativeEvent.contentSize.height - responsiveHeight(70);
+          if (isCloseToBottom) {
+            setPage(page => page + 1);
+          }
+        }}
+        scrollEventThrottle={400}>
+        {userList.map((user, index) => (
+          <UserCell
+            key={index}
+            name={user.nickname}
+            profileImage={user.profileImg}
+            onPress={() => {
+              navigation.push('UserPage', {userId: user.userId});
+            }}
+          />
+        ))}
       </ScrollView>
 
       {/* 검색 결과가 없을 때*/}

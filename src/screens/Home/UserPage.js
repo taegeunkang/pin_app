@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   Pressable,
   Modal,
+  TouchableOpacity,
 } from 'react-native';
 import Sample1 from '../../theme/assets/images/sample/sample1.png';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
@@ -20,23 +21,24 @@ import {useSSR, useTranslation} from 'react-i18next';
 import ProfileButton from '../../components/mypage/ProfileButton';
 import {useTheme} from '../../hooks';
 import PostBox from '../../components/mypage/PostBox';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useLayoutEffect} from 'react';
 import FollowButton from '../../components/mypage/FollowButton';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import GpsAlert from '../../components/Content/GpsAlert';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
+import HeaderLeftButton from '../../components/HeaderLeftButton';
 // 게시글 없을 때 check
 
-const MyPage = ({navigation}) => {
+const UserPage = ({navigation, route}) => {
+  const {userId} = route.params;
   const {t} = useTranslation('myPage');
-  const {Fonts} = useTheme();
+  const {Fonts, Colors} = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [modlaVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState({});
-  const [id, setId] = useState(null);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -70,19 +72,22 @@ const MyPage = ({navigation}) => {
     // setLoading(false);
   };
   const getProfile = async () => {
-    const id = await AsyncStorage.getItem('id');
-    setId(id);
-    const response = await fetch(API_URL + `/user/profile/info?userId=${id}`, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+    const response = await fetch(
+      API_URL + `/user/profile/info?userId=${userId}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        },
       },
-    });
+    );
     if (response.status == 200) {
       const r = await response.json();
-      setUserInfo(r);
       console.log(r);
+      setUserInfo(r);
     }
+    console.log(userId);
+    console.log(response.status);
   };
 
   useEffect(() => {
@@ -96,6 +101,44 @@ const MyPage = ({navigation}) => {
 
   return (
     <SafeAreaView style={[styles.container]}>
+      {/* 헤더*/}
+      <View
+        style={{
+          flexDirection: 'row',
+          height: '5%',
+          backgroundColor: Colors.white,
+        }}>
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+          }}
+          onPress={() => navigation.pop()}>
+          <HeaderLeftButton />
+        </TouchableOpacity>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              color: '#1A1E27',
+              fontFamily: 'SpoqaHanSansNeo-Bold',
+              fontSize: responsiveWidth(14),
+              lineHeight: responsiveHeight(24),
+              letterSpacing: responsiveWidth(-0.6),
+            }}>
+            {userInfo.nickname}
+          </Text>
+        </View>
+        <View style={{flex: 1}}></View>
+      </View>
+
       <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
         <Edit
           setProfileImage={() => {
@@ -205,7 +248,7 @@ const MyPage = ({navigation}) => {
 
               <Pressable
                 onPress={() =>
-                  navigation.navigate('FollowerList', {userId: id})
+                  navigation.push('FollowerList', {userId: userId})
                 }
                 style={{
                   flexDirection: 'row',
@@ -227,7 +270,7 @@ const MyPage = ({navigation}) => {
                   justifyContent: 'flex-start',
                 }}
                 onPress={() =>
-                  navigation.navigate('FollowingList', {userId: id})
+                  navigation.push('FollowingList', {userId: userId})
                 }>
                 <Text
                   style={[
@@ -302,4 +345,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPage;
+export default UserPage;

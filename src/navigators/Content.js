@@ -14,6 +14,7 @@ import {responsiveWidth, responsiveHeight} from '../components/Scale';
 import ProfileImage from '../screens/Home/ProfileImage';
 import BackgroundImage from '../screens/Home/BackgroundImage';
 import Nickname from '../screens/Home/Nickname';
+import UserPage from '../screens/Home/UserPage';
 const Stack = createStackNavigator();
 
 // @refresh reset
@@ -50,6 +51,11 @@ const Content = () => {
       <Stack.Screen
         name="MyPage"
         component={MyPage}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="UserPage"
+        component={UserPage}
         options={{headerShown: false}}
       />
       <Stack.Screen

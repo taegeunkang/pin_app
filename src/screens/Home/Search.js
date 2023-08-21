@@ -89,6 +89,7 @@ const Search = () => {
       setUserList([]);
       getSearchHistory();
     }
+    setPage(0);
   };
 
   const fetchData = async () => {
@@ -140,8 +141,7 @@ const Search = () => {
       </View>
 
       <View style={{marginTop: responsiveHeight(20)}} />
-      {/* 첫 화면 진입시 검색 기록이 존재 하지 않을 때 */}
-      {searchHistory && inpt.length == 0 && (
+      {searchHistory && searchHistory.length > 0 && inpt.length == 0 && (
         <ScrollView>
           <View
             style={{
@@ -173,8 +173,7 @@ const Search = () => {
       )}
       {/* <View style={{flex: 1, backgroundColor: Colors.white}}></View> */}
 
-      {/* 첫 화면 진입시 검색 기록이 존재 할 때 밑에 검색 결과가 있을 때 + 타이틀 */}
-      {userList && userList.length > 0 && (
+      {inpt.length > 0 && userList && userList.length > 0 && (
         <ScrollView
           onScroll={({nativeEvent}) => {
             if (loading) return;
@@ -182,7 +181,7 @@ const Search = () => {
             const isCloseToBottom =
               nativeEvent.layoutMeasurement.height +
                 nativeEvent.contentOffset.y >=
-              nativeEvent.contentSize.height - responsiveHeight(50);
+              nativeEvent.contentSize.height - responsiveHeight(70);
             if (isCloseToBottom) {
               setPage(page => page + 1);
             }

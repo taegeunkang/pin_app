@@ -18,5 +18,7 @@ export default function ({}) {
     downChevron: require('./assets/images/nav/down-chevron.png'),
     pin: require('./assets/images/nav/pin.png'),
     setting: require('./assets/images/nav/setting.png'),
+    defaultProfileImage: require('./assets/images/sample/default-profile.png'),
+    defaultBackgroundImage: require('./assets/images/sample/default-background.png'),
   };
 }

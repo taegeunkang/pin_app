@@ -64,6 +64,7 @@ const Login = ({navigation}) => {
         await AsyncStorage.setItem('token', response.token);
         await AsyncStorage.setItem('refreshToken', response.refreshToken);
         await AsyncStorage.setItem('emailAddress', response.emailAddress);
+        await AsyncStorage.setItem('id', response.id.toString());
         if (response.isFirstLogin) {
           navigation.navigate('ProfileInitialSetting');
           return;
