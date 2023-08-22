@@ -7,21 +7,16 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
-  KeyboardAvoidingView,
-  TextInput,
   SafeAreaView,
+  TextInput,
 } from 'react-native';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
-import Sample1 from '../../theme/assets/images/sample/sample1.png';
-import Sample3 from '../../theme/assets/images/sample/sample3.png';
 import {useTheme} from '../../hooks';
 import {WithLocalSvg} from 'react-native-svg';
 import SmaileIcon from '../../theme/assets/images/nav/smile.svg';
 import SmaileIconNot from '../../theme/assets/images/nav/smile-not.svg';
-import CommentIcon from '../../theme/assets/images/nav/comment.svg';
 import CommentIconNot from '../../theme/assets/images/nav/comment-not.svg';
 import LocationIconNot from '../../theme/assets/images/nav/loc.svg';
-import LocationIconNotIconNot from '../../theme/assets/images/nav/loc-not.svg';
 import {useState, useEffect} from 'react';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Slider} from '../../components/Content/Slider';
@@ -29,7 +24,6 @@ import Comment from '../../components/mypage/Comment';
 import CommentComment from '../../components/mypage/CommetComment';
 import {API_URL} from '../../utils/constants';
 import InputBox from '../../components/InputBox';
-import {Colors} from '../../theme/Variables';
 const screenWidth = Dimensions.get('screen').width;
 const Detail = ({navigation, route}) => {
   const {
@@ -101,185 +95,181 @@ const Detail = ({navigation, route}) => {
   }, [page]);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
-      style={{
-        flex: 1,
-        backgroundColor: Colors.white,
-        alignItems: 'center',
-      }}>
-      <SafeAreaView style={{position: 'relative'}}>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor="#4880EE"
-              colors={['#4880EE']}
-              style={{backgroundColor: '#FFFFFF'}}
-            />
+    <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#4880EE"
+            colors={['#4880EE']}
+            style={{backgroundColor: '#FFFFFF'}}
+          />
+        }
+        onScroll={({nativeEvent}) => {
+          if (loading) return;
+
+          const isCloseToBottom =
+            nativeEvent.layoutMeasurement.height +
+              nativeEvent.contentOffset.y >=
+            nativeEvent.contentSize.height - responsiveHeight(110);
+          if (isCloseToBottom) {
+            setPage(prevPage => prevPage + 1);
           }
-          onScroll={({nativeEvent}) => {
-            if (loading) return;
-
-            const isCloseToBottom =
-              nativeEvent.layoutMeasurement.height +
-                nativeEvent.contentOffset.y >=
-              nativeEvent.contentSize.height + responsiveHeight(10);
-            if (isCloseToBottom) {
-              setPage(prevPage => prevPage + 1);
-            }
-          }}
-          scrollEventThrottle={400}>
-          <View style={styles.container}>
-            <View style={styles.postContainer}>
-              <View style={styles.writerBox}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Image
-                    source={{
-                      uri: API_URL + `/post/image?watch=${profileImage}`,
-                    }}
-                    style={styles.writerImage}
-                  />
-                  <Text
-                    style={[
-                      Fonts.contentMediumBold,
-                      {marginRight: responsiveWidth(5)},
-                    ]}>
-                    {nickname}
-                  </Text>
-                  <Text style={Fonts.contentRegualrMedium}>
-                    {timeAgo(createdDate)}
-                  </Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                  {mention &&
-                    mention.map((f, index) => {
-                      if (index < 3) {
-                        return (
-                          <Image
-                            key={index}
-                            source={{
-                              uri:
-                                API_URL +
-                                `/user/profile/image?watch=${f.profileImage}`,
-                            }}
-                            style={styles.writerImage}
-                          />
-                        );
-                      } else {
-                        return;
-                      }
-                    })}
-
-                  {mention && mention.length - 3 > 0 && (
-                    <MoreFriends count={mention.length - 3} />
-                  )}
-                </View>
+        }}
+        scrollEventThrottle={400}>
+        <View style={styles.container}>
+          <View style={styles.postContainer}>
+            <View style={styles.writerBox}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image
+                  source={{
+                    uri: API_URL + `/post/image?watch=${profileImage}`,
+                  }}
+                  style={styles.writerImage}
+                />
+                <Text
+                  style={[
+                    Fonts.contentMediumBold,
+                    {marginRight: responsiveWidth(5)},
+                  ]}>
+                  {nickname}
+                </Text>
+                <Text style={Fonts.contentRegualrMedium}>
+                  {timeAgo(createdDate)}
+                </Text>
               </View>
-              {/* 본문 글 최대 500자 */}
-              <Text
-                style={[
-                  Fonts.contentMediumMedium,
-                  {width: responsiveWidth(370)},
-                ]}>
-                {content}
-              </Text>
-              <View style={{marginTop: responsiveHeight(10)}} />
+              <View style={{flexDirection: 'row'}}>
+                {mention &&
+                  mention.map((f, index) => {
+                    if (index < 3) {
+                      return (
+                        <Image
+                          key={index}
+                          source={{
+                            uri:
+                              API_URL +
+                              `/user/profile/image?watch=${f.profileImage}`,
+                          }}
+                          style={styles.writerImage}
+                        />
+                      );
+                    } else {
+                      return;
+                    }
+                  })}
 
-              {/* 첨부 파일*/}
-              <View
-                style={{
-                  width: responsiveWidth(370),
-                  height: responsiveWidth(370),
-                }}>
-                <Slider media={mediaFiles} />
+                {mention && mention.length - 3 > 0 && (
+                  <MoreFriends count={mention.length - 3} />
+                )}
               </View>
-              <View style={{marginBottom: responsiveHeight(20)}} />
-              {/* 좋아요, 댓글, 위치*/}
+            </View>
+            {/* 본문 글 최대 500자 */}
+            <Text
+              style={[
+                Fonts.contentMediumMedium,
+                {width: responsiveWidth(370)},
+              ]}>
+              {content}
+            </Text>
+            <View style={{marginTop: responsiveHeight(10)}} />
+
+            {/* 첨부 파일*/}
+            <View
+              style={{
+                width: responsiveWidth(370),
+                height: responsiveWidth(370),
+              }}>
+              <Slider media={mediaFiles} />
+            </View>
+            <View style={{marginBottom: responsiveHeight(20)}} />
+            {/* 좋아요, 댓글, 위치*/}
+            <View
+              style={{
+                flexDirection: 'row',
+                marginBottom: responsiveHeight(5),
+              }}>
               <View
                 style={{
                   flexDirection: 'row',
+                  marginRight: responsiveWidth(10),
                   marginBottom: responsiveHeight(5),
                 }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginRight: responsiveWidth(10),
-                    marginBottom: responsiveHeight(5),
-                  }}>
-                  <WithLocalSvg
-                    width={responsiveWidth(20)}
-                    height={responsiveHeight(20)}
-                    asset={isLiked ? SmaileIcon : SmaileIconNot}
-                    style={{marginRight: responsiveWidth(5)}}
-                    onPress={() => onLike()}
-                  />
-                  <Text style={Fonts.contentMediumMedium}>
-                    {formatNumber(likedCount)}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginRight: responsiveWidth(10),
-                  }}>
-                  <WithLocalSvg
-                    width={responsiveWidth(20)}
-                    height={responsiveHeight(20)}
-                    asset={CommentIconNot}
-                    style={{marginRight: responsiveWidth(5)}}
-                  />
-                  <Text style={Fonts.contentMediumMedium}>
-                    {' '}
-                    {formatNumber(commentsCount)}
-                  </Text>
-                </View>
-
-                <View style={{flexDirection: 'row'}}>
-                  <WithLocalSvg
-                    width={responsiveWidth(20)}
-                    height={responsiveHeight(20)}
-                    asset={LocationIconNot}
-                    style={{marginRight: responsiveWidth(5)}}
-                  />
-                  <Text style={Fonts.contentMediumMedium}>{locationName}</Text>
-                </View>
+                <WithLocalSvg
+                  width={responsiveWidth(20)}
+                  height={responsiveHeight(20)}
+                  asset={isLiked ? SmaileIcon : SmaileIconNot}
+                  style={{marginRight: responsiveWidth(5)}}
+                  onPress={() => onLike()}
+                />
+                <Text style={Fonts.contentMediumMedium}>
+                  {formatNumber(likedCount)}
+                </Text>
               </View>
-            </View>
 
-            <Comment />
-            <CommentComment />
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'flex-end',
-                position: 'absolute',
-                top: 0,
-              }}>
-              <TextInput
-                placeholder="여기에 텍스트를 입력하세요"
+              <View
                 style={{
-                  height: 40,
-                  borderColor: 'gray',
-                  borderWidth: 1,
-                  marginBottom: 10,
-                }}
-              />
-            </View>
-
-            {loading && (
-              <View style={{marginVertical: responsiveHeight(30)}}>
-                <ActivityIndicator color={'#4880EE'} size={'large'} />
+                  flexDirection: 'row',
+                  marginRight: responsiveWidth(10),
+                }}>
+                <WithLocalSvg
+                  width={responsiveWidth(20)}
+                  height={responsiveHeight(20)}
+                  asset={CommentIconNot}
+                  style={{marginRight: responsiveWidth(5)}}
+                />
+                <Text style={Fonts.contentMediumMedium}>
+                  {' '}
+                  {formatNumber(commentsCount)}
+                </Text>
               </View>
-            )}
+
+              <View style={{flexDirection: 'row'}}>
+                <WithLocalSvg
+                  width={responsiveWidth(20)}
+                  height={responsiveHeight(20)}
+                  asset={LocationIconNot}
+                  style={{marginRight: responsiveWidth(5)}}
+                />
+                <Text style={Fonts.contentMediumMedium}>{locationName}</Text>
+              </View>
+            </View>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-      {/* <InputBox /> */}
-    </KeyboardAvoidingView>
+
+          <Comment />
+          <CommentComment />
+
+          {/* {loading && (
+            <View style={{marginVertical: responsiveHeight(30)}}>
+              <ActivityIndicator color={'#4880EE'} size={'large'} />
+            </View>
+          )} */}
+        </View>
+      </ScrollView>
+
+      <View
+        style={{
+          width: '100%',
+          position: 'absolute',
+          bottom: 0,
+          height: responsiveHeight(70),
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#ffffff',
+        }}>
+        <TextInput
+          style={[Fonts.contentRegualrMedium, styles.loginInput]}
+          placeholder={'댓글 입력'}
+          placeholderTextColor={'#6D7582'}
+          // onChangeText={() => console.log('hh')}
+          // value={value}
+          // keyboardType={keyboardType}
+          // maxLength={maxLength}
+          // editable={!editable}
+          // ref={ref}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -417,6 +407,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F3F4',
     borderRadius: responsiveWidth(10),
     marginRight: responsiveWidth(5),
+  },
+
+  loginInput: {
+    height: responsiveHeight(48),
+    width: responsiveWidth(370),
+    borderRadius: responsiveWidth(12),
+    backgroundColor: '#F2F4F6',
+    paddingHorizontal: responsiveWidth(10),
   },
 });
 
