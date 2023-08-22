@@ -70,6 +70,7 @@ const FollowingList = ({navigation, route}) => {
   };
 
   const fetchData = async () => {
+    if (loading) return;
     setLoading(true);
     const response = await fetch(
       API_URL + `/user/following/list?userId=${userId}&page=${page}&size=${20}`,
@@ -90,6 +91,7 @@ const FollowingList = ({navigation, route}) => {
   };
 
   const fetchDataContainingWord = async () => {
+    if (loading) return;
     setLoading(true);
     const response = await fetch(
       API_URL +

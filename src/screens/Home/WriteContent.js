@@ -32,6 +32,7 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import SubmitButton from '../../components/SubmitButton';
 import {useTheme} from '../../hooks';
 import * as RNFS from 'react-native-fs';
+import {freemem} from 'os';
 // 동영상일 때는 썸네일 파일도 같이 넘겨줘야해서 수정 필요
 
 const WriteContent = ({navigation, route}) => {
@@ -137,8 +138,12 @@ const WriteContent = ({navigation, route}) => {
     formData.append('lon', lon); // lontitude;
     formData.append('locationName', loc);
     formData.append('isPrivate', isPrivate);
-    console.log(formData);
-    console.log(token);
+    let fff = [];
+    for (let j = 0; j < friends.length; j++) {
+      fff.push(friends[j].userId);
+    }
+    formData.append('mention', fff);
+
     const response = await fetch(API_URL + '/post/create', {
       method: 'POST',
       headers: {
@@ -151,10 +156,15 @@ const WriteContent = ({navigation, route}) => {
       navigation.reset({routes: [{name: 'Home'}]});
     } else {
       const r = await response.json();
-      
     }
 
     setLoading(false);
+  };
+
+  const moveToFindingFriends = async () => {
+    navigation.navigate('FindingFriends', {
+      userId: await AsyncStorage.getItem('id'),
+    });
   };
 
   return (
@@ -180,29 +190,6 @@ const WriteContent = ({navigation, route}) => {
                     }}
                     source={{uri: m.uri}}
                   />
-                  {/* <Pressable
-                  onPress={() => removeTargetFromArray(item)}
-                  style={{
-                    width: responsiveWidth(20),
-                    height: responsiveHeight(20),
-                    borderRadius: responsiveWidth(100),
-                    backgroundColor: '#4880EE',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    position: 'absolute',
-                    top: responsiveHeight(5),
-                    right: responsiveWidth(5),
-                  }}>
-                
-                  <Text
-                    style={{
-                      fontFamily: 'SpoqaHanSansNeo-Bold',
-                      fontSize: responsiveWidth(12),
-                      lineHeight: responsiveHeight(18),
-                      letterSpacing: responsiveWidth(-0.6),
-                      color: '#EAF3FE',
-                    }}></Text>
-                </Pressable> */}
                 </View>
               ))}
             </ScrollView>
@@ -250,7 +237,9 @@ const WriteContent = ({navigation, route}) => {
             <Text style={styles.subTitle}>위치</Text>
             <View style={{marginBottom: responsiveHeight(5)}} />
             <TouchableOpacity
-              onPress={() => navigation.navigate('FindingLocation')}>
+              onPress={() =>
+                navigation.navigate('FindingLocation', {lat: lat, lon: lon})
+              }>
               <Image
                 source={Images.plus}
                 style={{
@@ -278,8 +267,7 @@ const WriteContent = ({navigation, route}) => {
           <View style={{flexDirection: 'row'}}>
             <Text style={styles.subTitle}>함께한 친구</Text>
             <View style={{marginBottom: responsiveHeight(5)}} />
-            <TouchableOpacity
-              onPress={() => navigation.navigate('FindingFriends')}>
+            <TouchableOpacity onPress={moveToFindingFriends}>
               <Image
                 source={Images.plus}
                 style={{
@@ -292,13 +280,19 @@ const WriteContent = ({navigation, route}) => {
           {f &&
             f.map((u, index) => (
               <View
+                key={index}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'flex-start',
                   marginBottom: responsiveHeight(5),
                 }}>
-                <Image source={Sample5} style={styles.friendsImage} />
+                <Image
+                  source={{
+                    uri: API_URL + `/user/profile/image?watch=${u.profileImg}`,
+                  }}
+                  style={styles.friendsImage}
+                />
                 <Text
                   style={{
                     fontFamily: 'SpoqaHanSansNeo-Medium',

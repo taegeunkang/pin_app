@@ -63,13 +63,13 @@ const FollowerList = ({navigation, route}) => {
     );
     if (response.status == 200) {
       const r = await response.json();
-      console.log(r);
       setUserList(r);
     }
     setPage(0);
   };
 
   const fetchData = async () => {
+    if (loading) return;
     setLoading(true);
     const response = await fetch(
       API_URL + `/user/follower/list?userId=${userId}&page=${page}&size=${20}`,
@@ -90,6 +90,7 @@ const FollowerList = ({navigation, route}) => {
   };
 
   const fetchDataContainingWord = async () => {
+    if (loading) return;
     setLoading(true);
     const response = await fetch(
       API_URL +

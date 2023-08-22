@@ -7,6 +7,9 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  TextInput,
+  SafeAreaView,
 } from 'react-native';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import Sample1 from '../../theme/assets/images/sample/sample1.png';
@@ -24,10 +27,28 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Slider} from '../../components/Content/Slider';
 import Comment from '../../components/mypage/Comment';
 import CommentComment from '../../components/mypage/CommetComment';
+import {API_URL} from '../../utils/constants';
+import InputBox from '../../components/InputBox';
+import {Colors} from '../../theme/Variables';
 const screenWidth = Dimensions.get('screen').width;
-const Detail = () => {
+const Detail = ({navigation, route}) => {
+  const {
+    postId,
+    nickname,
+    profileImage,
+    content,
+    mediaFiles,
+    locationName,
+    liked,
+    likesCount,
+    commentsCount,
+    createdDate,
+    mention,
+    onLikePress,
+  } = route.params;
   const {Fonts} = useTheme();
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(liked);
+  const [likedCount, setLikedCount] = useState(likesCount);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -49,9 +70,17 @@ const Detail = () => {
     }, 2000);
   };
 
+  const onLike = async () => {
+    const r = await onLikePress(postId);
+    console.log('r : ', r);
+    setIsLiked(!isLiked);
+    setLikedCount(r);
+  };
+
   const fetchData = async () => {
     setLoading(true);
-
+    console.log('refresh');
+    console.log(route.params);
     // 예: API에서 데이터를 가져오는 코드
     // const response = await fetch(`YOUR_API_URL?page=${page}`);
     // const result = await response.json();
@@ -72,128 +101,185 @@ const Detail = () => {
   }, [page]);
 
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor="#4880EE"
-          colors={['#4880EE']}
-          style={{backgroundColor: '#FFFFFF'}}
-        />
-      }
-      onScroll={({nativeEvent}) => {
-        if (loading) return;
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={100}
+      style={{
+        flex: 1,
+        backgroundColor: Colors.white,
+        alignItems: 'center',
+      }}>
+      <SafeAreaView style={{position: 'relative'}}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#4880EE"
+              colors={['#4880EE']}
+              style={{backgroundColor: '#FFFFFF'}}
+            />
+          }
+          onScroll={({nativeEvent}) => {
+            if (loading) return;
 
-        const isCloseToBottom =
-          nativeEvent.layoutMeasurement.height + nativeEvent.contentOffset.y >=
-          nativeEvent.contentSize.height - responsiveHeight(50);
-        if (isCloseToBottom) {
-          setPage(prevPage => prevPage + 1);
-        }
-      }}
-      scrollEventThrottle={400}>
-      <View style={styles.container}>
-        <View style={styles.postContainer}>
-          <View style={styles.writerBox}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image source={Sample5} style={styles.writerImage} />
+            const isCloseToBottom =
+              nativeEvent.layoutMeasurement.height +
+                nativeEvent.contentOffset.y >=
+              nativeEvent.contentSize.height + responsiveHeight(10);
+            if (isCloseToBottom) {
+              setPage(prevPage => prevPage + 1);
+            }
+          }}
+          scrollEventThrottle={400}>
+          <View style={styles.container}>
+            <View style={styles.postContainer}>
+              <View style={styles.writerBox}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Image
+                    source={{
+                      uri: API_URL + `/post/image?watch=${profileImage}`,
+                    }}
+                    style={styles.writerImage}
+                  />
+                  <Text
+                    style={[
+                      Fonts.contentMediumBold,
+                      {marginRight: responsiveWidth(5)},
+                    ]}>
+                    {nickname}
+                  </Text>
+                  <Text style={Fonts.contentRegualrMedium}>
+                    {timeAgo(createdDate)}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                  {mention &&
+                    mention.map((f, index) => {
+                      if (index < 3) {
+                        return (
+                          <Image
+                            key={index}
+                            source={{
+                              uri:
+                                API_URL +
+                                `/user/profile/image?watch=${f.profileImage}`,
+                            }}
+                            style={styles.writerImage}
+                          />
+                        );
+                      } else {
+                        return;
+                      }
+                    })}
+
+                  {mention && mention.length - 3 > 0 && (
+                    <MoreFriends count={mention.length - 3} />
+                  )}
+                </View>
+              </View>
+              {/* 본문 글 최대 500자 */}
               <Text
                 style={[
-                  Fonts.contentMediumBold,
-                  {marginRight: responsiveWidth(5)},
+                  Fonts.contentMediumMedium,
+                  {width: responsiveWidth(370)},
                 ]}>
-                noisy_loud_dean
+                {content}
               </Text>
-              <Text style={Fonts.contentRegualrMedium}>
-                {timeAgo('2023-08-06T12:00:00.000')}
-              </Text>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-              <Image source={Sample5} style={styles.writerImage} />
-              <Image source={Sample5} style={styles.writerImage} />
-              <MoreFriends count={3} />
-            </View>
-          </View>
-          {/* 본문 글 최대 250자 */}
-          <Text
-            style={[Fonts.contentMediumMedium, {width: responsiveWidth(370)}]}>
-            컨텐츠를 여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도
-            만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수
-            있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를
-            여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼
-            확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수 있습니다.
-            컨텐츠를 여기 까지. ... 더보기확보할 수 있습니다. 컨텐츠를 여기
-            이정도 만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수
-            있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를
-            여기 이정도 만큼 확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼
-            확보할 수 있습니다. 컨텐츠를 여기 이정도 만큼 확보할 수 있습니다.
-            컨텐츠를 여기 까지.
-          </Text>
+              <View style={{marginTop: responsiveHeight(10)}} />
 
-          {/* 첨부 파일*/}
-          <View
-            style={{width: responsiveWidth(370), height: responsiveWidth(370)}}>
-            <Slider media={[Sample5, Sample1, Sample3]} />
-          </View>
-          <View style={{marginBottom: responsiveHeight(20)}} />
-          {/* 좋아요, 댓글, 위치*/}
-          <View
-            style={{
-              flexDirection: 'row',
-              marginBottom: responsiveHeight(5),
-            }}>
+              {/* 첨부 파일*/}
+              <View
+                style={{
+                  width: responsiveWidth(370),
+                  height: responsiveWidth(370),
+                }}>
+                <Slider media={mediaFiles} />
+              </View>
+              <View style={{marginBottom: responsiveHeight(20)}} />
+              {/* 좋아요, 댓글, 위치*/}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginBottom: responsiveHeight(5),
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginRight: responsiveWidth(10),
+                    marginBottom: responsiveHeight(5),
+                  }}>
+                  <WithLocalSvg
+                    width={responsiveWidth(20)}
+                    height={responsiveHeight(20)}
+                    asset={isLiked ? SmaileIcon : SmaileIconNot}
+                    style={{marginRight: responsiveWidth(5)}}
+                    onPress={() => onLike()}
+                  />
+                  <Text style={Fonts.contentMediumMedium}>
+                    {formatNumber(likedCount)}
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginRight: responsiveWidth(10),
+                  }}>
+                  <WithLocalSvg
+                    width={responsiveWidth(20)}
+                    height={responsiveHeight(20)}
+                    asset={CommentIconNot}
+                    style={{marginRight: responsiveWidth(5)}}
+                  />
+                  <Text style={Fonts.contentMediumMedium}>
+                    {' '}
+                    {formatNumber(commentsCount)}
+                  </Text>
+                </View>
+
+                <View style={{flexDirection: 'row'}}>
+                  <WithLocalSvg
+                    width={responsiveWidth(20)}
+                    height={responsiveHeight(20)}
+                    asset={LocationIconNot}
+                    style={{marginRight: responsiveWidth(5)}}
+                  />
+                  <Text style={Fonts.contentMediumMedium}>{locationName}</Text>
+                </View>
+              </View>
+            </View>
+
+            <Comment />
+            <CommentComment />
             <View
               style={{
-                flexDirection: 'row',
-                marginRight: responsiveWidth(10),
-                marginBottom: responsiveHeight(5),
+                flex: 1,
+                justifyContent: 'flex-end',
+                position: 'absolute',
+                top: 0,
               }}>
-              <WithLocalSvg
-                width={responsiveWidth(20)}
-                height={responsiveHeight(20)}
-                asset={isLiked ? SmaileIcon : SmaileIconNot}
-                style={{marginRight: responsiveWidth(5)}}
-                onPress={() => setIsLiked(!isLiked)}
+              <TextInput
+                placeholder="여기에 텍스트를 입력하세요"
+                style={{
+                  height: 40,
+                  borderColor: 'gray',
+                  borderWidth: 1,
+                  marginBottom: 10,
+                }}
               />
-              <Text style={Fonts.contentMediumMedium}>
-                {formatNumber(14000)}
-              </Text>
             </View>
 
-            <View
-              style={{flexDirection: 'row', marginRight: responsiveWidth(10)}}>
-              <WithLocalSvg
-                width={responsiveWidth(20)}
-                height={responsiveHeight(20)}
-                asset={CommentIconNot}
-                style={{marginRight: responsiveWidth(5)}}
-              />
-              <Text style={Fonts.contentMediumMedium}> {formatNumber(23)}</Text>
-            </View>
-
-            <View style={{flexDirection: 'row'}}>
-              <WithLocalSvg
-                width={responsiveWidth(20)}
-                height={responsiveHeight(20)}
-                asset={LocationIconNot}
-                style={{marginRight: responsiveWidth(5)}}
-              />
-              <Text style={Fonts.contentMediumMedium}>떼르미니 역</Text>
-            </View>
+            {loading && (
+              <View style={{marginVertical: responsiveHeight(30)}}>
+                <ActivityIndicator color={'#4880EE'} size={'large'} />
+              </View>
+            )}
           </View>
-        </View>
-
-        <Comment />
-        <CommentComment />
-
-        {loading && (
-          <View style={{marginVertical: responsiveHeight(20)}}>
-            <ActivityIndicator color={'#4880EE'} size={'large'} />
-          </View>
-        )}
-      </View>
-    </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
+      {/* <InputBox /> */}
+    </KeyboardAvoidingView>
   );
 };
 
@@ -259,9 +345,28 @@ const formatNumber = num => {
 };
 
 const timeAgo = dateInput => {
+  let t = dateInput.substring(0, dateInput.length - 10);
   const now = new Date();
-  const date = new Date(dateInput);
-  const seconds = Math.floor((now - date) / 1000); // 1초 = 1000밀리초
+  const utcNow = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    now.getUTCHours(),
+    now.getUTCMinutes(),
+    now.getUTCSeconds(),
+  );
+
+  const date = new Date(t);
+  const utcDate = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds(),
+  );
+
+  const seconds = Math.floor((utcNow - utcDate) / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
