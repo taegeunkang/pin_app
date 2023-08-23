@@ -58,7 +58,7 @@ const Content = () => {
       <Stack.Screen
         name="UserPage"
         component={UserPage}
-        options={{headerShown: false}}
+        options={{headerShown: true, headerTitle :'프로필'}}
       />
       <Stack.Screen
         name="FollowerList"

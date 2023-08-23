@@ -205,7 +205,7 @@ const Medias = () => {
             )}
           </View>
         )}
-        keyExtractor={item => item.id.toString()}
+        // keyExtractor={item => item.id.toString()}
         numColumns={4}
         style={{backgroundColor: Colors.white, flex: 1}}
       />

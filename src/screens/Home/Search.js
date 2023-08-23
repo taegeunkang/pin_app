@@ -22,7 +22,7 @@ import {API_URL} from '../../utils/constants';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
-const Search = () => {
+const Search = ({navigation}) => {
   const {t} = useTranslation('content');
   const [inpt, setInpt] = useState('');
   const [searchHistory, setSearchHistory] = useState([]);
@@ -101,7 +101,7 @@ const Search = () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
         },
-        body: JSON.stringify({word: inpt, page: page +1, size: 20}),
+        body: JSON.stringify({word: inpt, page: page + 1, size: 20}),
       });
       if (response.status == 200) {
         const r = await response.json();
@@ -162,7 +162,9 @@ const Search = () => {
               name={history.nickname}
               profileImage={history.profileImg}
               closeAvailable={true}
-              onPress={() => console.log('clicked')}
+              onPress={() =>
+                navigation.push('UserPage', {userId: history.userId})
+              }
               onClose={() => removeHistory(history)}
             />
           ))}
@@ -191,7 +193,10 @@ const Search = () => {
               key={index}
               profileImage={user.profileImg}
               name={user.nickname}
-              onPress={() => saveToSearchHistory(user)}
+              onPress={() => {
+                saveToSearchHistory(user);
+                navigation.push('UserPage', {userId: user.userId});
+              }}
             />
           ))}
 

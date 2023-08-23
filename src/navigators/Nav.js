@@ -19,6 +19,7 @@ import Content from './Content';
 import UploadPost from './UploadPost';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
 import AlertNavigator from './AlertNavigator';
+import SearchNavigator from './SearchNavigator';
 const Tab = createBottomTabNavigator();
 const Nav = () => {
   const {t} = useTranslation('content');
@@ -119,7 +120,7 @@ const Nav = () => {
       />
       <Tab.Screen
         name={t('nav.search')}
-        component={Search}
+        component={SearchNavigator}
         options={{
           headerShown: false,
         }}

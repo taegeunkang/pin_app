@@ -9,36 +9,45 @@ import {
   SafeAreaView,
   Pressable,
   Modal,
-  TouchableOpacity,
 } from 'react-native';
-import Sample1 from '../../theme/assets/images/sample/sample1.png';
-import Sample5 from '../../theme/assets/images/sample/sample5.png';
-import {FontSize} from '../../theme/Variables';
-import Cells from '../../theme/assets/images/table-cells-solid.svg';
 import Edit from '../../components/Content/Edit';
-import {WithLocalSvg} from 'react-native-svg';
+import React from 'react';
 import {useSSR, useTranslation} from 'react-i18next';
 import ProfileButton from '../../components/mypage/ProfileButton';
 import {useTheme} from '../../hooks';
 import PostBox from '../../components/mypage/PostBox';
-import {useState, useEffect, useLayoutEffect} from 'react';
+import {useState, useEffect} from 'react';
 import FollowButton from '../../components/mypage/FollowButton';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import GpsAlert from '../../components/Content/GpsAlert';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
-import HeaderLeftButton from '../../components/HeaderLeftButton';
+import {useFocusEffect} from '@react-navigation/native';
 // 게시글 없을 때 check
 
 const UserPage = ({navigation, route}) => {
   const {userId} = route.params;
   const {t} = useTranslation('myPage');
-  const {Fonts, Colors} = useTheme();
+  const {Fonts} = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [modlaVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState({});
+  const [id, setId] = useState(null);
+  const [postList, setPostList] = useState([]);
+  const [isPopped, setIsPopped] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
+  const [f, setF] = useState(-1);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (isPopped) {
+        // pop 후에만 실행할 동작
+        initData();
+        setIsPopped(false);
+      }
+    }, [isPopped]), // isPopped 의존성을 추가
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -51,25 +60,41 @@ const UserPage = ({navigation, route}) => {
     // RNHapticFeedback.trigger('impactMedium', options);
 
     // 여기서 데이터를 새로 고치는 로직을 추가합니다.
+    setPage(0);
+    setPostList([]);
     await getProfile();
+    await initData();
     setTimeout(() => {
       setRefreshing(false);
     }, 1000);
   };
-
-  const fetchData = async () => {
+  // 사용자의 포스트 목록 조회
+  const initData = async () => {
     setLoading(true);
+    const response = await fetch(
+      API_URL + `/post/find/all?userId=${userId}&page=${0}&size=${20}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        },
+      },
+    );
 
-    // 예: API에서 데이터를 가져오는 코드
-    // const response = await fetch(`YOUR_API_URL?page=${page}`);
-    // const result = await response.json();
+    switch (response.status) {
+      case 200:
+        let r = await response.json();
 
-    // setData(prevData => [...prevData, ...result]);
+        for (let a = 0; a < r.length; a++) {
+          console.log(r[a]);
+        }
+        setPostList(r);
+        break;
+      case 400:
+        break;
+    }
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-    // setLoading(false);
+    setLoading(false);
   };
   const getProfile = async () => {
     const response = await fetch(
@@ -84,61 +109,99 @@ const UserPage = ({navigation, route}) => {
     if (response.status == 200) {
       const r = await response.json();
       console.log(r);
+      setF(r.followStatus);
+      // status 3 -> 맞팔, 내가 팔로잉
+      // 2 상대방이 나를 팔로잉
+      // 1 양쪽다 언팔
+      // 0 내 페이지
       setUserInfo(r);
     }
-    console.log(userId);
-    console.log(response.status);
+  };
+
+  const thumbsUp = async postId => {
+    console.log(postId);
+    const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+
+    if (response.status == 200) {
+      const r = await response.json();
+      likeRefreshPost(postId, r);
+      return r;
+    }
+  };
+
+  const likeRefreshPost = (postId, likeCount) => {
+    let tmp = postList;
+    for (let i = 0; i < tmp.length; i++) {
+      if (tmp[i].postId == postId) {
+        tmp[i].likesCount = likeCount;
+      }
+    }
+    setPostList(tmp);
+  };
+  const followStatus = () => {
+    switch (userInfo.followStatus) {
+      case 3:
+        return <ProfileButton title={'언팔로잉'} onPress={follow} />;
+      case 2:
+        return <FollowButton title={'맞팔하기'} onPress={follow} />;
+      case 1:
+        return <FollowButton title={'팔로잉'} onPress={follow} />;
+    }
+  };
+
+  const follow = async () => {
+    setFollowLoading(true);
+    const response = await fetch(API_URL + `/user/follow?userId=${userId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+    if (response.status == 200) {
+      const r = await response.json();
+      console.log(r);
+      console.log(userInfo);
+      let a = userInfo;
+      console.log(f, r);
+      // 현재 1인데 3-> 팔로워 + 1
+      // 현재 3인데 2 -> 팔로잉 - 1
+      // 현재 3인데 1 -> 팔로워 - 1
+      // 현재 2인데 3 ->  팔로워 + 1
+      setF(r);
+      a.followStatus = r;
+      if (f == 1 && r == 3) {
+        a.follower = a.follower + 1;
+      } else if (f == 3 && r == 2) {
+        a.follower = a.follower - 1;
+      } else if (f == 3 && r == 1) {
+        a.follower = a.follower - 1;
+      } else if (f == 2 && r == 3) {
+        console.log('팔로우 상태', a.follower);
+        a.follower = a.follower + 1;
+        console.log(a.follower);
+      }
+
+      setUserInfo(a);
+    }
+    setFollowLoading(false);
   };
 
   useEffect(() => {
-    fetchData();
     getProfile();
+    initData();
   }, []);
 
   useEffect(() => {
-    fetchData();
+    // fetchData();
   }, [page]);
 
   return (
     <SafeAreaView style={[styles.container]}>
-      {/* 헤더*/}
-      <View
-        style={{
-          flexDirection: 'row',
-          height: '5%',
-          backgroundColor: Colors.white,
-        }}>
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-          }}
-          onPress={() => navigation.pop()}>
-          <HeaderLeftButton />
-        </TouchableOpacity>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              color: '#1A1E27',
-              fontFamily: 'SpoqaHanSansNeo-Bold',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-            }}>
-            {userInfo.nickname}
-          </Text>
-        </View>
-        <View style={{flex: 1}}></View>
-      </View>
-
       <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
         <Edit
           setProfileImage={() => {
@@ -216,10 +279,7 @@ const UserPage = ({navigation, route}) => {
                 }}
                 style={styles.profileImage}
               />
-              <ProfileButton
-                title={t('profile.edit')}
-                onPress={() => setModalVisible(true)}
-              />
+              {followStatus()}
               {/* <FollowButton title={'팔로잉'} /> */}
             </View>
             <Text style={[styles.nickname, Fonts.contentMediumBold]}>
@@ -287,9 +347,44 @@ const UserPage = ({navigation, route}) => {
           </View>
         </View>
         <View style={{marginBottom: responsiveHeight(10)}} />
-        <PostBox onPress={() => navigation.navigate('Detail')} />
-        <PostBox />
-        <PostBox />
+        {postList.map((post, index) => (
+          <PostBox
+            key={index}
+            postId={post.postId}
+            writerName={post.nickname}
+            writerProfileImage={post.profileImage}
+            content={post.content}
+            mediaFiles={post.mediaFiles}
+            locationName={post.locationName}
+            isLiked={post.liked}
+            likeCount={post.likesCount}
+            commentCount={post.commentsCount}
+            createdDate={post.createdDate}
+            mention={post.mention}
+            onPress={() => {
+              navigation.navigate('Detail', {
+                ...post,
+                onLikePress: thumbsUp,
+                userId: id,
+                reload: () => setIsPopped(true),
+              });
+            }}
+            thumbsUp={thumbsUp}
+          />
+        ))}
+        {postList.length == 0 && (
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text style={Fonts.contentMediumMedium}>
+              게시글이 존재하지 않습니다.
+            </Text>
+          </View>
+        )}
 
         {loading && (
           <View style={{marginVertical: responsiveHeight(20)}}>

@@ -1,10 +1,10 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useTheme} from '../../hooks';
-const FollowButton = ({title}) => {
+const FollowButton = ({title, onPress}) => {
   return (
-    <View style={styles.container}>
+    <Pressable onPress={onPress} style={styles.container}>
       <Text style={styles.tt}>{title}</Text>
-    </View>
+    </Pressable>
   );
 };
 
