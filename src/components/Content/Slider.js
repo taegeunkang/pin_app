@@ -7,12 +7,6 @@ import WebView from 'react-native-webview';
 const screenWidth = Dimensions.get('screen').width;
 
 export const Slider = ({media}) => {
-  const player = useRef(null);
-  useEffect(() => {
-    console.log('slider call');
-    console.log(media);
-  });
-
   // 게시글 업로드시 포스터 생성 후 포스터도 같이 표시를 해주어ㅑ 한다.
   return (
     <Swiper style={styles.wrapper} showsButtons={false}>
@@ -50,8 +44,8 @@ export const Slider = ({media}) => {
           <body>
             <div class="video-container">
               <video
-                src="http://localhost:8080/post/streaming?watch=sampleVideo.mp4"
-                poster="http://localhost:8080/post/image?watch=a2874a19-3618-485a-98f0-100873bd9250.png"
+                src="http://localhost:8080/post/streaming?watch=${file}"
+                poster="http://localhost:8080/post/image?watch=${file}"
                 controls
                 muted
                 playsinline

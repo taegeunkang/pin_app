@@ -11,6 +11,7 @@ import {
   Modal,
 } from 'react-native';
 import Edit from '../../components/Content/Edit';
+import React from 'react';
 import {useSSR, useTranslation} from 'react-i18next';
 import ProfileButton from '../../components/mypage/ProfileButton';
 import {useTheme} from '../../hooks';
@@ -21,6 +22,7 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import GpsAlert from '../../components/Content/GpsAlert';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
+import {useFocusEffect} from '@react-navigation/native';
 // 게시글 없을 때 check
 
 const MyPage = ({navigation}) => {
@@ -33,6 +35,17 @@ const MyPage = ({navigation}) => {
   const [userInfo, setUserInfo] = useState({});
   const [id, setId] = useState(null);
   const [postList, setPostList] = useState([]);
+  const [isPopped, setIsPopped] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (isPopped) {
+        // pop 후에만 실행할 동작
+        initData();
+        setIsPopped(false);
+      }
+    }, [isPopped]), // isPopped 의존성을 추가
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -296,12 +309,29 @@ const MyPage = ({navigation}) => {
             commentCount={post.commentsCount}
             createdDate={post.createdDate}
             mention={post.mention}
-            onPress={() =>
-              navigation.navigate('Detail', {...post, onLikePress: thumbsUp})
-            }
+            onPress={() => {
+              navigation.navigate('Detail', {
+                ...post,
+                onLikePress: thumbsUp,
+                userId: id,
+                reload: () => setIsPopped(true),
+              });
+            }}
             thumbsUp={thumbsUp}
           />
         ))}
+        {postList.length == 0 && (
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text style={Fonts.contentMediumMedium}>
+              게시글이 존재하지 않습니다.
+            </Text>
+          </View>
+        )}
 
         {loading && (
           <View style={{marginVertical: responsiveHeight(20)}}>

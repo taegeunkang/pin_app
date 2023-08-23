@@ -15,6 +15,7 @@ import ProfileImage from '../screens/Home/ProfileImage';
 import BackgroundImage from '../screens/Home/BackgroundImage';
 import Nickname from '../screens/Home/Nickname';
 import UserPage from '../screens/Home/UserPage';
+import DetailMention from '../screens/Home/DetailMention';
 const Stack = createStackNavigator();
 
 // @refresh reset
@@ -33,6 +34,7 @@ const Content = () => {
           letterSpacing: responsiveWidth(-0.6),
         },
         headerBackImage: () => <HeaderLeftButton />,
+        headerStyle: {backgroundColor: Colors.white},
         cardStyleInterpolator: ({current, next, layouts}) => {
           return {
             cardStyle: {
@@ -80,6 +82,14 @@ const Content = () => {
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('profile.detail'),
+        }}
+      />
+      <Stack.Screen
+        name="DetailMention"
+        component={DetailMention}
+        options={{
+          headerBackTitleVisible: false,
+          headerTitle: t('post.friends'),
         }}
       />
       <Stack.Screen

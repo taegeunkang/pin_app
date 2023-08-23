@@ -21,7 +21,6 @@ const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
             width: responsiveWidth(35),
             height: responsiveHeight(35),
             borderRadius: responsiveWidth(12),
-            backgroundColor: 'black',
           }}></Image>
         <Text style={styles.nickname}>{name}</Text>
       </View>

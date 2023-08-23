@@ -9,6 +9,10 @@ import {
   ActivityIndicator,
   SafeAreaView,
   TextInput,
+  Alert,
+  KeyboardAvoidingView,
+  Modal,
+  Pressable,
 } from 'react-native';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {useTheme} from '../../hooks';
@@ -17,13 +21,14 @@ import SmaileIcon from '../../theme/assets/images/nav/smile.svg';
 import SmaileIconNot from '../../theme/assets/images/nav/smile-not.svg';
 import CommentIconNot from '../../theme/assets/images/nav/comment-not.svg';
 import LocationIconNot from '../../theme/assets/images/nav/loc.svg';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Slider} from '../../components/Content/Slider';
 import Comment from '../../components/mypage/Comment';
 import CommentComment from '../../components/mypage/CommetComment';
 import {API_URL} from '../../utils/constants';
-import InputBox from '../../components/InputBox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import EditComment from '../../components/Content/EditComment';
 const screenWidth = Dimensions.get('screen').width;
 const Detail = ({navigation, route}) => {
   const {
@@ -39,13 +44,28 @@ const Detail = ({navigation, route}) => {
     createdDate,
     mention,
     onLikePress,
+    userId,
+    reload,
   } = route.params;
-  const {Fonts} = useTheme();
+  const {Fonts, Images} = useTheme();
   const [isLiked, setIsLiked] = useState(liked);
   const [likedCount, setLikedCount] = useState(likesCount);
+  const [commentCount, setCommentCount] = useState(commentsCount);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [commentList, setCommentList] = useState([]);
+  const [replyList, setReplyList] = useState({});
+  const [page, setPage] = useState(0);
+  const [inpt, setInpt] = useState('');
+  const [modlaVisible, setModalVisible] = useState(false);
+  const [replyModalVisible, setReplyModalVisible] = useState(false);
+  const [selectedComment, setSelectedComment] = useState(-1);
+  const [selectedReply, setSelectedReply] = useState(-1);
+  const [postModalVisible, setPostModalVisible] = useState(false);
+  const [reply, setReply] = useState(null);
+  const [replyPage, setReplyPage] = useState({});
+  const [replyLoading, setReplyLoading] = useState(false);
+  const inptRef = useRef(null);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -59,217 +79,532 @@ const Detail = ({navigation, route}) => {
 
     // 여기서 데이터를 새로 고치는 로직을 추가합니다.
     // 예를 들면 아래와 같이 2초 후에 로딩을 중지할 수 있습니다.
+    console.log(mention);
+    setPage(0);
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+    }, 1000);
   };
 
   const onLike = async () => {
     const r = await onLikePress(postId);
-    console.log('r : ', r);
     setIsLiked(!isLiked);
     setLikedCount(r);
   };
-
-  const fetchData = async () => {
+  // 댓글 조회
+  const fetchComment = async () => {
     setLoading(true);
-    console.log('refresh');
-    console.log(route.params);
-    // 예: API에서 데이터를 가져오는 코드
-    // const response = await fetch(`YOUR_API_URL?page=${page}`);
-    // const result = await response.json();
-
-    // setData(prevData => [...prevData, ...result]);
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    const response = await fetch(
+      API_URL + `/post/comment?postId=${postId}&page=${page}&size=${20}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        },
+      },
+    );
+    if (response.status == 200) {
+      const r = await response.json();
+      console.log('댓글 : ', r);
+      if (page == 0) {
+        setCommentList(r);
+      }
+      // } else {
+      //   let a = commentList;
+      //   a = a.concat(r);
+      //   setCommentList(a);
+      // }
+    }
+    setLoading(false);
     // setLoading(false);
   };
+
+  const submitComment = async () => {
+    if (!inpt || inpt.length == 0) return;
+    const bodyItem = {postId: postId, content: inpt};
+    if (reply) bodyItem.replyId = reply;
+    const response = await fetch(API_URL + '/post/comment/write', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyItem),
+    });
+
+    if (response.status == 200) {
+      // 새로고침하기 전에 수동으로 댓글을 넣어둠
+      // 댓글일 때
+      const cId = await response.json();
+      if (!reply) {
+        let a = commentList;
+        let b = {
+          commentId: cId,
+          content: inpt,
+          writer: nickname,
+          writerId: await AsyncStorage.getItem('id'),
+          profileImage: profileImage,
+          replyCount: 0,
+          createdDate: new Date().toISOString().replace('Z', '+00:00'),
+        };
+        a = a.concat(b);
+        setCommentList(a);
+      } else {
+        // 대댓글
+        let c = replyList;
+        if (!c[reply]) c[reply] = [];
+        let d = {
+          commentId: cId,
+          content: inpt,
+          writer: nickname,
+          writerId: await AsyncStorage.getItem('id'),
+          profileImage: profileImage,
+          createdDate: new Date().toISOString().replace('Z', '+00:00'),
+        };
+        c[reply] = c[reply].concat(d);
+        setReplyList(c);
+      }
+      setInpt('');
+    }
+  };
+  const deleteComment = async () => {
+    const response = await fetch(
+      API_URL + `/post/comment/delete?replyId=${selectedComment}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    if (response.status == 200) {
+      let a = [];
+      for (let i = 0; i < commentList.length; i++) {
+        if (commentList[i].commentId == selectedComment) {
+          continue;
+        }
+        a.push(commentList[i]);
+      }
+      setSelectedComment(-1);
+      setCommentCount(commentCount - 1);
+      setCommentList(a);
+    }
+  };
+
+  const deleteReply = async () => {
+    const response = await fetch(
+      API_URL + `/post/comment/delete?replyId=${selectedReply}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    if (response.status == 200) {
+      let tt = replyList;
+      let b = [];
+      for (let i = 0; i < replyList[selectedComment].length; i++) {
+        if (replyList[selectedComment][i].commentId == selectedReply) {
+          continue;
+        }
+        b.push(replyList[selectedComment][i]);
+      }
+      tt[selectedComment] = b;
+      // 대댓 수 1개 감소
+      let tt1 = commentList;
+      for (let j = 0; j < tt1.length; j++) {
+        if (tt1[j].commentId == selectedComment) {
+          tt1[j].replyCount = tt1[j].replyCount - 1;
+        }
+      }
+
+      setCommentList(tt1);
+      setSelectedComment(-1);
+      setSelectedReply(-1);
+      setReplyList(tt);
+    }
+  };
+
+  const isMyPost = async () => {
+    const myId = await AsyncStorage.getItem('id');
+    return myId == userId;
+  };
+  const deletePost = async () => {
+    const response = await fetch(API_URL + `/post/delete?id=${postId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        'Content-Type': 'application/json',
+      },
+    });
+    if (response.status == 200) {
+      reload();
+      navigation.pop();
+    }
+  };
+
+  const getReply = async commentId => {
+    setReplyLoading(true);
+    if (!replyPage[commentId]) {
+      // 첫 호출이라면 페이지 초기화
+      let a = replyPage;
+      a[commentId] = 0;
+      setReplyPage(a);
+    }
+
+    const response = await fetch(
+      API_URL +
+        `/post/comment/reply?postId=${postId}&replyId=${commentId}&page=${
+          replyPage[commentId]
+        }&size=${20}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        },
+      },
+    );
+    if (response.status == 200) {
+      const r = await response.json();
+      console.log(r);
+      // 페이지 늘림
+      let b = replyPage;
+      b[commentId] = b[commentId] + 1;
+      setReplyPage(b);
+
+      if (!replyList[commentId]) {
+        let c = replyList;
+        c[commentId] = r;
+        setReplyList(c);
+      } else {
+        let c1 = replyList;
+        c1[commentId] = c1[commentId].concat(r);
+        setReplyList(c1);
+      }
+    }
+
+    setReplyLoading(false);
+  };
   useEffect(() => {
-    fetchData();
+    fetchComment();
   }, []);
 
   useEffect(() => {
-    fetchData();
+    fetchComment();
   }, [page]);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#4880EE"
-            colors={['#4880EE']}
-            style={{backgroundColor: '#FFFFFF'}}
+    <KeyboardAvoidingView
+      style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}
+      behavior="padding"
+      enabled
+      keyboardVerticalOffset={100}>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: '#FFFFFF',
+          alignItems: 'center',
+        }}>
+        <Modal
+          visible={replyModalVisible}
+          animationType={'fade'}
+          transparent={true}>
+          <EditComment
+            deleteComment={() => {
+              deleteReply();
+              setReplyModalVisible(false);
+            }}
+            close={() => setReplyModalVisible(false)}
           />
-        }
-        onScroll={({nativeEvent}) => {
-          if (loading) return;
-
-          const isCloseToBottom =
-            nativeEvent.layoutMeasurement.height +
-              nativeEvent.contentOffset.y >=
-            nativeEvent.contentSize.height - responsiveHeight(110);
-          if (isCloseToBottom) {
-            setPage(prevPage => prevPage + 1);
+          {/* <GpsAlert onPress={() => setModalVisible(false)} /> */}
+        </Modal>
+        <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
+          <EditComment
+            deleteComment={() => {
+              deleteComment();
+              setModalVisible(false);
+            }}
+            close={() => setModalVisible(false)}
+          />
+          {/* <GpsAlert onPress={() => setModalVisible(false)} /> */}
+        </Modal>
+        <Modal
+          visible={postModalVisible}
+          animationType={'fade'}
+          transparent={true}>
+          <EditComment
+            deleteComment={() => {
+              deletePost();
+              setPostModalVisible(false);
+            }}
+            close={() => setPostModalVisible(false)}
+          />
+          {/* <GpsAlert onPress={() => setModalVisible(false)} /> */}
+        </Modal>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#4880EE"
+              colors={['#4880EE']}
+              style={{backgroundColor: '#FFFFFF'}}
+            />
           }
-        }}
-        scrollEventThrottle={400}>
-        <View style={styles.container}>
-          <View style={styles.postContainer}>
-            <View style={styles.writerBox}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image
-                  source={{
-                    uri: API_URL + `/post/image?watch=${profileImage}`,
-                  }}
-                  style={styles.writerImage}
-                />
-                <Text
-                  style={[
-                    Fonts.contentMediumBold,
-                    {marginRight: responsiveWidth(5)},
-                  ]}>
-                  {nickname}
-                </Text>
-                <Text style={Fonts.contentRegualrMedium}>
-                  {timeAgo(createdDate)}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                {mention &&
-                  mention.map((f, index) => {
-                    if (index < 3) {
-                      return (
-                        <Image
-                          key={index}
-                          source={{
-                            uri:
-                              API_URL +
-                              `/user/profile/image?watch=${f.profileImage}`,
-                          }}
-                          style={styles.writerImage}
-                        />
-                      );
-                    } else {
-                      return;
-                    }
-                  })}
+          onScroll={({nativeEvent}) => {
+            if (loading) return;
 
-                {mention && mention.length - 3 > 0 && (
-                  <MoreFriends count={mention.length - 3} />
-                )}
-              </View>
-            </View>
-            {/* 본문 글 최대 500자 */}
-            <Text
-              style={[
-                Fonts.contentMediumMedium,
-                {width: responsiveWidth(370)},
-              ]}>
-              {content}
-            </Text>
-            <View style={{marginTop: responsiveHeight(10)}} />
+            const isCloseToBottom =
+              nativeEvent.layoutMeasurement.height +
+                nativeEvent.contentOffset.y >=
+              nativeEvent.contentSize.height - responsiveHeight(10);
+            if (isCloseToBottom) {
+              setPage(prevPage => prevPage + 1);
+            }
+          }}
+          scrollEventThrottle={400}>
+          <View style={styles.container}>
+            <View style={styles.postContainer}>
+              <View style={styles.writerBox}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Image
+                    source={{
+                      uri: API_URL + `/post/image?watch=${profileImage}`,
+                    }}
+                    style={styles.writerImage}
+                  />
+                  <Text
+                    style={[
+                      Fonts.contentMediumBold,
+                      {marginRight: responsiveWidth(5)},
+                    ]}>
+                    {nickname}
+                  </Text>
+                  <Text style={Fonts.contentRegualrMedium}>
+                    {timeAgo(createdDate)}
+                  </Text>
+                </View>
+                <Pressable
+                  onPress={() =>
+                    navigation.push('DetailMention', {friends: mention})
+                  }
+                  style={{flexDirection: 'row'}}>
+                  {mention &&
+                    mention.map((f, index) => {
+                      if (index < 2) {
+                        return (
+                          <Image
+                            key={index}
+                            source={{
+                              uri:
+                                API_URL +
+                                `/user/profile/image?watch=${f.profileImage}`,
+                            }}
+                            style={styles.writerImage}
+                          />
+                        );
+                      } else {
+                        return;
+                      }
+                    })}
 
-            {/* 첨부 파일*/}
-            <View
-              style={{
-                width: responsiveWidth(370),
-                height: responsiveWidth(370),
-              }}>
-              <Slider media={mediaFiles} />
-            </View>
-            <View style={{marginBottom: responsiveHeight(20)}} />
-            {/* 좋아요, 댓글, 위치*/}
-            <View
-              style={{
-                flexDirection: 'row',
-                marginBottom: responsiveHeight(5),
-              }}>
+                  {mention && mention.length - 2 > 0 && (
+                    <MoreFriends count={mention.length - 2} />
+                  )}
+                  {isMyPost() && (
+                    <Pressable
+                      onPress={() => setPostModalVisible(true)}
+                      style={{
+                        width: responsiveWidth(25),
+                        height: responsiveHeight(25),
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Image
+                        source={Images.more}
+                        style={{
+                          width: responsiveWidth(20),
+                          height: responsiveHeight(20),
+                        }}
+                      />
+                    </Pressable>
+                  )}
+                </Pressable>
+              </View>
+              {/* 본문 글 최대 500자 */}
+              <Text
+                style={[
+                  Fonts.contentMediumMedium,
+                  {width: responsiveWidth(370)},
+                ]}>
+                {content}
+              </Text>
+              <View style={{marginTop: responsiveHeight(10)}} />
+
+              {/* 첨부 파일*/}
+              <View
+                style={{
+                  width: responsiveWidth(370),
+                  height: responsiveWidth(370),
+                }}>
+                <Slider media={mediaFiles} />
+              </View>
+              <View style={{marginBottom: responsiveHeight(20)}} />
+              {/* 좋아요, 댓글, 위치*/}
               <View
                 style={{
                   flexDirection: 'row',
-                  marginRight: responsiveWidth(10),
                   marginBottom: responsiveHeight(5),
                 }}>
-                <WithLocalSvg
-                  width={responsiveWidth(20)}
-                  height={responsiveHeight(20)}
-                  asset={isLiked ? SmaileIcon : SmaileIconNot}
-                  style={{marginRight: responsiveWidth(5)}}
-                  onPress={() => onLike()}
-                />
-                <Text style={Fonts.contentMediumMedium}>
-                  {formatNumber(likedCount)}
-                </Text>
-              </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginRight: responsiveWidth(10),
+                    marginBottom: responsiveHeight(5),
+                  }}>
+                  <WithLocalSvg
+                    width={responsiveWidth(20)}
+                    height={responsiveHeight(20)}
+                    asset={isLiked ? SmaileIcon : SmaileIconNot}
+                    style={{marginRight: responsiveWidth(5)}}
+                    onPress={() => onLike()}
+                  />
+                  <Text style={Fonts.contentMediumMedium}>
+                    {formatNumber(likedCount)}
+                  </Text>
+                </View>
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginRight: responsiveWidth(10),
-                }}>
-                <WithLocalSvg
-                  width={responsiveWidth(20)}
-                  height={responsiveHeight(20)}
-                  asset={CommentIconNot}
-                  style={{marginRight: responsiveWidth(5)}}
-                />
-                <Text style={Fonts.contentMediumMedium}>
-                  {' '}
-                  {formatNumber(commentsCount)}
-                </Text>
-              </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginRight: responsiveWidth(10),
+                  }}>
+                  <WithLocalSvg
+                    width={responsiveWidth(20)}
+                    height={responsiveHeight(20)}
+                    asset={CommentIconNot}
+                    style={{marginRight: responsiveWidth(5)}}
+                  />
+                  <Text style={Fonts.contentMediumMedium}>
+                    {formatNumber(commentCount)}
+                  </Text>
+                </View>
 
-              <View style={{flexDirection: 'row'}}>
-                <WithLocalSvg
-                  width={responsiveWidth(20)}
-                  height={responsiveHeight(20)}
-                  asset={LocationIconNot}
-                  style={{marginRight: responsiveWidth(5)}}
-                />
-                <Text style={Fonts.contentMediumMedium}>{locationName}</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <WithLocalSvg
+                    width={responsiveWidth(20)}
+                    height={responsiveHeight(20)}
+                    asset={LocationIconNot}
+                    style={{marginRight: responsiveWidth(5)}}
+                  />
+                  <Text style={Fonts.contentMediumMedium}>{locationName}</Text>
+                </View>
               </View>
             </View>
-          </View>
+            {commentList &&
+              commentList.map((comment, index) => (
+                <>
+                  <Comment
+                    key={index}
+                    writerId={comment.writerId}
+                    commentId={comment.commentId}
+                    nickname={comment.writer}
+                    profileImage={comment.profileImage}
+                    createdDate={comment.createdDate}
+                    content={comment.content}
+                    replyCount={comment.replyCount}
+                    showReply={getReply}
+                    onPress={() => {
+                      setModalVisible(true);
+                      setSelectedComment(comment.commentId);
+                    }}
+                    onReplyPress={() => {
+                      setReply(comment.commentId);
+                      inptRef.current.focus();
+                    }}
+                  />
+                  {replyList[comment.commentId] &&
+                    replyList[comment.commentId].map((r, index1) => {
+                      return (
+                        <CommentComment
+                          key={index1}
+                          commentId={r.commentId}
+                          nickname={r.writer}
+                          writerId={r.writerId}
+                          profileImage={r.profileImage}
+                          content={r.content}
+                          createdDate={r.createdDate}
+                          onPress={() => {
+                            setReplyModalVisible(true);
+                            setSelectedComment(comment.commentId);
+                            setSelectedReply(r.commentId);
+                          }}
+                          onReplyPress={() => {
+                            setReply(comment.commentId);
+                            inptRef.current.focus();
+                          }}
+                        />
+                      );
+                    })}
+                  {replyList[comment.commentId] &&
+                    comment.replyCount >
+                      replyList[comment.commentId].length && (
+                      <Pressable
+                        onPress={() => getReply(comment.commentId)}
+                        style={{width: '100%', height: responsiveHeight(20)}}>
+                        <Text
+                          style={[
+                            Fonts.contentRegualrMedium,
+                            {marginLeft: responsiveWidth(30)},
+                          ]}>
+                          더보기
+                        </Text>
+                      </Pressable>
+                    )}
+                </>
+              ))}
 
-          <Comment />
-          <CommentComment />
+            <View style={{height: responsiveHeight(70)}} />
 
-          {/* {loading && (
+            {/* {loading && (
             <View style={{marginVertical: responsiveHeight(30)}}>
               <ActivityIndicator color={'#4880EE'} size={'large'} />
             </View>
           )} */}
-        </View>
-      </ScrollView>
+          </View>
+        </ScrollView>
 
-      <View
-        style={{
-          width: '100%',
-          position: 'absolute',
-          bottom: 0,
-          height: responsiveHeight(70),
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#ffffff',
-        }}>
-        <TextInput
-          style={[Fonts.contentRegualrMedium, styles.loginInput]}
-          placeholder={'댓글 입력'}
-          placeholderTextColor={'#6D7582'}
-          // onChangeText={() => console.log('hh')}
-          // value={value}
-          // keyboardType={keyboardType}
-          // maxLength={maxLength}
-          // editable={!editable}
-          // ref={ref}
-        />
-      </View>
-    </SafeAreaView>
+        <View
+          style={{
+            width: '100%',
+            position: 'absolute',
+            bottom: 0,
+            height: responsiveHeight(70),
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#ffffff',
+          }}>
+          {/* 댓글 최대 150자*/}
+          <TextInput
+            style={[Fonts.contentRegualrMedium, styles.loginInput]}
+            placeholder={'댓글 입력'}
+            placeholderTextColor={'#6D7582'}
+            onChangeText={e => setInpt(e)}
+            value={inpt}
+            // keyboardType={keyboardType}
+            maxLength={150}
+            onSubmitEditing={() => submitComment()}
+            // editable={!editable}
+            ref={inptRef}
+            onBlur={() => setReply(null)}
+          />
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -283,6 +618,7 @@ const MoreFriends = ({count}) => {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#F2F3F4',
+        marginRight: responsiveWidth(5),
       }}>
       <Text
         style={{

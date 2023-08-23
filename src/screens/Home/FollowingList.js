@@ -28,7 +28,7 @@ const FollowingList = ({navigation, route}) => {
   const inputRef = useRef(null);
   const [page, setPage] = useState(0);
   const [userList, setUserList] = useState([]);
-  const [loading, setLoading] = useState([]);
+  const [loading, setLoading] = useState(false);
   const search = async () => {
     if (inpt && inpt.trim().length > 0) {
       const response = await fetch(

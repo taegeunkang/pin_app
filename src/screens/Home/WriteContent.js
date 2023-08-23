@@ -109,40 +109,43 @@ const WriteContent = ({navigation, route}) => {
     const formData = new FormData();
     let m = []; // 미디어 파일들
     let thumbnails = [];
-    for (let i = 0; i < media.length; i++) {
-      const med = media[i];
-      if (med.accessUri.substring(med.accessUri.length - 3) === 'mp4') {
-        const absolutePath = await getAbsolutePath(med.uri);
-        m.push({uri: absolutePath, type: 'video/mp4', name: `video${i}`});
-        thumbnails.push({
-          uri: med.accessUri,
-          typ: 'image/png',
-          name: `thumbnailFiles${i}`,
-        });
-      } else {
-        m.push({uri: med.accessUri, type: 'image/png', name: `image${i}`});
-      }
-    }
-
     formData.append('content', text); // 글 내용
+    if (media) {
+      for (let i = 0; i < media.length; i++) {
+        const med = media[i];
+        if (med.accessUri.substring(med.accessUri.length - 3) === 'mp4') {
+          const absolutePath = await getAbsolutePath(med.uri);
+          m.push({uri: absolutePath, type: 'video/mp4', name: `video${i}`});
+          thumbnails.push({
+            uri: med.accessUri,
+            typ: 'image/png',
+            name: `thumbnailFiles${i}`,
+          });
+        } else {
+          m.push({uri: med.accessUri, type: 'image/png', name: `image${i}`});
+        }
+      }
 
-    m.forEach((mm, index) => {
-      formData.append('mediaFiles', mm);
-    });
+      m.forEach((mm, index) => {
+        formData.append('mediaFiles', mm);
+      });
 
-    thumbnails.forEach((t, index) => {
-      formData.append('thumbnailFiles', t);
-    });
+      thumbnails.forEach((t, index) => {
+        formData.append('thumbnailFiles', t);
+      });
+    }
 
     formData.append('lat', lat); // latitude;
     formData.append('lon', lon); // lontitude;
     formData.append('locationName', loc);
     formData.append('isPrivate', isPrivate);
-    let fff = [];
-    for (let j = 0; j < friends.length; j++) {
-      fff.push(friends[j].userId);
+    if (friends) {
+      let fff = [];
+      for (let j = 0; j < friends.length; j++) {
+        fff.push(friends[j].userId);
+      }
+      formData.append('mention', fff);
     }
-    formData.append('mention', fff);
 
     const response = await fetch(API_URL + '/post/create', {
       method: 'POST',

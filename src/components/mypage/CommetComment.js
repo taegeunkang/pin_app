@@ -2,13 +2,46 @@ import {View, StyleSheet, Text, Image, Pressable} from 'react-native';
 import {responsiveHeight, responsiveWidth} from '../Scale';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {useTheme} from '../../hooks';
-const CommentComment = ({}) => {
+import {API_URL} from '../../utils/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const CommentComment = ({
+  commentId,
+  nickname,
+  writerId,
+  profileImage,
+  createdDate,
+  content,
+  onPress,
+  onReplyPress,
+}) => {
   const {Fonts, Images} = useTheme();
+  const isMine = async () => {
+    return (await AsyncStorage.getItem('id')) == writerId;
+  };
 
   const timeAgo = dateInput => {
+    let t = dateInput.substring(0, dateInput.length - 10);
     const now = new Date();
-    const date = new Date(dateInput);
-    const seconds = Math.floor((now - date) / 1000); // 1초 = 1000밀리초
+    const utcNow = Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      now.getUTCHours(),
+      now.getUTCMinutes(),
+      now.getUTCSeconds(),
+    );
+
+    const date = new Date(t);
+    const utcDate = Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds(),
+    );
+
+    const seconds = Math.floor((utcNow - utcDate) / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
@@ -30,6 +63,7 @@ const CommentComment = ({}) => {
       return `${month}.${day}.${year}`;
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -46,7 +80,9 @@ const CommentComment = ({}) => {
               justifyContent: 'flex-start',
             }}>
             <Image
-              source={Sample5}
+              source={{
+                uri: API_URL + `/post/image?watch=${profileImage}`,
+              }}
               style={{
                 width: responsiveWidth(25),
                 height: responsiveWidth(25),
@@ -54,7 +90,7 @@ const CommentComment = ({}) => {
                 marginRight: responsiveWidth(5),
               }}
             />
-            <Text style={Fonts.contentMediumBold}>noisy_loud_dean</Text>
+            <Text style={Fonts.contentMediumBold}>{nickname}</Text>
           </View>
 
           <View
@@ -68,12 +104,19 @@ const CommentComment = ({}) => {
                 Fonts.contentRegualrMedium,
                 {marginRight: responsiveWidth(10)},
               ]}>
-              {timeAgo('2023-08-06T12:00:00.000')}
+              {timeAgo(createdDate)}
             </Text>
-            <Image
-              source={Images.more}
-              style={{width: responsiveWidth(20), height: responsiveHeight(20)}}
-            />
+            {isMine() && (
+              <Pressable onPress={onPress}>
+                <Image
+                  source={Images.more}
+                  style={{
+                    width: responsiveWidth(20),
+                    height: responsiveHeight(20),
+                  }}
+                />
+              </Pressable>
+            )}
           </View>
         </View>
         <View
@@ -81,19 +124,16 @@ const CommentComment = ({}) => {
             width: responsiveWidth(270),
             marginLeft: responsiveWidth(10),
           }}>
-          <Text style={Fonts.contentMediumMedium}>
-            Good Pic!!! Good Pic!!!Good Pic!!!Good Pic!!!Good Pic!!! Good Pic!!!
-            Good Pic!!!Good Pic!!!Good Pic!!!Good Pic!!! Good Pic!!! Good
-            Pic!!!Good Pic!!!Good Pic!!!Good Pic!!!
-          </Text>
+          <Text style={Fonts.contentMediumMedium}>{content}</Text>
 
           {/* 답글 작성 &  대댓글 있으면 개수 표시 및 더보기 */}
-          <View style={{flexDirection: 'row', marginTop: responsiveHeight(5)}}>
-            <Pressable>
-              <Text style={styles.sub}>닫기</Text>
-            </Pressable>
-            <Pressable>
-              <Text style={styles.sub}>더보기</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: responsiveHeight(5),
+            }}>
+            <Pressable onPress={onReplyPress}>
+              <Text style={[Fonts.contentRegularRegualr]}>답글 달기</Text>
             </Pressable>
           </View>
         </View>
@@ -106,11 +146,11 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     minHeight: responsiveHeight(70),
-    alignItems: 'center',
+    alignItems: 'flex-end',
     marginTop: responsiveHeight(10),
   },
   content: {
-    width: responsiveWidth(320),
+    width: responsiveWidth(340),
     alignItems: 'center',
     marginLeft: responsiveWidth(10),
   },

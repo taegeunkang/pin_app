@@ -70,7 +70,7 @@ const PostBox = ({
           <View style={{flexDirection: 'row'}}>
             {mention &&
               mention.map((f, index) => {
-                if (index < 3) {
+                if (index < 2) {
                   return (
                     <Image
                       key={index}
@@ -87,8 +87,8 @@ const PostBox = ({
                 }
               })}
 
-            {mention && mention.length - 3 > 0 && (
-              <MoreFriends count={mention.length - 3} />
+            {mention && mention.length - 2 > 0 && (
+              <MoreFriends count={mention.length - 2} />
             )}
           </View>
         </View>

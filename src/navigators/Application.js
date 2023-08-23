@@ -23,6 +23,7 @@ import Congraturation from '../screens/Login/Congraturation';
 import {useTranslation} from 'react-i18next';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
 import ProfileInitialSetting from '../screens/Login/ProfileInitialSetting';
+import {Colors} from '../theme/Variables';
 const Stack = createStackNavigator();
 // @refresh reset
 const ApplicationNavigator = () => {
@@ -46,6 +47,7 @@ const ApplicationNavigator = () => {
               lineHeight: responsiveHeight(24),
               letterSpacing: responsiveWidth(-0.6),
             },
+            headerStyle: {backgroundColor: Colors.white},
             headerBackTitleVisible: false,
             cardStyleInterpolator: ({current, next, layouts}) => {
               return {
