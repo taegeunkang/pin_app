@@ -101,10 +101,11 @@ const Search = () => {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
         },
-        body: JSON.stringify({word: inpt, page: page, size: 20}),
+        body: JSON.stringify({word: inpt, page: page +1, size: 20}),
       });
       if (response.status == 200) {
         const r = await response.json();
+        if (r.length > 0) setPage(page + 1);
         let a = userList;
         a = a.concat(r);
         setUserList(a);
@@ -116,10 +117,6 @@ const Search = () => {
   useEffect(() => {
     search();
   }, [inpt]);
-
-  useEffect(() => {
-    fetchData();
-  }, [page]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -183,7 +180,7 @@ const Search = () => {
                 nativeEvent.contentOffset.y >=
               nativeEvent.contentSize.height - responsiveHeight(70);
             if (isCloseToBottom) {
-              setPage(page => page + 1);
+              fetchData();
             }
           }}
           scrollEventThrottle={400}>

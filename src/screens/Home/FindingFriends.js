@@ -75,8 +75,10 @@ const FindingFriends = ({navigation, route}) => {
   const fetchData = async () => {
     if (loading) return;
     setLoading(true);
+
     const response = await fetch(
-      API_URL + `/user/following/list?userId=${userId}&page=${page}&size=${20}`,
+      API_URL +
+        `/user/following/list?userId=${userId}&page=${page + 1}&size=${20}`,
       {
         method: 'GET',
         headers: {
@@ -86,6 +88,7 @@ const FindingFriends = ({navigation, route}) => {
     );
     if (response.status == 200) {
       const r = await response.json();
+      if (r.lenght > 0) setPage(page + 1);
       let a = userList;
       a = a.concat(r);
       setUserList(a);
@@ -98,7 +101,9 @@ const FindingFriends = ({navigation, route}) => {
     setLoading(true);
     const response = await fetch(
       API_URL +
-        `/user/following/list?userId=${userId}&word=${inpt}&page=${page}&size=${20}`,
+        `/user/following/list?userId=${userId}&word=${inpt}&page=${
+          page + 1
+        }&size=${20}`,
       {
         method: 'GET',
         headers: {
@@ -108,10 +113,9 @@ const FindingFriends = ({navigation, route}) => {
     );
     if (response.status == 200) {
       const r = await response.json();
+      if (r.length > 0) setPage(page + 1);
       let a = userList;
       a = a.concat(r);
-      console.log(a);
-
       setUserList(a);
     }
     setLoading(false);
@@ -125,13 +129,7 @@ const FindingFriends = ({navigation, route}) => {
     }
   }, [inpt]);
 
-  useEffect(() => {
-    if (inpt && inpt.trim().length > 0) {
-      fetchDataContainingWord();
-    } else {
-      fetchData();
-    }
-  }, [page]);
+  useEffect(() => {}, [page]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -220,7 +218,11 @@ const FindingFriends = ({navigation, route}) => {
               nativeEvent.contentOffset.y >=
             nativeEvent.contentSize.height - responsiveHeight(70);
           if (isCloseToBottom) {
-            setPage(page => page + 1);
+            if (inpt && inpt.trim().length > 0) {
+              fetchDataContainingWord();
+            } else {
+              fetchData();
+            }
           }
         }}
         scrollEventThrottle={400}>

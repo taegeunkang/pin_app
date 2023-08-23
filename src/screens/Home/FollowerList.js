@@ -72,7 +72,8 @@ const FollowerList = ({navigation, route}) => {
     if (loading) return;
     setLoading(true);
     const response = await fetch(
-      API_URL + `/user/follower/list?userId=${userId}&page=${page}&size=${20}`,
+      API_URL +
+        `/user/follower/list?userId=${userId}&page=${page + 1}&size=${20}`,
       {
         method: 'GET',
         headers: {
@@ -82,6 +83,7 @@ const FollowerList = ({navigation, route}) => {
     );
     if (response.status == 200) {
       const r = await response.json();
+      if (r.length > 0) setPage(page + 1);
       let a = userList;
       a = a.concat(r);
       setUserList(a);
@@ -94,7 +96,9 @@ const FollowerList = ({navigation, route}) => {
     setLoading(true);
     const response = await fetch(
       API_URL +
-        `/user/follower/list?userId=${userId}&word=${inpt}&page=${page}&size=${20}`,
+        `/user/follower/list?userId=${userId}&word=${inpt}&page=${
+          page + 1
+        }&size=${20}`,
       {
         method: 'GET',
         headers: {
@@ -104,6 +108,7 @@ const FollowerList = ({navigation, route}) => {
     );
     if (response.status == 200) {
       const r = await response.json();
+      if (r.length > 0) setPage(page + 1);
       let a = userList;
       a = a.concat(r);
       setUserList(a);
@@ -118,15 +123,6 @@ const FollowerList = ({navigation, route}) => {
       findFolowerAll();
     }
   }, [inpt]);
-
-  useEffect(() => {
-    if (inpt && inpt.trim().length > 0) {
-      fetchDataContainingWord();
-    } else {
-      fetchData();
-      console.log(page);
-    }
-  }, [page]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -164,7 +160,11 @@ const FollowerList = ({navigation, route}) => {
               nativeEvent.contentOffset.y >=
             nativeEvent.contentSize.height - responsiveHeight(70);
           if (isCloseToBottom) {
-            setPage(page => page + 1);
+            if (inpt && inpt.trim().length > 0) {
+              fetchDataContainingWord();
+            } else {
+              fetchData();
+            }
           }
         }}
         scrollEventThrottle={400}>
