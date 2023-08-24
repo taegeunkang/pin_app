@@ -178,6 +178,7 @@ const MyPage = ({navigation}) => {
   };
 
   const thumbsUp = async postId => {
+    console.log('호출');
     const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
       method: 'POST',
       headers: {
@@ -187,7 +188,6 @@ const MyPage = ({navigation}) => {
 
     if (response.status == 200) {
       const r = await response.json();
-      likeRefreshPost(postId, r);
       return r;
     } else if (response.status == 400) {
       const k = await response.json();
@@ -198,16 +198,6 @@ const MyPage = ({navigation}) => {
           break;
       }
     }
-  };
-
-  const likeRefreshPost = (postId, likeCount) => {
-    let tmp = postList;
-    for (let i = 0; i < tmp.length; i++) {
-      if (tmp[i].postId == postId) {
-        tmp[i].likesCount = likeCount;
-      }
-    }
-    setPostList(tmp);
   };
 
   useEffect(() => {
@@ -382,9 +372,9 @@ const MyPage = ({navigation}) => {
             onPress={() => {
               navigation.navigate('Detail', {
                 ...post,
-                onLikePress: thumbsUp,
                 userId: id,
                 reload: reload,
+                thumbsUp: thumbsUp,
               });
             }}
             thumbsUp={thumbsUp}

@@ -44,7 +44,7 @@ const Detail = ({navigation, route}) => {
     commentsCount,
     createdDate,
     mention,
-    onLikePress,
+    thumbsUp,
     userId,
     reload,
   } = route.params;
@@ -77,7 +77,7 @@ const Detail = ({navigation, route}) => {
   };
 
   const onLike = async () => {
-    const r = await onLikePress(postId);
+    const r = await thumbsUp(postId);
     setIsLiked(!isLiked);
     setLikedCount(r);
   };
