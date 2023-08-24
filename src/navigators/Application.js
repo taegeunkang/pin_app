@@ -24,6 +24,7 @@ import {useTranslation} from 'react-i18next';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
 import ProfileInitialSetting from '../screens/Login/ProfileInitialSetting';
 import {Colors} from '../theme/Variables';
+import UserDetailNavigator from './UserDetailNavigator';
 const Stack = createStackNavigator();
 // @refresh reset
 const ApplicationNavigator = () => {
@@ -98,6 +99,11 @@ const ApplicationNavigator = () => {
           <Stack.Screen
             name="Home"
             component={NavNavigator}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="UserDetailNavigator"
+            component={UserDetailNavigator}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

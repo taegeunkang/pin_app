@@ -30,24 +30,23 @@ import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditComment from '../../components/Content/EditComment';
 import {reIssue} from '../../utils/login';
-const screenWidth = Dimensions.get('screen').width;
-const Detail = ({navigation, route}) => {
-  const {
-    postId,
-    nickname,
-    profileImage,
-    content,
-    mediaFiles,
-    locationName,
-    liked,
-    likesCount,
-    commentsCount,
-    createdDate,
-    mention,
-    onLikePress,
-    userId,
-    reload,
-  } = route.params;
+import {useNavigation} from '@react-navigation/native';
+const Detail1 = ({
+  navigation,
+  postId,
+  nickname,
+  profileImage,
+  content,
+  mediaFiles,
+  locationName,
+  liked,
+  likesCount,
+  commentsCount,
+  createdDate,
+  mention,
+  userId,
+  close,
+}) => {
   const {Fonts, Images} = useTheme();
   const [isLiked, setIsLiked] = useState(liked);
   const [likedCount, setLikedCount] = useState(likesCount);
@@ -77,13 +76,34 @@ const Detail = ({navigation, route}) => {
   };
 
   const onLike = async () => {
-    const r = await onLikePress(postId);
-    setIsLiked(!isLiked);
-    setLikedCount(r);
+    const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+
+    if (response.status == 200) {
+      const r = await response.json();
+      setIsLiked(!isLiked);
+      setLikedCount(r);
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await onLike();
+          break;
+      }
+    }
   };
   // 댓글 조회
   const fetchComment = async isRefresh => {
     if (loading) return;
+    if (userId) {
+      console.log('저장함');
+      await AsyncStorage.setItem('homeId', JSON.stringify(userId));
+    }
     setLoading(true);
     const response = await fetch(
       API_URL +
@@ -273,8 +293,7 @@ const Detail = ({navigation, route}) => {
       },
     });
     if (response.status == 200) {
-      reload(postId);
-      navigation.pop();
+      close();
     } else if (response.status == 400) {
       const k = await response.json();
       switch (k['code']) {
@@ -337,6 +356,8 @@ const Detail = ({navigation, route}) => {
     setReplyLoading(false);
   };
   useEffect(() => {
+    console.log('마운트됨');
+    console.log(userId);
     fetchComment();
   }, []);
 
@@ -345,7 +366,7 @@ const Detail = ({navigation, route}) => {
       style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}
       behavior="padding"
       enabled
-      keyboardVerticalOffset={100}>
+      keyboardVerticalOffset={0}>
       <SafeAreaView
         style={{
           flex: 1,
@@ -413,7 +434,13 @@ const Detail = ({navigation, route}) => {
           <View style={styles.container}>
             <View style={styles.postContainer}>
               <View style={styles.writerBox}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Pressable
+                  onPress={() => {
+                    console.log('이동');
+                    close();
+                    navigation.push('UserDetailNavigator');
+                  }}
+                  style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Image
                     source={{
                       uri: API_URL + `/post/image?watch=${profileImage}`,
@@ -430,7 +457,7 @@ const Detail = ({navigation, route}) => {
                   <Text style={Fonts.contentRegualrMedium}>
                     {timeAgo(createdDate)}
                   </Text>
-                </View>
+                </Pressable>
                 <Pressable
                   onPress={() =>
                     navigation.push('DetailMention', {friends: mention})
@@ -466,6 +493,7 @@ const Detail = ({navigation, route}) => {
                         height: responsiveHeight(25),
                         alignItems: 'center',
                         justifyContent: 'center',
+                        marginRight: responsiveWidth(5),
                       }}>
                       <Image
                         source={Images.more}
@@ -476,6 +504,18 @@ const Detail = ({navigation, route}) => {
                       />
                     </Pressable>
                   )}
+                  <Pressable onPress={close}>
+                    <Text
+                      style={{
+                        fontFamily: 'SpoqaHanSansNeo-Bold',
+                        fontSize: responsiveWidth(14),
+                        lineHeight: responsiveHeight(24),
+                        letterSpacing: responsiveWidth(-0.6),
+                        color: '#4880EE',
+                      }}>
+                      닫기
+                    </Text>
+                  </Pressable>
                 </Pressable>
               </View>
               {/* 본문 글 최대 500자 */}
@@ -631,7 +671,7 @@ const Detail = ({navigation, route}) => {
             width: '100%',
             position: 'absolute',
             bottom: 0,
-            height: responsiveHeight(70),
+            height: responsiveHeight(100),
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: '#ffffff',
@@ -678,27 +718,6 @@ const MoreFriends = ({count}) => {
         }}>
         {'+' + count}
       </Text>
-    </View>
-  );
-};
-
-const PostFiles = ({images}) => {
-  return (
-    <View style={{flexDirection: 'row'}}>
-      <Image source={Sample5} style={styles.media} />
-      <Image source={Sample5} style={styles.media} />
-      <View style={styles.media}>
-        <Text
-          style={{
-            fontFamily: 'SpoqaHanSansNeo-Bold',
-            fontSize: responsiveWidth(14),
-            lineHeight: responsiveHeight(24),
-            letterSpacing: responsiveWidth(-0.6),
-            color: '#505866',
-          }}>
-          +3
-        </Text>
-      </View>
     </View>
   );
 };
@@ -802,4 +821,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Detail;
+export default Detail1;

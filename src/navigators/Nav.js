@@ -20,6 +20,7 @@ import UploadPost from './UploadPost';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
 import AlertNavigator from './AlertNavigator';
 import SearchNavigator from './SearchNavigator';
+import UserDetail from './UserDetailNavigator';
 const Tab = createBottomTabNavigator();
 const Nav = () => {
   const {t} = useTranslation('content');

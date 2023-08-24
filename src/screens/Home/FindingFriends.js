@@ -19,6 +19,7 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {TouchableOpacity} from 'react-native';
 import {API_URL} from '../../utils/constants';
 import UserCell from '../../components/Content/UserCell';
+import { reIssue } from '../../utils/login';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
@@ -46,8 +47,15 @@ const FindingFriends = ({navigation, route}) => {
       );
       if (response.status == 200) {
         const r = await response.json();
-
         setUserList(r);
+      } else if (response.status == 400) {
+        const k = await response.json();
+        switch (k['code']) {
+          case 'U08':
+            await reIssue();
+            await search();
+            break;
+        }
       }
     } else {
       setUserList([]);
@@ -68,6 +76,14 @@ const FindingFriends = ({navigation, route}) => {
     if (response.status == 200) {
       const r = await response.json();
       setUserList(r);
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await findFolowingAll();
+          break;
+      }
     }
     setPage(0);
   };
@@ -92,6 +108,14 @@ const FindingFriends = ({navigation, route}) => {
       let a = userList;
       a = a.concat(r);
       setUserList(a);
+    }else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await fetchData();
+          break;
+      }
     }
     setLoading(false);
   };
@@ -117,6 +141,14 @@ const FindingFriends = ({navigation, route}) => {
       let a = userList;
       a = a.concat(r);
       setUserList(a);
+    }else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await fetchDataContainingWord();
+          break;
+      }
     }
     setLoading(false);
   };

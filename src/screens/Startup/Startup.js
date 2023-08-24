@@ -30,7 +30,6 @@ const Startup = ({navigation}) => {
     if (token && token.length > 0 && refreshToken && refreshToken.length > 0) {
       // 토큰으로 로그인 체크
       const result1 = await checkLogin(token);
-      console.log(result1);
       // 로그인 성공
       if (result1) {
         navigation.reset({routes: [{name: 'Home'}]});
@@ -64,7 +63,6 @@ const Startup = ({navigation}) => {
         const res = await response.json();
         console.log('check successful id : ' + res['id']);
         await AsyncStorage.setItem('id', JSON.stringify(res['id']));
-
         return true;
       case 400:
         return false;

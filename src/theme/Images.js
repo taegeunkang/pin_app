@@ -16,7 +16,7 @@ export default function ({}) {
     more: require('./assets/images/nav/more.png'),
     upChevron: require('./assets/images/nav/up-chevron.png'),
     downChevron: require('./assets/images/nav/down-chevron.png'),
-    pin: require('./assets/images/nav/pin.png'),
+    pin: require('./assets/images/nav/marker.png'),
     setting: require('./assets/images/nav/setting.png'),
     defaultProfileImage: require('./assets/images/sample/default-profile.png'),
     defaultBackgroundImage: require('./assets/images/sample/default-background.png'),

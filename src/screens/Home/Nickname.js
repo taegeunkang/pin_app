@@ -14,6 +14,7 @@ import InputBox from '../../components/InputBox';
 import {API_URL} from '../../utils/constants';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {reIssue} from '../../utils/login';
 const Nickname = ({navigation}) => {
   const [inpt, setInpt] = useState('');
   const {Fonts, Colors} = useTheme();
@@ -81,6 +82,10 @@ const Nickname = ({navigation}) => {
             setDuplicate(true);
             setTooLong(false);
             setEmpty(false);
+            break;
+          case 'U08':
+            await reIssue();
+            await submit();
             break;
         }
         break;

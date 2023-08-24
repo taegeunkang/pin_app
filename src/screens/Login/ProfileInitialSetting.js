@@ -15,6 +15,7 @@ import InputBox from '../../components/InputBox';
 import {API_URL} from '../../utils/constants';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {reIssue} from '../../utils/login';
 const ProfileInitialSetting = ({navigation}) => {
   const [inpt, setInpt] = useState('');
   const {Fonts, Colors} = useTheme();
@@ -76,9 +77,13 @@ const ProfileInitialSetting = ({navigation}) => {
 
       case 400:
         const a = await response.json();
-        if (a.code == 'U07') {
-          setDuplicate(true);
-          return;
+        switch (a['code']) {
+          case 'U07':
+            setDuplicate(true);
+            break;
+          case 'U08':
+            await reIssue();
+            await submit();
         }
         break;
     }

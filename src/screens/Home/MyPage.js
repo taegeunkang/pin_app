@@ -17,12 +17,11 @@ import ProfileButton from '../../components/mypage/ProfileButton';
 import {useTheme} from '../../hooks';
 import PostBox from '../../components/mypage/PostBox';
 import {useState, useEffect} from 'react';
-import FollowButton from '../../components/mypage/FollowButton';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import GpsAlert from '../../components/Content/GpsAlert';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {useFocusEffect} from '@react-navigation/native';
+import {reIssue} from '../../utils/login';
 // 게시글 없을 때 check
 
 const MyPage = ({navigation}) => {
@@ -41,11 +40,28 @@ const MyPage = ({navigation}) => {
     React.useCallback(() => {
       if (isPopped) {
         // pop 후에만 실행할 동작
-        initData();
         setIsPopped(false);
       }
     }, [isPopped]), // isPopped 의존성을 추가
   );
+
+  const reload = async postid => {
+    console.log('실행됨');
+    setIsPopped(true);
+    let a = postList;
+    let b = [];
+    for (let i = 0; i < a.length; i++) {
+      if (a[i].postId == postid) {
+        continue;
+      }
+      b.push(a[i]);
+    }
+    setPostList(b);
+
+    let c = userInfo;
+    c.post = c.post - 1;
+    setUserInfo(c);
+  };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -67,6 +83,7 @@ const MyPage = ({navigation}) => {
     }, 1000);
   };
   // 사용자의 포스트 목록 조회
+
   const initData = async () => {
     setLoading(true);
     const userId = await AsyncStorage.getItem('id');
@@ -90,6 +107,48 @@ const MyPage = ({navigation}) => {
         setPostList(r);
         break;
       case 400:
+        const k = await response.json();
+        switch (k['code']) {
+          case 'U08':
+            await reIssue();
+            await initData();
+            break;
+        }
+        break;
+    }
+
+    setLoading(false);
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    const userId = await AsyncStorage.getItem('id');
+    const response = await fetch(
+      API_URL + `/post/find/all?userId=${userId}&page=${page + 1}&size=${20}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        },
+      },
+    );
+
+    switch (response.status) {
+      case 200:
+        let r = await response.json();
+        if (r.length > 0) setPage(page + 1);
+        let a = postList;
+        a = a.concat(r);
+        setPostList(a);
+        break;
+      case 400:
+        const k = await response.json();
+        switch (k['code']) {
+          case 'U08':
+            await reIssue();
+            await fetchData();
+            break;
+        }
         break;
     }
 
@@ -107,11 +166,18 @@ const MyPage = ({navigation}) => {
     if (response.status == 200) {
       const r = await response.json();
       setUserInfo(r);
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await getProfile();
+          break;
+      }
     }
   };
 
   const thumbsUp = async postId => {
-    console.log(postId);
     const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
       method: 'POST',
       headers: {
@@ -123,6 +189,14 @@ const MyPage = ({navigation}) => {
       const r = await response.json();
       likeRefreshPost(postId, r);
       return r;
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await thumbsUp(postId);
+          break;
+      }
     }
   };
 
@@ -140,10 +214,6 @@ const MyPage = ({navigation}) => {
     getProfile();
     initData();
   }, []);
-
-  useEffect(() => {
-    // fetchData();
-  }, [page]);
 
   return (
     <SafeAreaView style={[styles.container]}>
@@ -187,7 +257,7 @@ const MyPage = ({navigation}) => {
               nativeEvent.contentOffset.y >=
             nativeEvent.contentSize.height - responsiveHeight(50);
           if (isCloseToBottom) {
-            setPage(prevPage => prevPage + 1);
+            fetchData();
           }
         }}
         scrollEventThrottle={400}
@@ -314,7 +384,7 @@ const MyPage = ({navigation}) => {
                 ...post,
                 onLikePress: thumbsUp,
                 userId: id,
-                reload: () => setIsPopped(true),
+                reload: reload,
               });
             }}
             thumbsUp={thumbsUp}

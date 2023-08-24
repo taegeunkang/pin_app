@@ -26,10 +26,10 @@ import {useFocusEffect} from '@react-navigation/native';
 import {reIssue} from '../../utils/login';
 // 게시글 없을 때 check
 
-const UserPage = ({navigation, route}) => {
-  const {userId} = route.params;
+const UserPage1 = ({navigation, route}) => {
   const {t} = useTranslation('myPage');
   const {Fonts} = useTheme();
+  const [userId, setUserId] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -72,6 +72,7 @@ const UserPage = ({navigation, route}) => {
   // 사용자의 포스트 목록 조회
   const initData = async () => {
     setLoading(true);
+    const userId = await AsyncStorage.getItem('homeId');
     const response = await fetch(
       API_URL + `/post/find/all?userId=${userId}&page=${0}&size=${20}`,
       {
@@ -104,6 +105,8 @@ const UserPage = ({navigation, route}) => {
     setLoading(false);
   };
   const getProfile = async () => {
+    const userId = await AsyncStorage.getItem('homeId');
+    setUserId(userId);
     const response = await fetch(
       API_URL + `/user/profile/info?userId=${userId}`,
       {
@@ -174,18 +177,12 @@ const UserPage = ({navigation, route}) => {
         return <FollowButton title={'맞팔하기'} onPress={follow} />;
       case 1:
         return <FollowButton title={'팔로잉'} onPress={follow} />;
-      case 0:
-        return (
-          <ProfileButton
-            title={'프로필 편집'}
-            onPress={() => setModalVisible(true)}
-          />
-        );
     }
   };
 
   const follow = async () => {
     setFollowLoading(true);
+    const userId = await AsyncStorage.getItem('homeId');
     const response = await fetch(API_URL + `/user/follow?userId=${userId}`, {
       method: 'POST',
       headers: {
@@ -475,4 +472,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserPage;
+export default UserPage1;

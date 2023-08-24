@@ -15,12 +15,13 @@ import {responsiveWidth, responsiveHeight} from '../components/Scale';
 import ProfileImage from '../screens/Home/ProfileImage';
 import BackgroundImage from '../screens/Home/BackgroundImage';
 import Nickname from '../screens/Home/Nickname';
-import UserPage from '../screens/Home/UserPage';
+import UserPage1 from '../screens/Home/UserPage1';
 import DetailMention from '../screens/Home/DetailMention';
+import UserPage from '../screens/Home/UserPage';
 const Stack = createStackNavigator();
 
 // @refresh reset
-const Content = () => {
+const UserDetailNavigator = () => {
   const {t} = useTranslation('myPage');
   return (
     <Stack.Navigator
@@ -52,15 +53,16 @@ const Content = () => {
         },
       }}>
       <Stack.Screen
-        name="MyPage"
-        component={MyPage}
-        options={{headerShown: false}}
+        name="UserDetailPage"
+        component={UserPage1}
+        options={{headerShown: true, headerTitle: '프로필'}}
       />
       <Stack.Screen
         name="UserPage"
         component={UserPage}
         options={{headerShown: true, headerTitle: '프로필'}}
       />
+
       <Stack.Screen
         name="FollowerList"
         component={FollowerList}
@@ -80,14 +82,6 @@ const Content = () => {
       <Stack.Screen
         name="Detail"
         component={Detail}
-        options={{
-          headerBackTitleVisible: false,
-          headerTitle: t('profile.detail'),
-        }}
-      />
-      <Stack.Screen
-        name="Detail1"
-        component={Detail1}
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('profile.detail'),
@@ -125,15 +119,7 @@ const Content = () => {
           headerTitle: t('profile.nickname'),
         }}
       />
-      <Stack.Screen
-        name="Setting"
-        component={Detail}
-        options={{
-          headerBackTitleVisible: false,
-          headerTitle: t('profile.setting'),
-        }}
-      />
     </Stack.Navigator>
   );
 };
-export default Content;
+export default UserDetailNavigator;

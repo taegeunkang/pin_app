@@ -15,6 +15,7 @@ import SubmitButton from '../../components/SubmitButton';
 import {API_URL} from '../../utils/constants';
 import ChoosePic from '../../components/Content/ChoosePic';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {reIssue} from '../../utils/login';
 const ProfileImage = ({navigation, route}) => {
   const {profileImg} = route.params;
   const [pressed, setPressed] = useState(false);
@@ -62,9 +63,6 @@ const ProfileImage = ({navigation, route}) => {
     setPressed(false);
   };
   const submit = async () => {
-    console.log(defaultPic);
-    console.log(pic);
-
     if (!pic && !defaultPic) {
       Alert.alert('사진을 선택해 주세요.');
       return;
@@ -93,6 +91,13 @@ const ProfileImage = ({navigation, route}) => {
       case 200:
         navigation.pop();
         return;
+      case 400:
+        const k = await response.json();
+        switch (k['code']) {
+          case 'U08':
+            await reIssue();
+            await submit();
+        }
     }
   };
 

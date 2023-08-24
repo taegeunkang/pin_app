@@ -41,7 +41,7 @@ const Content = () => {
       <Stack.Screen
         name="Alram"
         component={Alram}
-        options={{headerShown: true, headerTitle: t('nav.setting')}}
+        options={{headerShown: true, headerTitle: t('nav.alram')}}
       />
       <Stack.Screen
         name="Setting"

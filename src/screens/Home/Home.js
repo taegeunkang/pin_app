@@ -29,11 +29,17 @@ import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import Permission from './Permission';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {check_email} from '../../utils/email';
+import {reIssue} from '../../utils/login';
+import {Fonts} from '../../theme';
+import {combineTransition} from 'react-native-reanimated';
+import Detail1 from './Detail1';
 const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [contents, setContents] = useState([]);
   const [permission, setPermission] = useState(true);
+  const [detailPressed, setDetailPressed] = useState(false);
+  const [focusedPin, setFocusedPin] = useState({});
   const mapRef = useRef(null);
   const {Gutters, Images} = useTheme();
 
@@ -119,25 +125,41 @@ const Home = ({navigation}) => {
     });
   };
 
-  const moveToDetail = () => {
-    setListBtn(false);
-    navigation.navigate('Detail');
-  };
-
   const getMyPosts = async () => {
+    console.log('post response');
     const response = await fetch(
       API_URL + '/post/all?id=' + (await AsyncStorage.getItem('id')),
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
           Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
         },
       },
     );
-    const res = await response.json();
-    setContents(res['contents']);
-    // console.log(res['contents']);
+    if (response.status == 200) {
+      const res = await response.json();
+      console.log(res);
+      setContents(res['contents']);
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await getMyPosts();
+          break;
+      }
+    } else {
+      setContents([]);
+    }
   };
+  const close = async () => {
+    setDetailPressed(false);
+  };
+
+  useEffect(() => {
+    getMyPosts();
+    console.log(focusedPin);
+  }, [detailPressed]);
 
   useEffect(() => {
     const t = async () => {
@@ -228,22 +250,8 @@ const Home = ({navigation}) => {
                     longitude: geometry.coordinates[0],
                     latitude: geometry.coordinates[1],
                   }}
-                  onPress={onPress}
-                />
-              );
-            }}>
-            {contents &&
-              contents.map((content, index) => (
-                <Marker
-                  key={content.contentId}
-                  coordinate={{
-                    latitude: content.lat,
-                    longitude: content.lon,
-                  }}
-                  // 클릭 후 상세 페이지로 이동
-                  onPress={() => console.log(content.contentId)}>
+                  onPress={onPress}>
                   <View
-                    {...content}
                     style={{
                       position: 'relative',
                       width: responsiveWidth(100),
@@ -252,16 +260,24 @@ const Home = ({navigation}) => {
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                    <Image
-                      source={{
-                        uri: API_URL + '/post/image?watch=' + content.thumbnail,
-                      }}
+                    <View
                       style={{
                         width: '91%',
-                        height: '85%',
+                        height: '91%',
                         borderRadius: 300,
-                      }}
-                    />
+                        backgroundColor: '#EAF3FE',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: responsiveWidth(34),
+                          fontFamily: 'SpoqaHanSansNeo-Bold',
+                          lineHeight: responsiveHeight(70),
+                          letterSpacing: responsiveWidth(-0.6),
+                          color: '#353C49',
+                        }}>{`+${points}`}</Text>
+                    </View>
                     <Image
                       source={Images.pin}
                       style={{
@@ -269,7 +285,7 @@ const Home = ({navigation}) => {
                         height: '100%',
                         borderRadius: 100,
                         position: 'absolute',
-                        top: responsiveHeight(10),
+                        // top: responsiveHeight(10),
                         // left: '50%',
                         // top: '50%',
                         // transform: [
@@ -280,7 +296,67 @@ const Home = ({navigation}) => {
                     />
                   </View>
                 </Marker>
-              ))}
+              );
+            }}>
+            {contents &&
+              contents.map((content, index) => {
+                console.log(content);
+                return (
+                  <Marker
+                    key={content.contentId}
+                    coordinate={{
+                      latitude: content.lat,
+                      longitude: content.lon,
+                    }}
+                    // 클릭 후 상세 페이지로 이동
+                    onPress={() => {
+                      setFocusedPin(content.detail);
+                      setDetailPressed(true);
+                    }}>
+                    <View
+                      {...content}
+                      style={{
+                        position: 'relative',
+                        width: responsiveWidth(100),
+                        height: responsiveHeight(100),
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Image
+                        source={{
+                          uri:
+                            API_URL + '/post/image?watch=' + content.thumbnail,
+                        }}
+                        style={{
+                          width: '91%',
+                          height: '91%',
+                          borderRadius: 300,
+                          backgroundColor: 'black',
+                          marginBottom: responsiveHeight(10),
+                        }}
+                        resizeMode="contain"
+                      />
+                      <Image
+                        source={Images.pin}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 100,
+                          position: 'absolute',
+                          // top: responsiveHeight(10),
+                          // left: '50%',
+                          // top: '50%',
+                          // transform: [
+                          //   {translateX: -50}, // Adjust these values accordingly
+                          //   {translateY: -12}, // For instance, -50% of your element width and height
+                          // ],
+                        }}
+                      />
+                    </View>
+                  </Marker>
+                );
+              })}
           </MapView>
         </>
       )}
@@ -290,10 +366,12 @@ const Home = ({navigation}) => {
       <Modal visible={!permission} animationType={'slide'} transparent={true}>
         <Permission
           close={() => {
-            console.log('완료');
             setPermission(true);
           }}
         />
+      </Modal>
+      <Modal visible={detailPressed} animationType={'slide'} transparent={true}>
+        <Detail1 {...focusedPin} close={close} navigation={navigation} />
       </Modal>
     </View>
   );

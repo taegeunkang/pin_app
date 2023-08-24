@@ -143,15 +143,17 @@ const PostBox = ({
             </Text>
           </View>
 
-          <View style={{flexDirection: 'row'}}>
-            <WithLocalSvg
-              width={responsiveWidth(20)}
-              height={responsiveHeight(20)}
-              asset={LocationIconNot}
-              style={{marginRight: responsiveWidth(5)}}
-            />
-            <Text style={Fonts.contentMediumMedium}>{locationName}</Text>
-          </View>
+          {locationName && (
+            <View style={{flexDirection: 'row'}}>
+              <WithLocalSvg
+                width={responsiveWidth(20)}
+                height={responsiveHeight(20)}
+                asset={LocationIconNot}
+                style={{marginRight: responsiveWidth(5)}}
+              />
+              <Text style={Fonts.contentMediumMedium}>{locationName}</Text>
+            </View>
+          )}
         </View>
       </View>
     </Pressable>

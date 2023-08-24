@@ -32,7 +32,7 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import SubmitButton from '../../components/SubmitButton';
 import {useTheme} from '../../hooks';
 import * as RNFS from 'react-native-fs';
-import {freemem} from 'os';
+import {reIssue} from '../../utils/login';
 // 동영상일 때는 썸네일 파일도 같이 넘겨줘야해서 수정 필요
 
 const WriteContent = ({navigation, route}) => {
@@ -104,6 +104,9 @@ const WriteContent = ({navigation, route}) => {
   // API_URL + "/post/create"
   // 동영상 기능 추가해야함
   const submitPost = async () => {
+    if (text.trim().length == 0) {
+      return;
+    }
     setLoading(true);
     const token = await AsyncStorage.getItem('token');
     const formData = new FormData();
@@ -157,8 +160,14 @@ const WriteContent = ({navigation, route}) => {
     console.log(response.status);
     if (response.status == 200) {
       navigation.reset({routes: [{name: 'Home'}]});
-    } else {
-      const r = await response.json();
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await submitPost(postId);
+          break;
+      }
     }
 
     setLoading(false);
@@ -230,6 +239,7 @@ const WriteContent = ({navigation, route}) => {
               paddingHorizontal: responsiveWidth(10),
             }}
             onChangeText={e => setText(e)}
+            maxLength={500}
           />
         </View>
       </View>
