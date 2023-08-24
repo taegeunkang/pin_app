@@ -18,7 +18,7 @@ import UserCell from '../../components/Content/UserCell';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
-import { reIssue } from '../../utils/login';
+import {reIssue} from '../../utils/login';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
@@ -183,7 +183,7 @@ const FollowingList = ({navigation, route}) => {
         />
       </View>
 
-      <View style={{marginTop: responsiveHeight(20)}} />
+      {/* <View style={{marginTop: responsiveHeight(20)}} /> */}
       {/* 첫 화면 진입시 검색 기록이 존재 하지 않을 때 */}
       {/* <View style={{flex: 1, backgroundColor: Colors.white}}></View> */}
 
@@ -211,24 +211,28 @@ const FollowingList = ({navigation, route}) => {
         ))}
       </ScrollView>
 
-      {/* 검색 결과가 없을 때*/}
-      {/* 
+      {/* 검색 결과가 없을 때 */}
+      {inpt && userList && userList.length == 0 && (
         <View
           style={{
-            flex: 1,
+            width: '100%',
+            height: '100%',
             backgroundColor: Colors.white,
             justifyContent: 'center',
+            alignItems: 'center',
           }}>
           <Text
             style={{
               fontFamily: 'SpoqaHanSansNeo-Medium',
-              fontSize: 14,
-              lineHeight: 20,
-              letterSpacing: -0.6,
+              fontSize: responsiveWidth(14),
+              lineHeight: responsiveHeight(20),
+              letterSpacing: responsiveWidth(-0.6),
+              color: '#505866',
             }}>
             {t('search.notFound')}
           </Text>
-        </View> */}
+        </View>
+      )}
     </SafeAreaView>
   );
 };

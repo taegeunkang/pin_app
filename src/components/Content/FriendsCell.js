@@ -3,7 +3,8 @@ import {useTheme} from '../../hooks';
 import {responsiveHeight, responsiveWidth} from '../Scale';
 import {API_URL} from '../../utils/constants';
 import {useEffect, useState} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import FastImage from 'react-native-fast-image';
+
 const FriendsCell = ({profileImage, nickname, onAdd, onSub}) => {
   const {Images} = useTheme();
   const [added, setAdded] = useState(false);
@@ -19,14 +20,18 @@ const FriendsCell = ({profileImage, nickname, onAdd, onSub}) => {
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Image
-          source={{uri: API_URL + `/user/profile/image?watch=${profileImage}`}}
+        <FastImage
+          source={{
+            uri: API_URL + `/user/profile/image?watch=${profileImage}`,
+            priority: FastImage.priority.high,
+          }}
           style={{
             width: responsiveWidth(35),
             height: responsiveHeight(35),
             borderRadius: responsiveWidth(12),
             backgroundColor: 'black',
-          }}></Image>
+          }}
+        />
         <Text style={styles.nickname}>{nickname}</Text>
       </View>
       {added ? (

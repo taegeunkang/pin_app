@@ -4,6 +4,7 @@ import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {useTheme} from '../../hooks';
 import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FastImage from 'react-native-fast-image';
 const CommentComment = ({
   commentId,
   nickname,
@@ -79,9 +80,10 @@ const CommentComment = ({
               alignItems: 'center',
               justifyContent: 'flex-start',
             }}>
-            <Image
+            <FastImage
               source={{
                 uri: API_URL + `/post/image?watch=${profileImage}`,
+                priority: FastImage.priority.high,
               }}
               style={{
                 width: responsiveWidth(25),

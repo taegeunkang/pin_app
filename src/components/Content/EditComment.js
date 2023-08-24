@@ -1,4 +1,11 @@
-import {View, StyleSheet, Text, Pressable, SafeAreaView} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
 import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
 import {useTranslation} from 'react-i18next';
 import SubmitButton2 from '../SubmitButton2';
@@ -10,12 +17,14 @@ const EditComment = ({close, deleteComment}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Pressable onPress={deleteComment} style={[styles.btn, styles.normal]}>
+        <TouchableOpacity
+          onPress={deleteComment}
+          style={[styles.btn, styles.normal]}>
           <Text style={styles.main}>삭제</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
 
-      <Pressable onPress={close} style={[styles.btn, styles.last]}>
+      <TouchableOpacity onPress={close} style={[styles.btn, styles.last]}>
         <Text
           style={{
             fontFamily: 'SpoqaHanSansNeo-Medium',
@@ -26,7 +35,7 @@ const EditComment = ({close, deleteComment}) => {
           }}>
           취소
         </Text>
-      </Pressable>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

@@ -11,6 +11,7 @@ import {setDefaultTheme} from '../../store/theme';
 import {useTheme} from '../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
+import {responsiveHeight} from '../../components/Scale';
 
 const Startup = ({navigation}) => {
   const {Layout, Gutters, Fonts, Images} = useTheme();
@@ -104,7 +105,14 @@ const Startup = ({navigation}) => {
       source={Images.splash}
       resizeMode="contain"
       style={styles.bg}>
-      <ActivityIndicator size={'large'} style={[Gutters.largeVMargin]} />
+      <View
+        style={{
+          marginBottom: responsiveHeight(150),
+          flex: 1,
+          justifyContent: 'flex-end',
+        }}>
+        <ActivityIndicator size={'large'} style={[Gutters.largeVMargin]} />
+      </View>
     </ImageBackground>
   );
 };

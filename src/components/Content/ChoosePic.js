@@ -21,6 +21,7 @@ const ChoosePic = ({onPress, cancel}) => {
   const [photos, setPhotos] = useState([]);
   const [galleryCursor, setGalleryCursor] = useState(null);
   const [array, setArray] = useState([]);
+  const [last, setLast] = useState(false);
   const {Images} = useTheme();
 
   useEffect(() => {
@@ -35,6 +36,9 @@ const ChoosePic = ({onPress, cancel}) => {
     return `assets-library://asset/asset.${ext}?id=${hash}&ext=${ext}`;
   };
   const getGalleryPhotos = async () => {
+    if (last) {
+      return;
+    }
     const params = {
       //이미지를 불러올 개수 (최신순으로)
       first: 50,
@@ -45,10 +49,10 @@ const ChoosePic = ({onPress, cancel}) => {
     try {
       //사진을 불러옵니다. edges는 gallery photo에 대한 정보
       const {edges, page_info} = await CameraRoll.getPhotos(params);
-      if (page_info.has_next_page === false) {
-        setGalleryCursor(null);
-      } else {
+      if (page_info.has_next_page) {
         setGalleryCursor(page_info.end_cursor);
+      } else {
+        setLast(true);
       }
 
       /*ios인 경우는 ph:// 형식으로 사진이 저장됩니다.
@@ -71,7 +75,13 @@ const ChoosePic = ({onPress, cancel}) => {
         };
         arr.push(a);
       }
-      setPhotos(arr);
+      if (photos) {
+        let b = photos;
+        b = b.concat(arr);
+        setPhotos(b);
+      } else {
+        setPhotos(arr);
+      }
     } catch (error) {
       console.log('[takeStore getPhotos error occured] ', error);
     }
@@ -126,11 +136,14 @@ const ChoosePic = ({onPress, cancel}) => {
         </View>
         <View style={{flex: 1}}></View>
       </View>
-      
+
       {/* 갤러리 사진 */}
 
       <FlatList
         data={photos}
+        keyExtractor={item => item.id.toString()}
+        onEndReached={getGalleryPhotos} // 스크롤이 끝나면 사진 불러오기 함수 호출
+        onEndReachedThreshold={0.5}
         renderItem={({item}) => (
           <View>
             <Pressable onPress={() => onPress(item)}>
@@ -144,7 +157,6 @@ const ChoosePic = ({onPress, cancel}) => {
             </Pressable>
           </View>
         )}
-        keyExtractor={item => item.id.toString()}
         numColumns={4}
         style={{backgroundColor: Colors.white, flex: 1}}
       />

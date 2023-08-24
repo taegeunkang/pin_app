@@ -24,6 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {useFocusEffect} from '@react-navigation/native';
 import {reIssue} from '../../utils/login';
+import FastImage from 'react-native-fast-image';
 // 게시글 없을 때 check
 
 const UserPage1 = ({navigation, route}) => {
@@ -283,10 +284,11 @@ const UserPage1 = ({navigation, route}) => {
           width: '100%',
           backgroundColor: '#F2F4F6',
         }}>
-        <Image
+        <FastImage
           source={{
             uri:
               API_URL + `/user/profile/image?watch=${userInfo.backgroundImg}`,
+            priority: FastImage.priority.high,
           }}
           style={styles.backgroundImage}
         />
@@ -303,11 +305,12 @@ const UserPage1 = ({navigation, route}) => {
                 alignItems: 'flex-end',
                 marginBottom: responsiveHeight(5),
               }}>
-              <Image
+              <FastImage
                 source={{
                   uri:
                     API_URL +
                     `/user/profile/image?watch=${userInfo.profileImg}`,
+                  priority: FastImage.priority.high,
                 }}
                 style={styles.profileImage}
               />

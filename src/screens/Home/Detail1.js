@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Modal,
   Pressable,
+  TouchableOpacity,
 } from 'react-native';
 import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {useTheme} from '../../hooks';
@@ -31,6 +32,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditComment from '../../components/Content/EditComment';
 import {reIssue} from '../../utils/login';
 import {useNavigation} from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 const Detail1 = ({
   navigation,
   postId,
@@ -441,9 +443,10 @@ const Detail1 = ({
                     navigation.push('UserDetailNavigator');
                   }}
                   style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Image
+                  <FastImage
                     source={{
                       uri: API_URL + `/post/image?watch=${profileImage}`,
+                      priority: FastImage.priority.high,
                     }}
                     style={styles.writerImage}
                   />
@@ -467,12 +470,13 @@ const Detail1 = ({
                     mention.map((f, index) => {
                       if (index < 2) {
                         return (
-                          <Image
+                          <FastImage
                             key={index}
                             source={{
                               uri:
                                 API_URL +
                                 `/user/profile/image?watch=${f.profileImage}`,
+                              priority: FastImage.priority.high,
                             }}
                             style={styles.writerImage}
                           />
@@ -504,7 +508,7 @@ const Detail1 = ({
                       />
                     </Pressable>
                   )}
-                  <Pressable onPress={close}>
+                  <TouchableOpacity onPress={close}>
                     <Text
                       style={{
                         fontFamily: 'SpoqaHanSansNeo-Bold',
@@ -515,7 +519,7 @@ const Detail1 = ({
                       }}>
                       닫기
                     </Text>
-                  </Pressable>
+                  </TouchableOpacity>
                 </Pressable>
               </View>
               {/* 본문 글 최대 500자 */}

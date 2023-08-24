@@ -35,6 +35,7 @@
     "react": "18.2.0",
     "react-i18next": "^12.2.0",
     "react-native": "0.71.7",
+    "react-native-fast-image": "^8.6.3",
     "react-native-flipper": "^0.189.0",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.11.0",

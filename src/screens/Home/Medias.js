@@ -1,33 +1,24 @@
 import {
   Dimensions,
   FlatList,
-  Image,
   Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
-  Modal,
   SafeAreaView,
-  ScrollView,
-  Alert,
 } from 'react-native';
-import {useEffect, useState, useLayoutEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {Colors} from '../../theme/Variables';
-import {WithLocalSvg} from 'react-native-svg';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import * as RNFS from 'react-native-fs';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_URL} from '../../utils/constants';
 import {useTheme} from '../../hooks';
 import SubmitButton from '../../components/SubmitButton';
 import {useNavigation} from '@react-navigation/native';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import {Card} from 'react-native-paper';
+import FastImage from 'react-native-fast-image';
 // ios 일 떄 파일 형식 변경을 해야지 정상적으로 불러오기 및 저장 가능
 
 const Medias = () => {
-  const [scale, setScale] = useState(1);
   const [photos, setPhotos] = useState([]);
   const [target, setTarget] = useState(null);
   const [galleryCursor, setGalleryCursor] = useState(null);
@@ -56,7 +47,6 @@ const Medias = () => {
       assetType: 'All',
       ...(galleryCursor && {after: galleryCursor}),
     };
-    console.log(galleryCursor);
     try {
       //사진을 불러옵니다. edges는 gallery photo에 대한 정보
       const {edges, page_info} = await CameraRoll.getPhotos(params);
@@ -153,8 +143,11 @@ const Medias = () => {
               onPress={() =>
                 watchPreview(Platform.OS === 'ios' ? item.accessUri : item.uri)
               }>
-              <Image
-                source={{uri: item.accessUri}}
+              <FastImage
+                source={{
+                  uri: item.accessUri,
+                  priority: FastImage.priority.normal,
+                }}
                 style={{
                   width: Dimensions.get('window').width / 4,
                   height: Dimensions.get('window').width / 4,
@@ -230,26 +223,6 @@ const Medias = () => {
       </View>
     </SafeAreaView>
   );
-};
-
-const ImageBox = ({image}) => {
-  return (
-    <Image
-      source={image}
-      style={{width: '100%', height: Dimensions.get('window').width}}
-    />
-  );
-};
-
-const openCamera = async () => {
-  await launchCamera({
-    mediaType: 'mixed',
-    quality: 1,
-    includeBase64: true,
-  })
-    .then(data => console.log(data))
-    .catch(error => console.log(error));
-  // setImage('data:image/png;base64,' + result.assets[0].base64);
 };
 
 const styles = StyleSheet.create({

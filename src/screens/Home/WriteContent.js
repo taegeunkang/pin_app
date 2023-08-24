@@ -11,6 +11,7 @@ import {
   Modal,
   Alert,
   ScrollView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {useEffect, useRef, useState} from 'react';
 import {toByteArray} from 'base64-js';
@@ -33,6 +34,7 @@ import SubmitButton from '../../components/SubmitButton';
 import {useTheme} from '../../hooks';
 import * as RNFS from 'react-native-fs';
 import {reIssue} from '../../utils/login';
+import FastImage from 'react-native-fast-image';
 // 동영상일 때는 썸네일 파일도 같이 넘겨줘야해서 수정 필요
 
 const WriteContent = ({navigation, route}) => {
@@ -49,6 +51,7 @@ const WriteContent = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const [lat, setLat] = useState(null);
   const [lon, setLon] = useState(null);
+  const inptRef = useRef(null);
   useEffect(() => {
     checkRefreshMediaFiles();
     getCurrentLocation();
@@ -180,174 +183,185 @@ const WriteContent = ({navigation, route}) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-      <View style={styles.inptContainer}>
-        {media && media.length > 0 && (
-          <>
-            <ScrollView
-              horizontal={true}
-              style={{
-                width: '100%',
-                paddingHorizontal: responsiveWidth(10),
-                height: responsiveHeight(110),
-                paddingVertical: responsiveHeight(5),
-              }}>
-              {media.map((m, index) => (
-                <View key={index} style={styles.imageContainer}>
-                  <Image
-                    style={{
-                      width: responsiveWidth(100),
-                      height: responsiveHeight(100),
-                      borderRadius: responsiveWidth(12),
-                    }}
-                    source={{uri: m.uri}}
-                  />
-                </View>
-              ))}
-            </ScrollView>
-          </>
-        )}
-
-        <View style={{marginTop: responsiveHeight(10)}} />
-
-        <View
-          style={{
-            width: '100%',
-            height: responsiveHeight(180),
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#F2F4F6',
-            marginBottom: responsiveHeight(20),
-          }}>
-          <TextInput
-            value={text}
-            placeholder={t('write.content.placeholder')}
-            placeholderTextColor={'#6D7582'}
-            multiline={true}
-            style={{
-              width: responsiveWidth(370),
-              height: responsiveHeight(160),
-              textAlignVertical: 'top',
-              fontFamily: 'SpoqaHanSansNeo-Medium',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#505866',
-              backgroundColor: '#FFFFFF',
-              borderRadius: responsiveWidth(12),
-              paddingVertical: responsiveHeight(10),
-              paddingHorizontal: responsiveWidth(10),
-            }}
-            onChangeText={e => setText(e)}
-            maxLength={500}
-          />
-        </View>
-      </View>
-
-      <View style={{flex: 1, paddingHorizontal: responsiveWidth(10)}}>
-        <View style={styles.listContent}>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={styles.subTitle}>위치</Text>
-            <View style={{marginBottom: responsiveHeight(5)}} />
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('FindingLocation', {lat: lat, lon: lon})
-              }>
-              <Image
-                source={Images.plus}
+    <TouchableWithoutFeedback onPress={() => inptRef.current.blur()}>
+      <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+        <View style={styles.inptContainer}>
+          {media && media.length > 0 && (
+            <>
+              <ScrollView
+                horizontal={true}
                 style={{
-                  width: responsiveWidth(20),
-                  height: responsiveHeight(20),
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-          {loc && (
-            <Text
+                  width: '100%',
+                  paddingHorizontal: responsiveWidth(10),
+                  height: responsiveHeight(110),
+                  paddingVertical: responsiveHeight(5),
+                }}>
+                {media.map((m, index) => (
+                  <View key={index} style={styles.imageContainer}>
+                    <FastImage
+                      style={{
+                        width: responsiveWidth(100),
+                        height: responsiveHeight(100),
+                        borderRadius: responsiveWidth(12),
+                      }}
+                      source={{uri: m.uri, priority: FastImage.priority.normal}}
+                    />
+                  </View>
+                ))}
+              </ScrollView>
+            </>
+          )}
+
+          <View style={{marginTop: responsiveHeight(10)}} />
+
+          <View
+            style={{
+              width: '100%',
+              height: responsiveHeight(180),
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#F2F4F6',
+              marginBottom: responsiveHeight(20),
+            }}>
+            <TextInput
+              value={text}
+              placeholder={t('write.content.placeholder')}
+              placeholderTextColor={'#6D7582'}
+              multiline={true}
               style={{
-                fontFamily: 'SpoqaHanSansNeo-Regular',
+                width: responsiveWidth(370),
+                height: responsiveHeight(160),
+                textAlignVertical: 'top',
+                fontFamily: 'SpoqaHanSansNeo-Medium',
                 fontSize: responsiveWidth(14),
                 lineHeight: responsiveHeight(24),
                 letterSpacing: responsiveWidth(-0.6),
                 color: '#505866',
-              }}>
-              {loc}
-            </Text>
-          )}
-        </View>
-
-        <View style={styles.friendsList}>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={styles.subTitle}>함께한 친구</Text>
-            <View style={{marginBottom: responsiveHeight(5)}} />
-            <TouchableOpacity onPress={moveToFindingFriends}>
-              <Image
-                source={Images.plus}
-                style={{
-                  width: responsiveWidth(20),
-                  height: responsiveHeight(20),
-                }}
-              />
-            </TouchableOpacity>
+                backgroundColor: '#FFFFFF',
+                borderRadius: responsiveWidth(12),
+                paddingVertical: responsiveHeight(10),
+                paddingHorizontal: responsiveWidth(10),
+              }}
+              onChangeText={e => setText(e)}
+              ref={inptRef}
+              maxLength={500}
+            />
           </View>
-          {f &&
-            f.map((u, index) => (
-              <View
-                key={index}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  marginBottom: responsiveHeight(5),
-                }}>
-                <Image
-                  source={{
-                    uri: API_URL + `/user/profile/image?watch=${u.profileImg}`,
-                  }}
-                  style={styles.friendsImage}
-                />
-                <Text
-                  style={{
-                    fontFamily: 'SpoqaHanSansNeo-Medium',
-                    fontSize: responsiveWidth(14),
-                    lineHeight: responsiveHeight(24),
-                    letterSpacing: responsiveWidth(-0.6),
-                    color: '#505866',
-                  }}>
-                  {u.nickname}
-                </Text>
-              </View>
-            ))}
         </View>
 
-        {/* 친구 기능 추가 후 생성 */}
-        {/* <View style={styles.listContent}>
+        <View style={{flex: 1, paddingHorizontal: responsiveWidth(10)}}>
+          <View style={styles.listContent}>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={styles.subTitle}>위치</Text>
+              <View style={{marginBottom: responsiveHeight(5)}} />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('FindingLocation', {lat: lat, lon: lon})
+                }>
+                <Image
+                  source={Images.plus}
+                  style={{
+                    width: responsiveWidth(20),
+                    height: responsiveHeight(20),
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+            {loc && (
+              <Text
+                style={{
+                  fontFamily: 'SpoqaHanSansNeo-Regular',
+                  fontSize: responsiveWidth(14),
+                  lineHeight: responsiveHeight(24),
+                  letterSpacing: responsiveWidth(-0.6),
+                  color: '#505866',
+                }}>
+                {loc}
+              </Text>
+            )}
+          </View>
+
+          <View style={styles.friendsList}>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={styles.subTitle}>함께한 친구</Text>
+              <View style={{marginBottom: responsiveHeight(5)}} />
+              <TouchableOpacity onPress={moveToFindingFriends}>
+                <Image
+                  source={Images.plus}
+                  style={{
+                    width: responsiveWidth(20),
+                    height: responsiveHeight(20),
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+            {f &&
+              f.map((u, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    marginBottom: responsiveHeight(5),
+                  }}>
+                  <Image
+                    source={{
+                      uri:
+                        API_URL + `/user/profile/image?watch=${u.profileImg}`,
+                    }}
+                    style={styles.friendsImage}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: 'SpoqaHanSansNeo-Medium',
+                      fontSize: responsiveWidth(14),
+                      lineHeight: responsiveHeight(24),
+                      letterSpacing: responsiveWidth(-0.6),
+                      color: '#505866',
+                    }}>
+                    {u.nickname}
+                  </Text>
+                </View>
+              ))}
+          </View>
+
+          {/* 친구 기능 추가 후 생성 */}
+          {/* <View style={styles.listContent}>
           <Text style={{fontSize: FontSize.medium}}>함꼐한 친구</Text>
           <WithLocalSvg asset={RightArrow} width={20} height={20} />
         </View> */}
-        <View style={styles.listContent}>
-          <Text style={styles.subTitle}>비공개</Text>
-          <Switch
-            value={isPrivate}
-            onValueChange={() => setIsPrivate(!isPrivate)}
-            color="#4880EE"
-          />
+          <View style={styles.listContent}>
+            <Text style={styles.subTitle}>비공개</Text>
+            <Switch
+              value={isPrivate}
+              onValueChange={() => setIsPrivate(!isPrivate)}
+              color="#4880EE"
+            />
+          </View>
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              marginBottom: responsiveHeight(10),
+            }}>
+            <SubmitButton
+              title={'완료'}
+              onPress={submitPost}
+              loading={loading}
+            />
+          </View>
         </View>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            marginBottom: responsiveHeight(10),
-          }}>
-          <SubmitButton title={'완료'} onPress={submitPost} loading={loading} />
-        </View>
-      </View>
 
-      <Modal visible={gpsPermission} animationType={'fade'} transparent={true}>
-        <GpsAlert />
-      </Modal>
-    </View>
+        <Modal
+          visible={gpsPermission}
+          animationType={'fade'}
+          transparent={true}>
+          <GpsAlert />
+        </Modal>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

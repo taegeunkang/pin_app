@@ -19,7 +19,7 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {TouchableOpacity} from 'react-native';
 import {API_URL} from '../../utils/constants';
 import UserCell from '../../components/Content/UserCell';
-import { reIssue } from '../../utils/login';
+import {reIssue} from '../../utils/login';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
@@ -108,7 +108,7 @@ const FindingFriends = ({navigation, route}) => {
       let a = userList;
       a = a.concat(r);
       setUserList(a);
-    }else if (response.status == 400) {
+    } else if (response.status == 400) {
       const k = await response.json();
       switch (k['code']) {
         case 'U08':
@@ -141,7 +141,7 @@ const FindingFriends = ({navigation, route}) => {
       let a = userList;
       a = a.concat(r);
       setUserList(a);
-    }else if (response.status == 400) {
+    } else if (response.status == 400) {
       const k = await response.json();
       switch (k['code']) {
         case 'U08':
@@ -236,7 +236,7 @@ const FindingFriends = ({navigation, route}) => {
         />
       </View>
 
-      <View style={{marginTop: responsiveHeight(20)}} />
+      {/* <View style={{marginTop: responsiveHeight(20)}} /> */}
       {/* 첫 화면 진입시 검색 기록이 존재 하지 않을 때 */}
       {/* <View style={{flex: 1, backgroundColor: Colors.white}}></View> */}
 
@@ -274,7 +274,8 @@ const FindingFriends = ({navigation, route}) => {
       {inpt && userList && userList.length == 0 && (
         <View
           style={{
-            flex: 1,
+            width: '100%',
+            height: '100%',
             backgroundColor: Colors.white,
             justifyContent: 'center',
             alignItems: 'center',

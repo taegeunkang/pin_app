@@ -9,19 +9,24 @@ import {
 import {useTheme} from '../../hooks';
 import {responsiveHeight, responsiveWidth} from '../Scale';
 import {API_URL} from '../../utils/constants';
+import FastImage from 'react-native-fast-image';
 const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
   const {Images} = useTheme();
 
   return (
     <Pressable onPress={onPress} style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Image
-          source={{uri: API_URL + `/user/profile/image?watch=${profileImage}`}}
+        <FastImage
+          source={{
+            uri: API_URL + `/user/profile/image?watch=${profileImage}`,
+            priority: FastImage.priority.high,
+          }}
           style={{
             width: responsiveWidth(35),
             height: responsiveHeight(35),
             borderRadius: responsiveWidth(12),
-          }}></Image>
+          }}
+        />
         <Text style={styles.nickname}>{name}</Text>
       </View>
       {closeAvailable ? (

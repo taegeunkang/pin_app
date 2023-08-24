@@ -6,33 +6,23 @@ import {
   Text,
   View,
   Animated,
-  SafeAreaView,
   Image,
 } from 'react-native';
 import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
 import Geolocation from '@react-native-community/geolocation';
 import {useEffect, useState, useRef} from 'react';
-import GpsAlert from '../../components/Content/GpsAlert';
-import ListModal from '../../components/Content/ListModal';
-import {Colors} from '../../theme/Variables';
-import {launchCamera} from 'react-native-image-picker';
 import {WithLocalSvg} from 'react-native-svg';
 import CurrentLocationBtn from '../../theme/assets/images/nav/location.svg';
 import {useTheme} from '../../hooks';
-import MyPage from './MyPage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import Permission from './Permission';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import {check_email} from '../../utils/email';
 import {reIssue} from '../../utils/login';
-import {Fonts} from '../../theme';
-import {combineTransition} from 'react-native-reanimated';
 import Detail1 from './Detail1';
+import FastImage from 'react-native-fast-image';
 const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -323,10 +313,11 @@ const Home = ({navigation}) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
-                      <Image
+                      <FastImage
                         source={{
                           uri:
                             API_URL + '/post/image?watch=' + content.thumbnail,
+                          priority: FastImage.priority.high,
                         }}
                         style={{
                           width: '91%',

@@ -3,6 +3,7 @@ import Swiper from 'react-native-swiper';
 import {API_URL} from '../../utils/constants';
 import {useEffect, useRef} from 'react';
 import WebView from 'react-native-webview';
+import FastImage from 'react-native-fast-image';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -56,9 +57,12 @@ export const Slider = ({media}) => {
         </html>
         `;
         return ext == '.png' ? (
-          <Image
+          <FastImage
             key={index}
-            source={{uri: API_URL + '/post/image?watch=' + file}}
+            source={{
+              uri: API_URL + '/post/image?watch=' + file,
+              priority: FastImage.priority.high,
+            }}
             style={{width: '100%', height: '100%'}}
           />
         ) : (

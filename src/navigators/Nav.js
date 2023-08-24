@@ -111,6 +111,7 @@ const Nav = () => {
         },
         tabBarActiveTintColor: '#1A1E27',
         tabBarInactiveTintColor: '#6D7582',
+        headerStyle: {backgroundColor: '#FFFFFF'},
       })}>
       <Tab.Screen
         name="Home"

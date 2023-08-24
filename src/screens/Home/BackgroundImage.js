@@ -15,6 +15,7 @@ import {API_URL} from '../../utils/constants';
 import ChoosePic from '../../components/Content/ChoosePic';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {reIssue} from '../../utils/login';
+import FastImage from 'react-native-fast-image';
 const BackgroundImage = ({navigation, route}) => {
   const {backgroundImg} = route.params;
   const [pressed, setPressed] = useState(false);
@@ -100,7 +101,7 @@ const BackgroundImage = ({navigation, route}) => {
     }
   };
   return (
-    <View style={{flex: 1, alignItems: 'center'}}>
+    <View style={{flex: 1, alignItems: 'center', backgroundColor: '#FFFFFF'}}>
       <Modal visible={pressed} animationType={'slide'} transparent={true}>
         <ChoosePic onPress={closeModal} cancel={() => setPressed(false)} />
       </Modal>
@@ -111,9 +112,10 @@ const BackgroundImage = ({navigation, route}) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <Image
+        <FastImage
           source={{
             uri: showPic(),
+            priority: FastImage.priority.high,
           }}
           style={{
             width: '100%',

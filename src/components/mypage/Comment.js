@@ -6,6 +6,7 @@ import createTransform from 'redux-persist/es/createTransform';
 import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState} from 'react';
+import FastImage from 'react-native-fast-image';
 const Comment = ({
   commentId,
   writerId,
@@ -90,9 +91,10 @@ const Comment = ({
               alignItems: 'center',
               justifyContent: 'flex-start',
             }}>
-            <Image
+            <FastImage
               source={{
                 uri: API_URL + `/post/image?watch=${profileImage}`,
+                priority: FastImage.priority.high,
               }}
               style={{
                 width: responsiveWidth(25),

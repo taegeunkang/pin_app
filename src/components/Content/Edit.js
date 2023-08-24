@@ -1,4 +1,11 @@
-import {View, StyleSheet, Text, Pressable, SafeAreaView} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native';
 import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
 import {useTranslation} from 'react-i18next';
 import SubmitButton2 from '../SubmitButton2';
@@ -16,22 +23,24 @@ const Edit = ({
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Pressable
+        <TouchableOpacity
           onPress={setBackgroundImage}
           style={[styles.btn, styles.normal]}>
           <Text style={styles.main}>배경 이미지 변경</Text>
-        </Pressable>
-        <Pressable
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={setProfileImage}
           style={[styles.btn, styles.normal]}>
           <Text style={styles.main}>프로필 이미지 변경</Text>
-        </Pressable>
-        <Pressable onPress={setNickname} style={[styles.btn, styles.normal]}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={setNickname}
+          style={[styles.btn, styles.normal]}>
           <Text style={styles.main}>닉네임 편집</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
 
-      <Pressable onPress={close} style={[styles.btn, styles.last]}>
+      <TouchableOpacity onPress={close} style={[styles.btn, styles.last]}>
         <Text
           style={{
             fontFamily: 'SpoqaHanSansNeo-Medium',
@@ -42,7 +51,7 @@ const Edit = ({
           }}>
           취소
         </Text>
-      </Pressable>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

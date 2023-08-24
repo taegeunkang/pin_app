@@ -30,6 +30,7 @@ import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditComment from '../../components/Content/EditComment';
 import {reIssue} from '../../utils/login';
+import FastImage from 'react-native-fast-image';
 const screenWidth = Dimensions.get('screen').width;
 const Detail = ({navigation, route}) => {
   const {
@@ -414,9 +415,10 @@ const Detail = ({navigation, route}) => {
             <View style={styles.postContainer}>
               <View style={styles.writerBox}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Image
+                  <FastImage
                     source={{
                       uri: API_URL + `/post/image?watch=${profileImage}`,
+                      priority: FastImage.priority.high,
                     }}
                     style={styles.writerImage}
                   />
@@ -440,12 +442,13 @@ const Detail = ({navigation, route}) => {
                     mention.map((f, index) => {
                       if (index < 2) {
                         return (
-                          <Image
+                          <FastImage
                             key={index}
                             source={{
                               uri:
                                 API_URL +
                                 `/user/profile/image?watch=${f.profileImage}`,
+                              priority: FastImage.priority.high,
                             }}
                             style={styles.writerImage}
                           />

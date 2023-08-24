@@ -18,6 +18,7 @@ import LocationIconNotIconNot from '../../theme/assets/images/nav/loc-not.svg';
 import {useEffect, useState} from 'react';
 import {responsiveHeight, responsiveWidth} from '../Scale';
 import {API_URL} from '../../utils/constants';
+import FastImage from 'react-native-fast-image';
 const PostBox = ({
   postId,
   writerName,
@@ -49,10 +50,11 @@ const PostBox = ({
       <View style={styles.postContainer}>
         <View style={styles.writerBox}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
+            <FastImage
               source={{
                 uri:
                   API_URL + `/user/profile/image?watch=${writerProfileImage}`,
+                priority: FastImage.priority.high,
               }}
               style={styles.writerImage}
             />
@@ -72,12 +74,13 @@ const PostBox = ({
               mention.map((f, index) => {
                 if (index < 2) {
                   return (
-                    <Image
+                    <FastImage
                       key={index}
                       source={{
                         uri:
                           API_URL +
                           `/user/profile/image?watch=${f.profileImage}`,
+                        priority: FastImage.priority.high,
                       }}
                       style={styles.writerImage}
                     />
@@ -191,9 +194,12 @@ const PostFiles = ({images}) => {
       {images.map((image, index) => {
         if (index < 3) {
           return (
-            <Image
+            <FastImage
               key={index}
-              source={{uri: API_URL + `/post/image?watch=${image}`}}
+              source={{
+                uri: API_URL + `/post/image?watch=${image}`,
+                priority: FastImage.priority.high,
+              }}
               style={styles.media}
             />
           );
