@@ -36,7 +36,7 @@ const UserDetailNavigator = () => {
           letterSpacing: responsiveWidth(-0.6),
         },
         headerBackImage: () => <HeaderLeftButton />,
-        headerStyle: {backgroundColor: Colors.white},
+        headerStyle: {backgroundColor: '#FFFFFF'},
         cardStyleInterpolator: ({current, next, layouts}) => {
           return {
             cardStyle: {

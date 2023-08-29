@@ -114,10 +114,9 @@ const ProfileImage = ({navigation, route}) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <FastImage
+        <Image
           source={{
             uri: showPic(),
-            priority: FastImage.priority.high,
           }}
           style={{
             width: responsiveWidth(100),

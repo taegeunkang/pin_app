@@ -295,8 +295,8 @@ const styles = StyleSheet.create({
   },
   postContainer: {width: responsiveWidth(370)},
   writerImage: {
-    width: responsiveWidth(25),
-    height: responsiveHeight(25),
+    width: responsiveWidth(30),
+    height: responsiveHeight(30),
     borderRadius: responsiveWidth(8),
     marginRight: responsiveWidth(5),
   },

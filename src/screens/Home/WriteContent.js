@@ -198,13 +198,13 @@ const WriteContent = ({navigation, route}) => {
                 }}>
                 {media.map((m, index) => (
                   <View key={index} style={styles.imageContainer}>
-                    <FastImage
+                    <Image
                       style={{
                         width: responsiveWidth(100),
                         height: responsiveHeight(100),
                         borderRadius: responsiveWidth(12),
                       }}
-                      source={{uri: m.uri, priority: FastImage.priority.normal}}
+                      source={{uri: m.uri}}
                     />
                   </View>
                 ))}

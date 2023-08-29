@@ -63,7 +63,6 @@ const UserPage1 = ({navigation, route}) => {
 
     // 여기서 데이터를 새로 고치는 로직을 추가합니다.
     setPage(0);
-    setPostList([]);
     await getProfile();
     await initData();
     setTimeout(() => {
@@ -418,12 +417,6 @@ const UserPage1 = ({navigation, route}) => {
             <Text style={Fonts.contentMediumMedium}>
               게시글이 존재하지 않습니다.
             </Text>
-          </View>
-        )}
-
-        {loading && (
-          <View style={{marginVertical: responsiveHeight(20)}}>
-            <ActivityIndicator color={'#4880EE'} size={'large'} />
           </View>
         )}
       </ScrollView>

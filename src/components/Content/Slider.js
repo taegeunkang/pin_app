@@ -1,14 +1,22 @@
-import {View, StyleSheet, Text, Image, Dimensions} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Dimensions,
+  Pressable,
+} from 'react-native';
 import Swiper from 'react-native-swiper';
 import {API_URL} from '../../utils/constants';
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import WebView from 'react-native-webview';
 import FastImage from 'react-native-fast-image';
 
-const screenWidth = Dimensions.get('screen').width;
-
 export const Slider = ({media}) => {
   // 게시글 업로드시 포스터 생성 후 포스터도 같이 표시를 해주어ㅑ 한다.
+  const [fastImageResizeMode, setFastImageResizeMode] = useState(
+    FastImage.resizeMode.cover,
+  );
   return (
     <Swiper style={styles.wrapper} showsButtons={false}>
       {media.map((file, index) => {
@@ -45,8 +53,8 @@ export const Slider = ({media}) => {
           <body>
             <div class="video-container">
               <video
-                src="http://localhost:8080/post/streaming?watch=${file}"
-                poster="http://localhost:8080/post/image?watch=${file}"
+                src="${API_URL}/post/streaming?watch=${file}"
+                poster="${API_URL}/post/image?watch=${file}"
                 controls
                 muted
                 playsinline
@@ -57,14 +65,26 @@ export const Slider = ({media}) => {
         </html>
         `;
         return ext == '.png' ? (
-          <FastImage
-            key={index}
-            source={{
-              uri: API_URL + '/post/image?watch=' + file,
-              priority: FastImage.priority.high,
-            }}
-            style={{width: '100%', height: '100%'}}
-          />
+          <Pressable
+            onPress={() => {
+              // Toggle resizeMode when FastImage is pressed
+              console.log('clicked');
+              setFastImageResizeMode(
+                fastImageResizeMode === FastImage.resizeMode.cover
+                  ? FastImage.resizeMode.contain
+                  : FastImage.resizeMode.cover,
+              );
+            }}>
+            <FastImage
+              key={index}
+              source={{
+                uri: API_URL + '/post/image?watch=' + file,
+                priority: FastImage.priority.high,
+              }}
+              resizeMode={fastImageResizeMode}
+              style={{width: '100%', height: '100%'}}
+            />
+          </Pressable>
         ) : (
           <WebView
             key={index}

@@ -6,21 +6,9 @@ const Preview = ({route}) => {
   const item = route.params.item;
   const [scale, setScale] = useState(1);
   const [paused, setPaused] = useState(false);
-  const lastTap = useRef(null);
 
-  const handleDoubleTap = () => {
-    const now = Date.now();
-    const DOUBLE_PRESS_DELAY = 300;
-
-    if (lastTap.current && now - lastTap.current < DOUBLE_PRESS_DELAY) {
-      setPaused(prevPaused => !prevPaused); // 동영상의 정지/재생 상태를 전환
-    } else {
-      if (paused) {
-        // 동영상이 정지 상태라면
-        setPaused(false); // 동영상을 재생
-      }
-      lastTap.current = now;
-    }
+  const handleSingleTap = () => {
+    setPaused(prevPaused => !prevPaused); // 동영상의 정지/재생 상태를 전환
   };
 
   return (
@@ -32,7 +20,7 @@ const Preview = ({route}) => {
         justifyContent: 'center',
       }}>
       {item && item.substring(item.length - 3) === 'mp4' && (
-        <TouchableWithoutFeedback onPress={handleDoubleTap}>
+        <TouchableWithoutFeedback onPress={handleSingleTap}>
           <Video
             source={{uri: item}}
             style={{

@@ -43,6 +43,7 @@ const UploadPost = () => {
           lineHeight: responsiveHeight(24),
           letterSpacing: responsiveWidth(-0.6),
         },
+        headerStyle: {backgroundColor: '#FFFFFF'},
         headerBackImage: () => <HeaderLeftButton />,
         cardStyleInterpolator: ({current, next, layouts}) => {
           return {

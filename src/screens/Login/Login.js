@@ -141,7 +141,7 @@ const Login = ({navigation}) => {
           style={{
             width: '100%',
             height: responsiveHeight(200),
-            backgroundColor: 'transparent',
+            backgroundColor: Colors.white,
             justifyContent: 'center',
             alignItems: 'center',
           }}>

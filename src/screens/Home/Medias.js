@@ -7,6 +7,7 @@ import {
   Text,
   View,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import {Colors} from '../../theme/Variables';
@@ -98,6 +99,7 @@ const Medias = () => {
   };
 
   const addArray = async target => {
+    if (array && array.length >= 10) return;
     let arr = array;
     if (!isArrayContain(target) && arr.length <= 10) {
       arr.push(target);
@@ -134,7 +136,6 @@ const Medias = () => {
 
       <FlatList
         data={photos}
-        keyExtractor={item => item.id.toString()}
         onEndReached={getGalleryPhotos} // 스크롤이 끝나면 사진 불러오기 함수 호출
         onEndReachedThreshold={0.5}
         renderItem={({item}) => (
@@ -143,10 +144,9 @@ const Medias = () => {
               onPress={() =>
                 watchPreview(Platform.OS === 'ios' ? item.accessUri : item.uri)
               }>
-              <FastImage
+              <Image
                 source={{
                   uri: item.accessUri,
-                  priority: FastImage.priority.normal,
                 }}
                 style={{
                   width: Dimensions.get('window').width / 4,
@@ -198,7 +198,6 @@ const Medias = () => {
             )}
           </View>
         )}
-        // keyExtractor={item => item.id.toString()}
         numColumns={4}
         style={{backgroundColor: Colors.white, flex: 1}}
       />
