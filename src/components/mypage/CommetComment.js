@@ -4,7 +4,8 @@ import {useTheme} from '../../hooks';
 import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
-import { timeAgo } from '../../utils/util';
+import More from '../../theme/assets/images/light/detail.svg';
+import {timeAgo} from '../../utils/util';
 const CommentComment = ({
   commentId,
   nickname,
@@ -65,12 +66,9 @@ const CommentComment = ({
             </Text>
             {isMine() && (
               <Pressable onPress={onPress}>
-                <Image
-                  source={Images.more}
-                  style={{
-                    width: responsiveWidth(20),
-                    height: responsiveHeight(20),
-                  }}
+                <More
+                  width={responsiveWidth(20)}
+                  height={responsiveHeight(20)}
                 />
               </Pressable>
             )}

@@ -31,24 +31,24 @@ import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
 import More from '../../theme/assets/images/light/detail.svg';
 import {timeAgo} from '../../utils/util';
-const Detail = ({navigation, route}) => {
-  const {
-    postId,
-    nickname,
-    profileImage,
-    content,
-    mediaFiles,
-    locationName,
-    liked,
-    likesCount,
-    commentsCount,
-    createdDate,
-    mention,
-    thumbsUp,
-    userId,
-    reload,
-    close,
-  } = route.params;
+const MapDetail = ({
+  navigation,
+  route,
+  postId,
+  nickname,
+  profileImage,
+  content,
+  mediaFiles,
+  locationName,
+  liked,
+  likesCount,
+  commentsCount,
+  createdDate,
+  mention,
+  thumbsUp,
+  userId,
+  close,
+}) => {
   const {Fonts, Images} = useTheme();
   const [isLiked, setIsLiked] = useState(liked);
   const [likedCount, setLikedCount] = useState(likesCount);
@@ -67,8 +67,8 @@ const Detail = ({navigation, route}) => {
   const [reply, setReply] = useState(null);
   const [replyPage, setReplyPage] = useState({});
   const [replyLoading, setReplyLoading] = useState(false);
-  const {Colors} = useTheme();
   const [focused, setFocused] = useState(false);
+  const {Colors} = useTheme();
   const inptRef = useRef(null);
 
   const onRefresh = () => {
@@ -103,6 +103,7 @@ const Detail = ({navigation, route}) => {
     if (response.status == 200) {
       const r = await response.json();
       if (page == -1 || isRefresh) {
+        console.log('리프레시');
         setCommentList(r);
       } else {
         let a = commentList;
@@ -276,7 +277,6 @@ const Detail = ({navigation, route}) => {
       },
     });
     if (response.status == 200) {
-      if (reload != null) reload(postId);
       close();
     } else if (response.status == 400) {
       const k = await response.json();
@@ -349,14 +349,15 @@ const Detail = ({navigation, route}) => {
     <KeyboardAvoidingView
       style={{
         flex: 1,
+        width: Dimensions.get('screen').width,
         flexDirection: 'column',
         justifyContent: 'center',
         position: 'relative',
       }}
       behavior="padding"
       enabled
-      keyboardVerticalOffset={-30}>
-      <View
+      keyboardVerticalOffset={0}>
+      <SafeAreaView
         style={{
           flex: 1,
           backgroundColor: '#ffffff',
@@ -368,7 +369,7 @@ const Detail = ({navigation, route}) => {
             style={{
               width: Dimensions.get('screen').width,
               paddingHorizontal: responsiveWidth(10),
-              height: responsiveHeight(110),
+              height: responsiveHeight(35),
               flexDirection: 'row',
               alignItems: 'flex-end',
             }}>
@@ -439,9 +440,10 @@ const Detail = ({navigation, route}) => {
             <View style={styles.postContainer}>
               <View style={styles.writerBox}>
                 <Pressable
-                  onPress={() =>
-                    navigation.push('MapUserPage', {userId: userId})
-                  }
+                  onPress={() => {
+                    close();
+                    navigation.navigate('UserPage', {userId: userId});
+                  }}
                   style={{flexDirection: 'row', alignItems: 'center'}}>
                   <FastImage
                     source={{
@@ -668,12 +670,12 @@ const Detail = ({navigation, route}) => {
         <View
           style={{
             width: '100%',
-            // position: 'absolute',
-            // bottom: focused ? 0 : responsiveHeight(50),
+            position: 'absolute',
+            bottom: 0,
             height: responsiveHeight(70),
+            backgroundColor: '#ffffff',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#ffffff',
             zIndex: 400,
           }}>
           {/* 댓글 최대 150자*/}
@@ -687,15 +689,16 @@ const Detail = ({navigation, route}) => {
             maxLength={150}
             onSubmitEditing={() => submitComment()}
             // editable={!editable}
-            ref={inptRef}
             onFocus={() => setFocused(true)}
+            ref={inptRef}
             onBlur={() => {
-              setFocused(false);
               setReply(null);
+              setFocused(false);
             }}
           />
+          {!focused && <View style={{height: responsiveHeight(30)}} />}
         </View>
-        {!focused && <View style={{height: responsiveHeight(50)}} />}
+
         <Modal
           visible={replyModalVisible}
           animationType={'fade'}
@@ -726,10 +729,12 @@ const Detail = ({navigation, route}) => {
               deletePost();
               setPostModalVisible(false);
             }}
-            close={() => setPostModalVisible(false)}
+            close={() => {
+              setPostModalVisible(false);
+            }}
           />
         </Modal>
-      </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
@@ -814,4 +819,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Detail;
+export default MapDetail;

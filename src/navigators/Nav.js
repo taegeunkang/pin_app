@@ -13,12 +13,11 @@ import UploadIcon from '../theme/assets/images/light/upload-select.svg';
 import UploadIconNot from '../theme/assets/images/light/upload-not-select.svg';
 import UserIcon from '../theme/assets/images/light/user-select.svg';
 import UserIconNot from '../theme/assets/images/light/user-not-select.svg';
-import {Image} from 'react-native';
-import Content from './Content';
 import UploadPost from './UploadPost';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
 import AlertNavigator from './AlertNavigator';
-import SearchNavigator from './SearchNavigator';
+import MyPage from '../screens/Home/MyPage';
+import Search from '../screens/Home/Search';
 const Tab = createBottomTabNavigator();
 const Nav = () => {
   const {t} = useTranslation('content');
@@ -106,7 +105,7 @@ const Nav = () => {
       />
       <Tab.Screen
         name={t('nav.search')}
-        component={SearchNavigator}
+        component={Search}
         options={{
           headerShown: false,
         }}
@@ -126,7 +125,7 @@ const Nav = () => {
 
       <Tab.Screen
         name={t('nav.mypage')}
-        component={Content}
+        component={MyPage}
         options={{headerShown: false}}
       />
       <Tab.Screen

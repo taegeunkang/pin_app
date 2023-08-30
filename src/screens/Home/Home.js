@@ -7,6 +7,7 @@ import {
   Animated as Ani,
   Image,
   Dimensions,
+  Modal,
   SafeAreaView,
 } from 'react-native';
 import {Marker} from 'react-native-maps';
@@ -23,15 +24,17 @@ import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {reIssue} from '../../utils/login';
 import MapNavigator from '../../navigators/MapNavigator';
 import FastImage from 'react-native-fast-image';
-import Modal from 'react-native-modal';
 import SlidingUpPanel from 'rn-sliding-up-panel';
-const Home = () => {
+import Detail from './Detail';
+import MapDetail from './MapDetail';
+const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [contents, setContents] = useState([]);
   const [permission, setPermission] = useState(true);
   const [detailPressed, setDetailPressed] = useState(false);
   const [focusedPin, setFocusedPin] = useState(null);
+  const [modalHeight, setModalHeight] = useState(0);
   const mapRef = useRef(null);
   const {Gutters, Images} = useTheme();
   const scaleValue = useState(new Ani.Value(1))[0];
@@ -178,7 +181,7 @@ const Home = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {!latitude && !longitude && (
         <View
           style={{
@@ -314,7 +317,7 @@ const Home = () => {
                     onPress={() => {
                       setFocusedPin(content.detail);
                       setDetailPressed(true);
-                      this._panel.show();
+                      console.log(content.detail);
                     }}>
                     <View
                       {...content}
@@ -367,42 +370,17 @@ const Home = () => {
         />
       </Modal>
 
-      <SlidingUpPanel
-        ref={c => (this._panel = c)}
-        allowDragging={false}
-        draggableRange={{
-          top: Dimensions.get('screen').height - responsiveHeight(50),
-          bottom: 0,
-        }}>
-        {detailPressed && (
-          <MapNavigator
-            {...focusedPin}
-            thumbsUp={thumbsUp}
-            close={() => {
-              this._panel.hide();
-              setDetailPressed(false);
-            }}
-          />
-        )}
-      </SlidingUpPanel>
-      {/* <Modal visible={detailPressed} animationType={'slide'} transparent={true}> */}
-      {/* {detailPressed && (
-        <View
-          style={[
-            {
-              width: Dimensions.get('screen').width,
-              height: Dimensions.get('screen').height,
-              backgroundColor: 'yellow',
-              zIndex: 200,
-              position: 'absolute',
-            },
-          ]}>
-          <MapNavigator {...focusedPin} close={close} />
-        </View>
-      )} */}
-
-      {/* </Modal> */}
-    </View>
+      <Modal visible={detailPressed} animationType={'slide'} transparent={true}>
+        <MapDetail
+          {...focusedPin}
+          close={() => {
+            close();
+          }}
+          navigation={navigation}
+          thumbsUp={thumbsUp}
+        />
+      </Modal>
+    </SafeAreaView>
   );
 };
 

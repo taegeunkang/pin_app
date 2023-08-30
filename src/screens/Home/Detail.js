@@ -47,7 +47,6 @@ const Detail = ({navigation, route}) => {
     thumbsUp,
     userId,
     reload,
-    close,
   } = route.params;
   const {Fonts, Images} = useTheme();
   const [isLiked, setIsLiked] = useState(liked);
@@ -275,7 +274,7 @@ const Detail = ({navigation, route}) => {
       },
     });
     if (response.status == 200) {
-      if (reload != null) reload(postId);
+      reload(postId);
       navigation.pop();
     } else if (response.status == 400) {
       const k = await response.json();
@@ -348,6 +347,7 @@ const Detail = ({navigation, route}) => {
     <KeyboardAvoidingView
       style={{
         flex: 1,
+        width: Dimensions.get('screen').width,
         flexDirection: 'column',
         justifyContent: 'center',
         position: 'relative',
@@ -361,57 +361,6 @@ const Detail = ({navigation, route}) => {
           backgroundColor: '#ffffff',
           alignItems: 'center',
         }}>
-        {/* 헤더*/}
-        {close != null && (
-          <View
-            style={{
-              width: Dimensions.get('screen').width,
-              paddingHorizontal: responsiveWidth(10),
-              height: responsiveHeight(110),
-              flexDirection: 'row',
-              alignItems: 'flex-end',
-            }}>
-            <View style={{width: '33.33%'}}></View>
-            <View
-              style={{
-                width: '33.33%',
-                height: responsiveHeight(30),
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  color: '#1A1E27',
-                  fontFamily: 'SpoqaHanSansNeo-Bold',
-                  fontSize: responsiveWidth(14),
-                  lineHeight: responsiveHeight(24),
-                  letterSpacing: responsiveWidth(-0.6),
-                }}>
-                게시글
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={close}
-              style={{
-                width: '33.33%',
-                backgroundColor: Colors.transparent,
-                height: responsiveHeight(30),
-                justifyContent: 'center',
-                alignItems: 'flex-end',
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'SpoqaHanSansNeo-Bold',
-                  fontSize: responsiveWidth(14),
-                  lineHeight: responsiveHeight(24),
-                  letterSpacing: responsiveWidth(-0.6),
-                  color: '#4880EE',
-                }}>
-                닫기
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -495,7 +444,6 @@ const Detail = ({navigation, route}) => {
                       height: responsiveHeight(25),
                       alignItems: 'center',
                       justifyContent: 'center',
-                      backgroundColor: 'yellow',
                     }}>
                     <More
                       width={responsiveWidth(20)}
@@ -665,7 +613,7 @@ const Detail = ({navigation, route}) => {
           style={{
             width: '100%',
             position: 'absolute',
-            bottom: 0,
+            bottom: responsiveHeight(15),
             height: responsiveHeight(70),
             backgroundColor: '#ffffff',
             alignItems: 'center',

@@ -50,7 +50,40 @@ const UserPage = ({navigation, route}) => {
     }, [isPopped]), // isPopped 의존성을 추가
   );
 
-  const initUserId = async () => {};
+  const fetchData = async () => {
+    setLoading(true);
+    const userId = await AsyncStorage.getItem('id');
+    const response = await fetch(
+      API_URL + `/post/find/all?userId=${userId}&page=${page + 1}&size=${20}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        },
+      },
+    );
+
+    switch (response.status) {
+      case 200:
+        let r = await response.json();
+        if (r.length > 0) setPage(page + 1);
+        let a = postList;
+        a = a.concat(r);
+        setPostList(a);
+        break;
+      case 400:
+        const k = await response.json();
+        switch (k['code']) {
+          case 'U08':
+            await reIssue();
+            await fetchData();
+            break;
+        }
+        break;
+    }
+
+    setLoading(false);
+  };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -77,7 +110,6 @@ const UserPage = ({navigation, route}) => {
     switch (response.status) {
       case 200:
         let r = await response.json();
-
         setPostList(r);
         break;
       case 400:
@@ -216,10 +248,6 @@ const UserPage = ({navigation, route}) => {
     initData();
   }, []);
 
-  useEffect(() => {
-    // fetchData();
-  }, [page]);
-
   return (
     <SafeAreaView style={[styles.container]}>
       <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
@@ -261,7 +289,7 @@ const UserPage = ({navigation, route}) => {
               nativeEvent.contentOffset.y >=
             nativeEvent.contentSize.height - responsiveHeight(50);
           if (isCloseToBottom) {
-            setPage(prevPage => prevPage + 1);
+            fetchData();
           }
         }}
         scrollEventThrottle={400}
@@ -385,9 +413,11 @@ const UserPage = ({navigation, route}) => {
             onPress={() => {
               navigation.navigate('Detail', {
                 ...post,
-                onLikePress: thumbsUp,
+                thumbsUp: thumbsUp,
                 userId: id,
-                reload: () => setIsPopped(true),
+                reload: () => {
+                  setIsPopped(true);
+                },
               });
             }}
             thumbsUp={thumbsUp}

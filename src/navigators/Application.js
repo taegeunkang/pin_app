@@ -13,6 +13,8 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import Startup from '../screens/Startup/Startup';
+import FollowerList from '../screens/Home/FollowerList';
+import FollowingList from '../screens/Home/FollowingList';
 import {useTheme} from '../hooks';
 // import ContentNavigator from './Content';
 import NavNavigator from './Nav';
@@ -24,11 +26,18 @@ import {useTranslation} from 'react-i18next';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
 import ProfileInitialSetting from '../screens/Login/ProfileInitialSetting';
 import {Colors} from '../theme/Variables';
-import UserDetailNavigator from './UserDetailNavigator';
+import MapNavigator from './MapNavigator';
+import UserPage from '../screens/Home/UserPage';
+import ProfileImage from '../screens/Home/ProfileImage';
+import BackgroundImage from '../screens/Home/BackgroundImage';
+import Nickname from '../screens/Home/Nickname';
+import DetailMention from '../screens/Home/DetailMention';
+import Detail from '../screens/Home/Detail';
+import Search from '../screens/Home/Search';
 const Stack = createStackNavigator();
 // @refresh reset
 const ApplicationNavigator = () => {
-  const {t} = useTranslation('login');
+  const {t} = useTranslation(['login', 'myPage']);
   const {Layout, darkMode, NavigationTheme} = useTheme();
   const {colors} = NavigationTheme;
   const navigationRef = useNavigationContainerRef();
@@ -77,7 +86,7 @@ const ApplicationNavigator = () => {
             name="Register"
             component={Register}
             options={{
-              title: t('header.register'),
+              title: t('login:header.register'),
             }}
           />
           <Stack.Screen
@@ -92,7 +101,14 @@ const ApplicationNavigator = () => {
             component={ProfileInitialSetting}
             options={{
               headerShown: true,
-              headerTitle: t('profileSetting'),
+              headerTitle: t('login:profileSetting'),
+            }}
+          />
+          <Stack.Screen
+            name={'검색'}
+            component={Search}
+            options={{
+              headerShown: false,
             }}
           />
 
@@ -101,10 +117,74 @@ const ApplicationNavigator = () => {
             component={NavNavigator}
             options={{headerShown: false}}
           />
+
           <Stack.Screen
-            name="UserDetailNavigator"
-            component={UserDetailNavigator}
+            name="MapNavigator"
+            component={MapNavigator}
             options={{headerShown: false}}
+          />
+
+          <Stack.Screen
+            name="UserPage"
+            component={UserPage}
+            options={{headerShown: true, headerTitle: '프로필'}}
+          />
+
+          <Stack.Screen
+            name="FollowerList"
+            component={FollowerList}
+            options={{
+              headerShown: true,
+              headerTitle: t('myPage:profile.follower'),
+            }}
+          />
+          <Stack.Screen
+            name="FollowingList"
+            component={FollowingList}
+            options={{
+              headerShown: true,
+              headerTitle: t('myPage:profile.following'),
+            }}
+          />
+          <Stack.Screen
+            name="Detail"
+            component={Detail}
+            options={{
+              headerBackTitleVisible: false,
+              headerTitle: t('myPage:profile.detail'),
+            }}
+          />
+          <Stack.Screen
+            name="DetailMention"
+            component={DetailMention}
+            options={{
+              headerBackTitleVisible: false,
+              headerTitle: t('myPage:post.friends'),
+            }}
+          />
+          <Stack.Screen
+            name="ProfileImage"
+            component={ProfileImage}
+            options={{
+              headerBackTitleVisible: false,
+              headerTitle: t('myPage:profile.profileImage'),
+            }}
+          />
+          <Stack.Screen
+            name="BackgroundImage"
+            component={BackgroundImage}
+            options={{
+              headerBackTitleVisible: false,
+              headerTitle: t('myPage:profile.backgroundImage'),
+            }}
+          />
+          <Stack.Screen
+            name="Nickname"
+            component={Nickname}
+            options={{
+              headerBackTitleVisible: false,
+              headerTitle: t('myPage:profile.nickname'),
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>

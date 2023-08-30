@@ -5,7 +5,7 @@ import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState} from 'react';
 import FastImage from 'react-native-fast-image';
-import More from '../../theme/assets/images/light/more.svg';
+import More from '../../theme/assets/images/light/detail.svg';
 import {timeAgo} from '../../utils/util';
 const Comment = ({
   commentId,
