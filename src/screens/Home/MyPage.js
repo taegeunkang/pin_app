@@ -47,7 +47,6 @@ const MyPage = ({navigation}) => {
   );
 
   const reload = async postid => {
-    console.log('실행됨');
     setIsPopped(true);
     let a = postList;
     let b = [];
@@ -100,10 +99,6 @@ const MyPage = ({navigation}) => {
     switch (response.status) {
       case 200:
         let r = await response.json();
-
-        for (let a = 0; a < r.length; a++) {
-          console.log(r[a]);
-        }
         setPostList(r);
         break;
       case 400:
@@ -227,7 +222,6 @@ const MyPage = ({navigation}) => {
           }}
           close={() => setModalVisible(false)}
         />
-        {/* <GpsAlert onPress={() => setModalVisible(false)} /> */}
       </Modal>
       <ScrollView
         refreshControl={

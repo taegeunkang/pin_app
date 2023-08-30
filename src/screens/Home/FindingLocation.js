@@ -32,12 +32,9 @@ const FindingLocation = ({navigation, route}) => {
   };
   const onChangeTyping = e => {
     setCustomTyping(e);
-    console.log(e);
-    // console.log(customTyping);
     if (e.length > 0) {
       setTyping(true);
     } else {
-      console.log('empty');
       setTyping(false);
     }
   };

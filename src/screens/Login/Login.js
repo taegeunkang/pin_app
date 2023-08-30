@@ -147,7 +147,7 @@ const Login = ({navigation}) => {
           <InputBox
             title={'이메일'}
             placeholder={t('input.id')}
-            onChangeText={e => setId(e)}
+            onChangeText={e => setId(e.toLowerCase())}
             value={id}
             isWrong={wrongId || wrongRes}
             ref={inputRef}

@@ -191,17 +191,12 @@ const FindingFriends = ({navigation, route}) => {
   });
 
   const addFriends = async user => {
-    console.log(user);
-    console.log('add');
     let a = friendsList;
     a = a.concat(user);
-    console.log(a);
     setFriendsList(a);
   };
 
   const subFriends = async user => {
-    console.log(user);
-    console.log('sub');
     let a = [];
     for (let i = 0; i < friendsList; i++) {
       if (friendsList[i].userId == user.userId) {
@@ -210,7 +205,6 @@ const FindingFriends = ({navigation, route}) => {
       a.push(friendsList[i]);
     }
     setFriendsList(a);
-    console.log(a);
   };
 
   return (

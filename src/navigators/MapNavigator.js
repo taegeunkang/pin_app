@@ -6,10 +6,7 @@ import FollowingList from '../screens/Home/FollowingList';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useTranslation} from 'react-i18next';
 import Detail from '../screens/Home/Detail';
-import Detail1 from '../screens/Home/Detail';
 import {Colors} from '../theme/Variables';
-import {WithLocalSvg} from 'react-native-svg';
-import {useTheme} from '../hooks';
 import HeaderLeftButton from '../components/HeaderLeftButton';
 import {responsiveWidth, responsiveHeight} from '../components/Scale';
 import ProfileImage from '../screens/Home/ProfileImage';
@@ -20,7 +17,7 @@ import DetailMention from '../screens/Home/DetailMention';
 const Stack = createStackNavigator();
 
 // @refresh reset
-const Content = () => {
+const MapNavigator = props => {
   const {t} = useTranslation('myPage');
   return (
     <Stack.Navigator
@@ -52,12 +49,16 @@ const Content = () => {
         },
       }}>
       <Stack.Screen
-        name="MyPage"
-        component={MyPage}
-        options={{headerShown: false}}
+        name="MapUser"
+        component={Detail}
+        initialParams={props}
+        options={{
+          headerBackTitleVisible: false,
+          headerTitle: t('profile.detail'),
+        }}
       />
       <Stack.Screen
-        name="UserPage"
+        name="MapUserPage"
         component={UserPage}
         options={{headerShown: true, headerTitle: '프로필'}}
       />
@@ -85,7 +86,6 @@ const Content = () => {
           headerTitle: t('profile.detail'),
         }}
       />
-
       <Stack.Screen
         name="DetailMention"
         component={DetailMention}
@@ -129,4 +129,4 @@ const Content = () => {
     </Stack.Navigator>
   );
 };
-export default Content;
+export default MapNavigator;

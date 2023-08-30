@@ -57,7 +57,6 @@ const BackgroundImage = ({navigation, route}) => {
   };
 
   const closeModal = item => {
-    console.log(item);
     setPic(item);
     setDefaultPic(false);
     setPressed(false);

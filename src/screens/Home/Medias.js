@@ -16,7 +16,6 @@ import {useTheme} from '../../hooks';
 import SubmitButton from '../../components/SubmitButton';
 import {useNavigation} from '@react-navigation/native';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import FastImage from 'react-native-fast-image';
 // ios 일 떄 파일 형식 변경을 해야지 정상적으로 불러오기 및 저장 가능
 
 const Medias = () => {
@@ -27,6 +26,7 @@ const Medias = () => {
   const [array, setArray] = useState([]);
   const {Images} = useTheme();
   const navigation = useNavigation();
+
   useEffect(() => {
     const t = async () => {
       await getGalleryPhotos();

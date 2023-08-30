@@ -5,6 +5,8 @@ import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState} from 'react';
 import FastImage from 'react-native-fast-image';
+import More from '../../theme/assets/images/light/more.svg';
+import {timeAgo} from '../../utils/util';
 const Comment = ({
   commentId,
   writerId,
@@ -27,51 +29,6 @@ const Comment = ({
   const showReplyProxy = async commentId => {
     await showReply(commentId);
     setClosed(false);
-  };
-
-  const timeAgo = dateInput => {
-    let t = dateInput.substring(0, dateInput.length - 10);
-    const now = new Date();
-    const utcNow = Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate(),
-      now.getUTCHours(),
-      now.getUTCMinutes(),
-      now.getUTCSeconds(),
-    );
-
-    const date = new Date(t);
-    const utcDate = Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      date.getUTCDate(),
-      date.getUTCHours(),
-      date.getUTCMinutes(),
-      date.getUTCSeconds(),
-    );
-
-    const seconds = Math.floor((utcNow - utcDate) / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (seconds < 60) {
-      return `${seconds}초전`;
-    } else if (minutes < 60) {
-      return `${minutes}분전`;
-    } else if (hours < 24) {
-      return `${hours}시간전`;
-    } else if (days <= 7) {
-      return `${days}일전`;
-    } else {
-      // mm.dd.YYYY 형식으로 반환
-      const year = date.getFullYear();
-      // 월은 0부터 시작하기 때문에 1을 더해줍니다.
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${month}.${day}.${year}`;
-    }
   };
 
   return (
@@ -119,12 +76,9 @@ const Comment = ({
             </Text>
             {myComment() && (
               <Pressable onPress={onPress}>
-                <Image
-                  source={Images.more}
-                  style={{
-                    width: responsiveWidth(20),
-                    height: responsiveHeight(20),
-                  }}
+                <More
+                  width={responsiveWidth(20)}
+                  height={responsiveHeight(20)}
                 />
               </Pressable>
             )}

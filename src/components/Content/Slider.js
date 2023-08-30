@@ -68,7 +68,6 @@ export const Slider = ({media}) => {
           <Pressable
             onPress={() => {
               // Toggle resizeMode when FastImage is pressed
-              console.log('clicked');
               setFastImageResizeMode(
                 fastImageResizeMode === FastImage.resizeMode.cover
                   ? FastImage.resizeMode.contain

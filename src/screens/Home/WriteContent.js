@@ -17,7 +17,6 @@ import {Switch} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
-import GpsAlert from '../../components/Content/GpsAlert';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import SubmitButton from '../../components/SubmitButton';
 import Plus from '../../theme/assets/images/light/plus.svg';
@@ -148,7 +147,6 @@ const WriteContent = ({navigation, route}) => {
       },
       body: formData,
     });
-    console.log(response.status);
     if (response.status == 200) {
       navigation.reset({routes: [{name: 'Home'}]});
     } else if (response.status == 400) {
@@ -344,13 +342,6 @@ const WriteContent = ({navigation, route}) => {
             />
           </View>
         </View>
-
-        <Modal
-          visible={gpsPermission}
-          animationType={'fade'}
-          transparent={true}>
-          <GpsAlert />
-        </Modal>
       </View>
     </TouchableWithoutFeedback>
   );

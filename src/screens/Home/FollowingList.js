@@ -70,7 +70,6 @@ const FollowingList = ({navigation, route}) => {
     );
     if (response.status == 200) {
       const r = await response.json();
-      console.log(r);
       setUserList(r);
     } else if (response.status == 400) {
       const k = await response.json();

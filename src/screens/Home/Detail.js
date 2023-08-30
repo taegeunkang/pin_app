@@ -3,7 +3,7 @@ import {
   Text,
   StyleSheet,
   Image,
-  Dimensions,
+  TouchableOpacity,
   ScrollView,
   RefreshControl,
   SafeAreaView,
@@ -14,12 +14,11 @@ import {
   Pressable,
 } from 'react-native';
 import {useTheme} from '../../hooks';
-import {WithLocalSvg} from 'react-native-svg';
 import SmaileIcon from '../../theme/assets/images/light/smile-select.svg';
 import SmaileIconNot from '../../theme/assets/images/light/smile-not-select.svg';
 import CommentIconNot from '../../theme/assets/images/light/comment-not-select.svg';
 import LocationIconNot from '../../theme/assets/images/light/pin-not-select.svg';
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, useLayoutEffect} from 'react';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Slider} from '../../components/Content/Slider';
 import Comment from '../../components/mypage/Comment';
@@ -29,7 +28,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditComment from '../../components/Content/EditComment';
 import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
-const screenWidth = Dimensions.get('screen').width;
+import More from '../../theme/assets/images/light/detail.svg';
+import {timeAgo} from '../../utils/util';
 const Detail = ({navigation, route}) => {
   const {
     postId,
@@ -46,6 +46,7 @@ const Detail = ({navigation, route}) => {
     thumbsUp,
     userId,
     reload,
+    close,
   } = route.params;
   const {Fonts, Images} = useTheme();
   const [isLiked, setIsLiked] = useState(liked);
@@ -65,7 +66,37 @@ const Detail = ({navigation, route}) => {
   const [reply, setReply] = useState(null);
   const [replyPage, setReplyPage] = useState({});
   const [replyLoading, setReplyLoading] = useState(false);
+  const {Colors} = useTheme();
   const inptRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (close != null) {
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={close}
+            style={{
+              backgroundColor: Colors.transparent,
+              width: responsiveWidth(60),
+              height: responsiveHeight(30),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'SpoqaHanSansNeo-Bold',
+                fontSize: responsiveWidth(14),
+                lineHeight: responsiveHeight(24),
+                letterSpacing: responsiveWidth(-0.6),
+                color: '#4880EE',
+              }}>
+              닫기
+            </Text>
+          </TouchableOpacity>
+        ),
+      });
+    }
+  });
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -272,7 +303,7 @@ const Detail = ({navigation, route}) => {
       },
     });
     if (response.status == 200) {
-      reload(postId);
+      if (reload != null) reload(postId);
       navigation.pop();
     } else if (response.status == 400) {
       const k = await response.json();
@@ -308,7 +339,6 @@ const Detail = ({navigation, route}) => {
     );
     if (response.status == 200) {
       const r = await response.json();
-      console.log(r);
       // 페이지 늘림
       let b = replyPage;
       b[commentId] = b[commentId] + 1;
@@ -336,57 +366,30 @@ const Detail = ({navigation, route}) => {
     setReplyLoading(false);
   };
   useEffect(() => {
+    console.log(thumbsUp);
     fetchComment();
   }, []);
+  const moreHandler = () => {
+    setPostModalVisible(true);
+  };
 
   return (
     <KeyboardAvoidingView
-      style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}
+      style={{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        zIndex: 1000,
+      }}
       behavior="padding"
       enabled
       keyboardVerticalOffset={100}>
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: '#FFFFFF',
+          backgroundColor: '#ffffff',
           alignItems: 'center',
         }}>
-        <Modal
-          visible={replyModalVisible}
-          animationType={'fade'}
-          transparent={true}>
-          <EditComment
-            deleteComment={() => {
-              deleteReply();
-              setReplyModalVisible(false);
-            }}
-            close={() => setReplyModalVisible(false)}
-          />
-          {/* <GpsAlert onPress={() => setModalVisible(false)} /> */}
-        </Modal>
-        <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
-          <EditComment
-            deleteComment={() => {
-              deleteComment();
-              setModalVisible(false);
-            }}
-            close={() => setModalVisible(false)}
-          />
-          {/* <GpsAlert onPress={() => setModalVisible(false)} /> */}
-        </Modal>
-        <Modal
-          visible={postModalVisible}
-          animationType={'fade'}
-          transparent={true}>
-          <EditComment
-            deleteComment={() => {
-              deletePost();
-              setPostModalVisible(false);
-            }}
-            close={() => setPostModalVisible(false)}
-          />
-          {/* <GpsAlert onPress={() => setModalVisible(false)} /> */}
-        </Modal>
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -431,13 +434,13 @@ const Detail = ({navigation, route}) => {
                     {timeAgo(createdDate)}
                   </Text>
                 </View>
-                <Pressable
-                  onPress={() =>
-                    navigation.push('DetailMention', {friends: mention})
-                  }
-                  style={{flexDirection: 'row'}}>
-                  {mention &&
-                    mention.map((f, index) => {
+                {mention && (
+                  <Pressable
+                    onPress={() => {
+                      navigation.push('DetailMention', {friends: mention});
+                    }}
+                    style={{flexDirection: 'row', backgroundColor: 'black'}}>
+                    {mention.map((f, index) => {
                       if (index < 2) {
                         return (
                           <FastImage
@@ -456,28 +459,28 @@ const Detail = ({navigation, route}) => {
                       }
                     })}
 
-                  {mention && mention.length - 2 > 0 && (
-                    <MoreFriends count={mention.length - 2} />
-                  )}
-                  {isMyPost() && (
-                    <Pressable
-                      onPress={() => setPostModalVisible(true)}
-                      style={{
-                        width: responsiveWidth(25),
-                        height: responsiveHeight(25),
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <Image
-                        source={Images.more}
-                        style={{
-                          width: responsiveWidth(20),
-                          height: responsiveHeight(20),
-                        }}
-                      />
-                    </Pressable>
-                  )}
-                </Pressable>
+                    {mention.length - 2 > 0 && (
+                      <MoreFriends count={mention.length - 2} />
+                    )}
+                  </Pressable>
+                )}
+
+                {isMyPost() && (
+                  <Pressable
+                    onPress={() => setPostModalVisible(true)}
+                    style={{
+                      width: responsiveWidth(25),
+                      height: responsiveHeight(25),
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'yellow',
+                    }}>
+                    <More
+                      width={responsiveWidth(20)}
+                      height={responsiveHeight(20)}
+                    />
+                  </Pressable>
+                )}
               </View>
               {/* 본문 글 최대 500자 */}
               <Text
@@ -661,6 +664,39 @@ const Detail = ({navigation, route}) => {
             onBlur={() => setReply(null)}
           />
         </View>
+        <Modal
+          visible={replyModalVisible}
+          animationType={'fade'}
+          transparent={true}>
+          <EditComment
+            deleteComment={() => {
+              deleteReply();
+              setReplyModalVisible(false);
+            }}
+            close={() => setReplyModalVisible(false)}
+          />
+        </Modal>
+        <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
+          <EditComment
+            deleteComment={() => {
+              deleteComment();
+              setModalVisible(false);
+            }}
+            close={() => setModalVisible(false)}
+          />
+        </Modal>
+        <Modal
+          visible={postModalVisible}
+          animationType={'fade'}
+          transparent={true}>
+          <EditComment
+            deleteComment={() => {
+              deletePost();
+              setPostModalVisible(false);
+            }}
+            close={() => setPostModalVisible(false)}
+          />
+        </Modal>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
@@ -704,51 +740,6 @@ const formatNumber = num => {
     return (num / 1e3).toFixed(1) + 'k';
   } else {
     return num.toString();
-  }
-};
-
-const timeAgo = dateInput => {
-  let t = dateInput.substring(0, dateInput.length - 10);
-  const now = new Date();
-  const utcNow = Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-    now.getUTCHours(),
-    now.getUTCMinutes(),
-    now.getUTCSeconds(),
-  );
-
-  const date = new Date(t);
-  const utcDate = Date.UTC(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-    date.getUTCSeconds(),
-  );
-
-  const seconds = Math.floor((utcNow - utcDate) / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (seconds < 60) {
-    return `${seconds}초전`;
-  } else if (minutes < 60) {
-    return `${minutes}분전`;
-  } else if (hours < 24) {
-    return `${hours}시간전`;
-  } else if (days <= 7) {
-    return `${days}일전`;
-  } else {
-    // mm.dd.YYYY 형식으로 반환
-    const year = date.getFullYear();
-    // 월은 0부터 시작하기 때문에 1을 더해줍니다.
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${month}.${day}.${year}`;
   }
 };
 

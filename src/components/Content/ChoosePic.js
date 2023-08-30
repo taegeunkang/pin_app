@@ -164,26 +164,6 @@ const ChoosePic = ({onPress, cancel}) => {
   );
 };
 
-const ImageBox = ({image}) => {
-  return (
-    <Image
-      source={image}
-      style={{width: '100%', height: Dimensions.get('window').width}}
-    />
-  );
-};
-
-const openCamera = async () => {
-  await launchCamera({
-    mediaType: 'mixed',
-    quality: 1,
-    includeBase64: true,
-  })
-    .then(data => console.log(data))
-    .catch(error => console.log(error));
-  // setImage('data:image/png;base64,' + result.assets[0].base64);
-};
-
 const styles = StyleSheet.create({
   container: {flex: 1, justifyContent: 'center'},
   headerTitle: {

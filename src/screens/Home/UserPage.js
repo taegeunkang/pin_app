@@ -19,7 +19,6 @@ import PostBox from '../../components/mypage/PostBox';
 import {useState, useEffect} from 'react';
 import FollowButton from '../../components/mypage/FollowButton';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import GpsAlert from '../../components/Content/GpsAlert';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {useFocusEffect} from '@react-navigation/native';
@@ -51,17 +50,10 @@ const UserPage = ({navigation, route}) => {
     }, [isPopped]), // isPopped 의존성을 추가
   );
 
+  const initUserId = async () => {};
+
   const onRefresh = async () => {
     setRefreshing(true);
-
-    // 햅틱 피드백 발생
-    // const options = {
-    //   enableVibrateFallback: true,
-    //   ignoreAndroidSystemSettings: false,
-    // };
-    // RNHapticFeedback.trigger('impactMedium', options);
-
-    // 여기서 데이터를 새로 고치는 로직을 추가합니다.
     setPage(0);
     await getProfile();
     await initData();
@@ -86,9 +78,6 @@ const UserPage = ({navigation, route}) => {
       case 200:
         let r = await response.json();
 
-        for (let a = 0; a < r.length; a++) {
-          console.log(r[a]);
-        }
         setPostList(r);
         break;
       case 400:
@@ -115,7 +104,6 @@ const UserPage = ({navigation, route}) => {
     );
     if (response.status == 200) {
       const r = await response.json();
-      console.log(r);
       setF(r.followStatus);
       // status 3 -> 맞팔, 내가 팔로잉
       // 2 상대방이 나를 팔로잉
@@ -134,7 +122,6 @@ const UserPage = ({navigation, route}) => {
   };
 
   const thumbsUp = async postId => {
-    console.log(postId);
     const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
       method: 'POST',
       headers: {
@@ -208,9 +195,7 @@ const UserPage = ({navigation, route}) => {
       } else if (f == 3 && r == 1) {
         a.follower = a.follower - 1;
       } else if (f == 2 && r == 3) {
-        console.log('팔로우 상태', a.follower);
         a.follower = a.follower + 1;
-        console.log(a.follower);
       }
 
       setUserInfo(a);
@@ -257,7 +242,6 @@ const UserPage = ({navigation, route}) => {
           }}
           close={() => setModalVisible(false)}
         />
-        {/* <GpsAlert onPress={() => setModalVisible(false)} /> */}
       </Modal>
       <ScrollView
         refreshControl={

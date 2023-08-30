@@ -12,7 +12,6 @@ import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
 import Geolocation from '@react-native-community/geolocation';
 import {useEffect, useState, useRef} from 'react';
-import {WithLocalSvg} from 'react-native-svg';
 import CurrentLocationBtn from '../../theme/assets/images/light/current-location.svg';
 import {useTheme} from '../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,15 +20,15 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import Permission from './Permission';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {reIssue} from '../../utils/login';
-import Detail1 from './Detail1';
+import MapNavigator from '../../navigators/MapNavigator';
 import FastImage from 'react-native-fast-image';
-const Home = ({navigation}) => {
+const Home = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [contents, setContents] = useState([]);
   const [permission, setPermission] = useState(true);
   const [detailPressed, setDetailPressed] = useState(false);
-  const [focusedPin, setFocusedPin] = useState({});
+  const [focusedPin, setFocusedPin] = useState(null);
   const mapRef = useRef(null);
   const {Gutters, Images} = useTheme();
 
@@ -57,13 +56,6 @@ const Home = ({navigation}) => {
     if (location == RESULTS.GRANTED || locationUsage == RESULTS.GRANTED) {
       Geolocation.getCurrentPosition(
         position => {
-          console.log(
-            'latitude : ' +
-              position['coords']['latitude'] +
-              '  ' +
-              'longtitude : ' +
-              position['coords']['longitude'],
-          );
           setLatitude(position['coords']['latitude']);
           setLongitude(position['coords']['longitude']);
         },
@@ -115,8 +107,30 @@ const Home = ({navigation}) => {
     });
   };
 
+  const thumbsUp = async postId => {
+    console.log('호출11');
+    const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+
+    if (response.status == 200) {
+      const r = await response.json();
+      return r;
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await thumbsUp(postId);
+          break;
+      }
+    }
+  };
+
   const getMyPosts = async () => {
-    console.log('post response');
     const response = await fetch(
       API_URL + '/post/all?id=' + (await AsyncStorage.getItem('id')),
       {
@@ -128,7 +142,6 @@ const Home = ({navigation}) => {
     );
     if (response.status == 200) {
       const res = await response.json();
-      console.log(res);
       setContents(res['contents']);
     } else if (response.status == 400) {
       const k = await response.json();
@@ -148,7 +161,6 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     getMyPosts();
-    console.log(focusedPin);
   }, [detailPressed]);
 
   useEffect(() => {
@@ -165,6 +177,18 @@ const Home = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      {/*  GPS허용 모달*/}
+
+      <Modal visible={!permission} animationType={'slide'} transparent={true}>
+        <Permission
+          close={() => {
+            setPermission(true);
+          }}
+        />
+      </Modal>
+      <Modal visible={detailPressed} animationType={'slide'} transparent={true}>
+        <MapNavigator {...focusedPin} close={close} />
+      </Modal>
       {!latitude && !longitude && (
         <View
           style={{
@@ -289,7 +313,6 @@ const Home = ({navigation}) => {
             }}>
             {contents &&
               contents.map((content, index) => {
-                console.log(content);
                 return (
                   <Marker
                     key={content.contentId}
@@ -334,13 +357,6 @@ const Home = ({navigation}) => {
                           height: '100%',
                           borderRadius: 100,
                           position: 'absolute',
-                          // top: responsiveHeight(10),
-                          // left: '50%',
-                          // top: '50%',
-                          // transform: [
-                          //   {translateX: -50}, // Adjust these values accordingly
-                          //   {translateY: -12}, // For instance, -50% of your element width and height
-                          // ],
                         }}
                       />
                     </View>
@@ -350,19 +366,6 @@ const Home = ({navigation}) => {
           </MapView>
         </>
       )}
-
-      {/*  GPS허용 모달*/}
-
-      <Modal visible={!permission} animationType={'slide'} transparent={true}>
-        <Permission
-          close={() => {
-            setPermission(true);
-          }}
-        />
-      </Modal>
-      <Modal visible={detailPressed} animationType={'slide'} transparent={true}>
-        <Detail1 {...focusedPin} close={close} navigation={navigation} />
-      </Modal>
     </View>
   );
 };

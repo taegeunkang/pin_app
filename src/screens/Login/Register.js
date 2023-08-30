@@ -105,7 +105,6 @@ const Register = ({navigation}) => {
       setVerified(true);
     } else {
       response = await response.json();
-      console.log(response);
       switch (response['code']) {
         case 'E07':
           setExpired(false);
@@ -151,13 +150,11 @@ const Register = ({navigation}) => {
   };
 
   const sendEmail = async () => {
-    console.log('보냄');
     if (checkEmail(email) && sent && !checkEmailResendAvailable()) {
       setResendAvailable(false);
       return;
     }
     setResendAvailable(true);
-    console.log(1);
     if (checkEmail(email)) {
       // 이메일 형식이 맞다면
       setWrongReg(false);
@@ -166,10 +163,7 @@ const Register = ({navigation}) => {
         method: 'GET',
       });
       let status = response['status'];
-      console.log(status);
-      console.log(2);
       response = await response.json();
-      console.log(response);
 
       setSendingEmail(false);
       if (status == 200) {
