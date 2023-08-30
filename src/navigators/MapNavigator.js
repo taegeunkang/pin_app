@@ -6,6 +6,7 @@ import FollowingList from '../screens/Home/FollowingList';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useTranslation} from 'react-i18next';
 import Detail from '../screens/Home/Detail';
+import Detail1 from '../screens/Home/Detail1';
 import {Colors} from '../theme/Variables';
 import HeaderLeftButton from '../components/HeaderLeftButton';
 import {responsiveWidth, responsiveHeight} from '../components/Scale';
@@ -50,11 +51,12 @@ const MapNavigator = props => {
       }}>
       <Stack.Screen
         name="MapUser"
-        component={Detail}
+        component={Detail1}
         initialParams={props}
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('profile.detail'),
+          headerShown: false,
         }}
       />
       <Stack.Screen

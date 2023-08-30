@@ -1,12 +1,13 @@
 import {
   ActivityIndicator,
-  Modal,
   Pressable,
   StyleSheet,
   Text,
   View,
-  Animated,
+  Animated as Ani,
   Image,
+  Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
@@ -22,6 +23,8 @@ import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {reIssue} from '../../utils/login';
 import MapNavigator from '../../navigators/MapNavigator';
 import FastImage from 'react-native-fast-image';
+import Modal from 'react-native-modal';
+import SlidingUpPanel from 'rn-sliding-up-panel';
 const Home = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -31,11 +34,10 @@ const Home = () => {
   const [focusedPin, setFocusedPin] = useState(null);
   const mapRef = useRef(null);
   const {Gutters, Images} = useTheme();
-
-  const scaleValue = useState(new Animated.Value(1))[0];
+  const scaleValue = useState(new Ani.Value(1))[0];
 
   const onButtonPressIn = () => {
-    Animated.timing(scaleValue, {
+    Ani.timing(scaleValue, {
       toValue: 0.95,
       duration: 100,
       useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
@@ -43,7 +45,7 @@ const Home = () => {
   };
 
   const onButtonPressOut = () => {
-    Animated.timing(scaleValue, {
+    Ani.timing(scaleValue, {
       toValue: 1,
       duration: 150,
       useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
@@ -177,18 +179,6 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      {/*  GPS허용 모달*/}
-
-      <Modal visible={!permission} animationType={'slide'} transparent={true}>
-        <Permission
-          close={() => {
-            setPermission(true);
-          }}
-        />
-      </Modal>
-      <Modal visible={detailPressed} animationType={'slide'} transparent={true}>
-        <MapNavigator {...focusedPin} close={close} />
-      </Modal>
       {!latitude && !longitude && (
         <View
           style={{
@@ -207,7 +197,7 @@ const Home = () => {
       )}
       {latitude && longitude && (
         <>
-          <Animated.View
+          <Ani.View
             style={{
               width: responsiveWidth(45),
               height: responsiveHeight(45),
@@ -216,7 +206,7 @@ const Home = () => {
               left: responsiveWidth(20),
               backgroundColor: '#EAF3FE',
               borderRadius: responsiveWidth(100),
-              zIndex: 100,
+              zIndex: detailPressed ? 0 : 100,
               shadowOffset: {width: 0, height: responsiveHeight(3)},
               shadowOpacity: 0.25,
               shadowRadius: responsiveWidth(3),
@@ -236,7 +226,7 @@ const Home = () => {
                 height={responsiveHeight(35)}
               />
             </Pressable>
-          </Animated.View>
+          </Ani.View>
 
           <MapView
             style={styles.map}
@@ -324,6 +314,7 @@ const Home = () => {
                     onPress={() => {
                       setFocusedPin(content.detail);
                       setDetailPressed(true);
+                      this._panel.show();
                     }}>
                     <View
                       {...content}
@@ -366,6 +357,51 @@ const Home = () => {
           </MapView>
         </>
       )}
+      {/*  GPS허용 모달*/}
+
+      <Modal visible={!permission} animationType={'slide'} transparent={true}>
+        <Permission
+          close={() => {
+            setPermission(true);
+          }}
+        />
+      </Modal>
+
+      <SlidingUpPanel
+        ref={c => (this._panel = c)}
+        allowDragging={false}
+        draggableRange={{
+          top: Dimensions.get('screen').height - responsiveHeight(50),
+          bottom: 0,
+        }}>
+        {detailPressed && (
+          <MapNavigator
+            {...focusedPin}
+            thumbsUp={thumbsUp}
+            close={() => {
+              this._panel.hide();
+              setDetailPressed(false);
+            }}
+          />
+        )}
+      </SlidingUpPanel>
+      {/* <Modal visible={detailPressed} animationType={'slide'} transparent={true}> */}
+      {/* {detailPressed && (
+        <View
+          style={[
+            {
+              width: Dimensions.get('screen').width,
+              height: Dimensions.get('screen').height,
+              backgroundColor: 'yellow',
+              zIndex: 200,
+              position: 'absolute',
+            },
+          ]}>
+          <MapNavigator {...focusedPin} close={close} />
+        </View>
+      )} */}
+
+      {/* </Modal> */}
     </View>
   );
 };

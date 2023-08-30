@@ -91,6 +91,7 @@ const Nav = () => {
         },
         tabBarStyle: {
           backgroundColor: Colors.white,
+          position: 'relative',
         },
         tabBarActiveTintColor: '#1A1E27',
         tabBarInactiveTintColor: '#6D7582',

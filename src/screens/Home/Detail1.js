@@ -68,6 +68,7 @@ const Detail = ({navigation, route}) => {
   const [replyPage, setReplyPage] = useState({});
   const [replyLoading, setReplyLoading] = useState(false);
   const {Colors} = useTheme();
+  const [focused, setFocused] = useState(false);
   const inptRef = useRef(null);
 
   const onRefresh = () => {
@@ -276,7 +277,7 @@ const Detail = ({navigation, route}) => {
     });
     if (response.status == 200) {
       if (reload != null) reload(postId);
-      navigation.pop();
+      close();
     } else if (response.status == 400) {
       const k = await response.json();
       switch (k['code']) {
@@ -354,8 +355,8 @@ const Detail = ({navigation, route}) => {
       }}
       behavior="padding"
       enabled
-      keyboardVerticalOffset={100}>
-      <SafeAreaView
+      keyboardVerticalOffset={-30}>
+      <View
         style={{
           flex: 1,
           backgroundColor: '#ffffff',
@@ -437,7 +438,11 @@ const Detail = ({navigation, route}) => {
           <View style={styles.container}>
             <View style={styles.postContainer}>
               <View style={styles.writerBox}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Pressable
+                  onPress={() =>
+                    navigation.push('MapUserPage', {userId: userId})
+                  }
+                  style={{flexDirection: 'row', alignItems: 'center'}}>
                   <FastImage
                     source={{
                       uri: API_URL + `/post/image?watch=${profileImage}`,
@@ -455,7 +460,7 @@ const Detail = ({navigation, route}) => {
                   <Text style={Fonts.contentRegualrMedium}>
                     {timeAgo(createdDate)}
                   </Text>
-                </View>
+                </Pressable>
                 {mention && (
                   <Pressable
                     onPress={() => {
@@ -495,7 +500,6 @@ const Detail = ({navigation, route}) => {
                       height: responsiveHeight(25),
                       alignItems: 'center',
                       justifyContent: 'center',
-                      backgroundColor: 'yellow',
                     }}>
                     <More
                       width={responsiveWidth(20)}
@@ -664,12 +668,12 @@ const Detail = ({navigation, route}) => {
         <View
           style={{
             width: '100%',
-            position: 'absolute',
-            bottom: 0,
+            // position: 'absolute',
+            // bottom: focused ? 0 : responsiveHeight(50),
             height: responsiveHeight(70),
-            backgroundColor: '#ffffff',
             alignItems: 'center',
             justifyContent: 'center',
+            backgroundColor: '#ffffff',
             zIndex: 400,
           }}>
           {/* 댓글 최대 150자*/}
@@ -684,9 +688,14 @@ const Detail = ({navigation, route}) => {
             onSubmitEditing={() => submitComment()}
             // editable={!editable}
             ref={inptRef}
-            onBlur={() => setReply(null)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => {
+              setFocused(false);
+              setReply(null);
+            }}
           />
         </View>
+        {!focused && <View style={{height: responsiveHeight(50)}} />}
         <Modal
           visible={replyModalVisible}
           animationType={'fade'}
@@ -720,7 +729,7 @@ const Detail = ({navigation, route}) => {
             close={() => setPostModalVisible(false)}
           />
         </Modal>
-      </SafeAreaView>
+      </View>
     </KeyboardAvoidingView>
   );
 };

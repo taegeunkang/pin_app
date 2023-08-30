@@ -42,7 +42,17 @@ const Content = () => {
       <Stack.Screen
         name="Alram"
         component={Alram}
-        options={{headerShown: true, headerTitle: t('nav.alram')}}
+        options={{
+          headerShown: true,
+          headerTitle: t('nav.alram'),
+          headerTitleStyle: {
+            color: '#1A1E27',
+            fontFamily: 'SpoqaHanSansNeo-Bold',
+            fontSize: responsiveWidth(14),
+            lineHeight: responsiveHeight(24),
+            letterSpacing: responsiveWidth(-0.6),
+          },
+        }}
       />
       <Stack.Screen
         name="Setting"
