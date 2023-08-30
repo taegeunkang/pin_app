@@ -1,21 +1,11 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Dimensions,
-  Pressable,
-} from 'react-native';
-import Sample5 from '../../theme/assets/images/sample/sample5.png';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useTheme} from '../../hooks';
 import {WithLocalSvg} from 'react-native-svg';
-import SmaileIcon from '../../theme/assets/images/nav/smile.svg';
-import SmaileIconNot from '../../theme/assets/images/nav/smile-not.svg';
-import CommentIcon from '../../theme/assets/images/nav/comment.svg';
-import CommentIconNot from '../../theme/assets/images/nav/comment-not.svg';
-import LocationIconNot from '../../theme/assets/images/nav/loc.svg';
-import LocationIconNotIconNot from '../../theme/assets/images/nav/loc-not.svg';
-import {useEffect, useState} from 'react';
+import SmaileIcon from '../../theme/assets/images/light/smile-select.svg';
+import SmaileIconNot from '../../theme/assets/images/light/smile-not-select.svg';
+import CommentIconNot from '../../theme/assets/images/light/comment-not-select.svg';
+import LocationIconNot from '../../theme/assets/images/light/pin-not-select.svg';
+import {useState} from 'react';
 import {responsiveHeight, responsiveWidth} from '../Scale';
 import {API_URL} from '../../utils/constants';
 import FastImage from 'react-native-fast-image';
@@ -120,13 +110,23 @@ const PostBox = ({
               marginRight: responsiveWidth(10),
               marginBottom: responsiveHeight(5),
             }}>
-            <WithLocalSvg
-              width={responsiveWidth(20)}
-              height={responsiveHeight(20)}
-              asset={liked ? SmaileIcon : SmaileIconNot}
-              style={{marginRight: responsiveWidth(5)}}
-              onPress={() => onLikePress(postId)}
-            />
+            {liked ? (
+              <Pressable onPress={() => onLikePress(postId)}>
+                <SmaileIcon
+                  width={responsiveWidth(20)}
+                  height={responsiveHeight(20)}
+                  style={{marginRight: responsiveWidth(5)}}
+                />
+              </Pressable>
+            ) : (
+              <Pressable onPress={() => onLikePress(postId)}>
+                <SmaileIconNot
+                  width={responsiveWidth(20)}
+                  height={responsiveHeight(20)}
+                  style={{marginRight: responsiveWidth(5)}}
+                />
+              </Pressable>
+            )}
             <Text style={Fonts.contentMediumMedium}>
               {formatNumber(likedCount)}
             </Text>
@@ -134,24 +134,21 @@ const PostBox = ({
 
           <View
             style={{flexDirection: 'row', marginRight: responsiveWidth(10)}}>
-            <WithLocalSvg
+            <CommentIconNot
               width={responsiveWidth(20)}
               height={responsiveHeight(20)}
-              asset={CommentIconNot}
               style={{marginRight: responsiveWidth(5)}}
             />
             <Text style={Fonts.contentMediumMedium}>
-              {' '}
               {formatNumber(commentCount)}
             </Text>
           </View>
 
           {locationName && (
             <View style={{flexDirection: 'row'}}>
-              <WithLocalSvg
+              <LocationIconNot
                 width={responsiveWidth(20)}
                 height={responsiveHeight(20)}
-                asset={LocationIconNot}
                 style={{marginRight: responsiveWidth(5)}}
               />
               <Text style={Fonts.contentMediumMedium}>{locationName}</Text>

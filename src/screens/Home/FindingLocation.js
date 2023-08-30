@@ -2,10 +2,9 @@ import {useEffect, useState, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
 import {View, Text, StyleSheet, Pressable, SafeAreaView} from 'react-native';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {WithLocalSvg} from 'react-native-svg';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import SearchIconNot from '../../theme/assets/images/nav/search-not.svg';
+import SearchIconNot from '../../theme/assets/images/light/search-not-select.svg';
 import {useTheme} from '../../hooks';
 const FindingLocation = ({navigation, route}) => {
   const {lat, lon} = route.params;
@@ -50,10 +49,9 @@ const FindingLocation = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginInput}>
-        <WithLocalSvg
+        <SearchIconNot
           width={responsiveWidth(25)}
           height={responsiveHeight(25)}
-          asset={SearchIconNot}
         />
 
         <TextInput

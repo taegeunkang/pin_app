@@ -1,4 +1,4 @@
-import {composeInitialProps, useTranslation} from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import {
   Text,
   View,
@@ -6,19 +6,13 @@ import {
   TouchableOpacity,
   Image,
   TouchableWithoutFeedback,
-  Keyboard,
 } from 'react-native';
-import Button from '../../theme/components/login/Button';
-import {TextInput} from 'react-native-gesture-handler';
 import {useTheme} from '../../hooks';
 import {Colors, FontSize} from '../../theme/Variables';
-// import Sns from '../../theme/components/Sns';
 import {useState, useRef} from 'react';
-// import TextBox from 'react-native-password-eye';
 import {check_email} from '../../utils/email';
 import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Logo from '../../theme/assets/images/p-logo-transparent.svg';
 import SubmitButton from '../../components/SubmitButton';
 import InputBox from '../../components/InputBox';
 import {responsiveWidth, responsiveHeight} from '../../components/Scale';
@@ -34,8 +28,7 @@ const Login = ({navigation}) => {
   const [wrongId, setWrongId] = useState(false);
   const [wrongRes, setWrongRes] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
-  const {Common, Fonts, Gutters, Layout, Images} = useTheme();
-
+  const {Layout, Images} = useTheme();
   const inputRef = useRef(null);
 
   const loginSubmit = async () => {
@@ -141,13 +134,12 @@ const Login = ({navigation}) => {
           style={{
             width: '100%',
             height: responsiveHeight(200),
-            backgroundColor: Colors.white,
-            justifyContent: 'center',
             alignItems: 'center',
+            justifyContent: 'center',
           }}>
           <Image
-            source={Images.appLogo}
-            style={{width: responsiveWidth(200), height: responsiveHeight(200)}}
+            source={Images.pLogo}
+            style={{width: responsiveWidth(150), height: responsiveHeight(150)}}
           />
         </View>
 

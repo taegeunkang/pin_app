@@ -15,13 +15,12 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
-import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {useTheme} from '../../hooks';
 import {WithLocalSvg} from 'react-native-svg';
-import SmaileIcon from '../../theme/assets/images/nav/smile.svg';
-import SmaileIconNot from '../../theme/assets/images/nav/smile-not.svg';
-import CommentIconNot from '../../theme/assets/images/nav/comment-not.svg';
-import LocationIconNot from '../../theme/assets/images/nav/loc.svg';
+import SmaileIcon from '../../theme/assets/images/light/smile-select.svg';
+import SmaileIconNot from '../../theme/assets/images/light/smile-not-select.svg';
+import CommentIconNot from '../../theme/assets/images/light/comment-not-select.svg';
+import LocationIconNot from '../../theme/assets/images/light/pin-not-select.svg';
 import {useState, useEffect, useRef} from 'react';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Slider} from '../../components/Content/Slider';

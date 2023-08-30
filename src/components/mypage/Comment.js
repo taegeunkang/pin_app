@@ -1,8 +1,6 @@
 import {View, StyleSheet, Text, Image, Pressable} from 'react-native';
 import {responsiveHeight, responsiveWidth} from '../Scale';
-import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {useTheme} from '../../hooks';
-import createTransform from 'redux-persist/es/createTransform';
 import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState} from 'react';

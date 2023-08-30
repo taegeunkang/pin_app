@@ -9,14 +9,12 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {Colors} from '../../theme/Variables';
-import SearchIcon from '../../theme/assets/images/nav/search.svg';
-import SearchIconNot from '../../theme/assets/images/nav/search-not.svg';
+import SearchIconNot from '../../theme/assets/images/light/search-not-select.svg';
 import {useTranslation} from 'react-i18next';
 import {useState, useRef, useEffect} from 'react';
 import {WithLocalSvg} from 'react-native-svg';
 import UserCell from '../../components/Content/UserCell';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {reIssue} from '../../utils/login';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
@@ -164,10 +162,9 @@ const FollowingList = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginInput}>
-        <WithLocalSvg
+        <SearchIconNot
           width={responsiveWidth(25)}
           height={responsiveHeight(25)}
-          asset={SearchIconNot}
         />
 
         <TextInput

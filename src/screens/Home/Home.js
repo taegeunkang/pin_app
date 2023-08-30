@@ -13,7 +13,7 @@ import MapView from 'react-native-map-clustering';
 import Geolocation from '@react-native-community/geolocation';
 import {useEffect, useState, useRef} from 'react';
 import {WithLocalSvg} from 'react-native-svg';
-import CurrentLocationBtn from '../../theme/assets/images/nav/location.svg';
+import CurrentLocationBtn from '../../theme/assets/images/light/current-location.svg';
 import {useTheme} from '../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
@@ -207,10 +207,9 @@ const Home = ({navigation}) => {
               onPressOut={onButtonPressOut}
               style={{}}
               onPress={returnCurrentLocation}>
-              <WithLocalSvg
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
-                asset={CurrentLocationBtn}
+              <CurrentLocationBtn
+                width={responsiveWidth(35)}
+                height={responsiveHeight(35)}
               />
             </Pressable>
           </Animated.View>

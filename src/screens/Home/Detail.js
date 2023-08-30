@@ -6,7 +6,6 @@ import {
   Dimensions,
   ScrollView,
   RefreshControl,
-  ActivityIndicator,
   SafeAreaView,
   TextInput,
   Alert,
@@ -14,13 +13,12 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {useTheme} from '../../hooks';
 import {WithLocalSvg} from 'react-native-svg';
-import SmaileIcon from '../../theme/assets/images/nav/smile.svg';
-import SmaileIconNot from '../../theme/assets/images/nav/smile-not.svg';
-import CommentIconNot from '../../theme/assets/images/nav/comment-not.svg';
-import LocationIconNot from '../../theme/assets/images/nav/loc.svg';
+import SmaileIcon from '../../theme/assets/images/light/smile-select.svg';
+import SmaileIconNot from '../../theme/assets/images/light/smile-not-select.svg';
+import CommentIconNot from '../../theme/assets/images/light/comment-not-select.svg';
+import LocationIconNot from '../../theme/assets/images/light/pin-not-select.svg';
 import {useState, useEffect, useRef} from 'react';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Slider} from '../../components/Content/Slider';
@@ -514,13 +512,24 @@ const Detail = ({navigation, route}) => {
                     marginRight: responsiveWidth(10),
                     marginBottom: responsiveHeight(5),
                   }}>
-                  <WithLocalSvg
-                    width={responsiveWidth(20)}
-                    height={responsiveHeight(20)}
-                    asset={isLiked ? SmaileIcon : SmaileIconNot}
-                    style={{marginRight: responsiveWidth(5)}}
-                    onPress={() => onLike()}
-                  />
+                  {isLiked ? (
+                    <Pressable onPress={() => onLike()}>
+                      <SmaileIcon
+                        width={responsiveWidth(20)}
+                        height={responsiveHeight(20)}
+                        style={{marginRight: responsiveWidth(5)}}
+                      />
+                    </Pressable>
+                  ) : (
+                    <Pressable onPress={() => onLike()}>
+                      <SmaileIconNot
+                        width={responsiveWidth(20)}
+                        height={responsiveHeight(20)}
+                        style={{marginRight: responsiveWidth(5)}}
+                      />
+                    </Pressable>
+                  )}
+
                   <Text style={Fonts.contentMediumMedium}>
                     {formatNumber(likedCount)}
                   </Text>
@@ -531,10 +540,9 @@ const Detail = ({navigation, route}) => {
                     flexDirection: 'row',
                     marginRight: responsiveWidth(10),
                   }}>
-                  <WithLocalSvg
+                  <CommentIconNot
                     width={responsiveWidth(20)}
                     height={responsiveHeight(20)}
-                    asset={CommentIconNot}
                     style={{marginRight: responsiveWidth(5)}}
                   />
                   <Text style={Fonts.contentMediumMedium}>
@@ -543,10 +551,9 @@ const Detail = ({navigation, route}) => {
                 </View>
                 {locationName && (
                   <View style={{flexDirection: 'row'}}>
-                    <WithLocalSvg
+                    <LocationIconNot
                       width={responsiveWidth(20)}
                       height={responsiveHeight(20)}
-                      asset={LocationIconNot}
                       style={{marginRight: responsiveWidth(5)}}
                     />
                     <Text style={Fonts.contentMediumMedium}>
@@ -681,27 +688,6 @@ const MoreFriends = ({count}) => {
         }}>
         {'+' + count}
       </Text>
-    </View>
-  );
-};
-
-const PostFiles = ({images}) => {
-  return (
-    <View style={{flexDirection: 'row'}}>
-      <Image source={Sample5} style={styles.media} />
-      <Image source={Sample5} style={styles.media} />
-      <View style={styles.media}>
-        <Text
-          style={{
-            fontFamily: 'SpoqaHanSansNeo-Bold',
-            fontSize: responsiveWidth(14),
-            lineHeight: responsiveHeight(24),
-            letterSpacing: responsiveWidth(-0.6),
-            color: '#505866',
-          }}>
-          +3
-        </Text>
-      </View>
     </View>
   );
 };

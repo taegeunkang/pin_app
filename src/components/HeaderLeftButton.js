@@ -1,6 +1,7 @@
 import {useTheme} from '../hooks';
 import {Image, View} from 'react-native';
 import {responsiveHeight, responsiveWidth} from './Scale';
+import LeftChevron from '../theme/assets/images/light/left-chevron.svg';
 const HeaderLeftButton = () => {
   const {Images} = useTheme();
   return (
@@ -11,15 +12,9 @@ const HeaderLeftButton = () => {
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
+        paddingLeft: responsiveWidth(10),
       }}>
-      <Image
-        source={Images.leftChevron}
-        style={{
-          marginLeft: responsiveWidth(5),
-          width: responsiveWidth(20),
-          height: responsiveHeight(20),
-        }}
-      />
+      <LeftChevron width={responsiveWidth(20)} height={responsiveHeight(20)} />
     </View>
   );
 };

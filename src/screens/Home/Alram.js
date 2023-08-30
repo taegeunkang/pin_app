@@ -1,8 +1,8 @@
 import {Image, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useTheme} from '../../hooks';
 import {ScrollView} from 'react-native-gesture-handler';
-import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import More from '../../theme/assets/images/light/more.svg';
 import {useEffect, useLayoutEffect} from 'react';
 const Alram = ({navigation}) => {
   const {Images, Colors} = useTheme();
@@ -13,13 +13,10 @@ const Alram = ({navigation}) => {
           onPress={() => {
             navigation.navigate('Setting');
           }}>
-          <Image
-            source={Images.setting}
-            style={{
-              width: responsiveWidth(20),
-              height: responsiveHeight(20),
-              marginRight: responsiveWidth(10),
-            }}
+          <More
+            width={responsiveWidth(20)}
+            height={responsiveHeight(20)}
+            style={{marginRight: responsiveWidth(10)}}
           />
         </TouchableOpacity>
       ),
@@ -28,7 +25,7 @@ const Alram = ({navigation}) => {
 
   return (
     <ScrollView style={{backgroundColor: '#FFFFFF'}}>
-      <Notify
+      {/* <Notify
         image={Sample5}
         title={'mars2727 님이 새로운 게시글을 업로드 하였습니다.'}
         read={true}
@@ -49,7 +46,7 @@ const Alram = ({navigation}) => {
       <Notify
         image={Sample5}
         title={'mars2727 님이 새로운 게시글을 업로드 하였습니다.'}
-      />
+      /> */}
     </ScrollView>
   );
 };

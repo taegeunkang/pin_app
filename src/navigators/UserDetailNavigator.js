@@ -1,6 +1,4 @@
 import React from 'react';
-import {Image, Text, TouchableOpacity} from 'react-native';
-import MyPage from '../screens/Home/MyPage';
 import FollowerList from '../screens/Home/FollowerList';
 import FollowingList from '../screens/Home/FollowingList';
 import {createStackNavigator} from '@react-navigation/stack';

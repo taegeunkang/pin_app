@@ -3,27 +3,16 @@ import {
   View,
   Image,
   StyleSheet,
-  Dimensions,
   TextInput,
-  Pressable,
   TouchableOpacity,
-  Animated,
   Modal,
-  Alert,
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
 import {useEffect, useRef, useState} from 'react';
-import {toByteArray} from 'base64-js';
 import {useIsFocused} from '@react-navigation/native';
-import Sample1 from '../../theme/assets/images/sample/sample1.png';
-import Tag from '../../components/Content/Tag';
-import {WithLocalSvg} from 'react-native-svg';
 import {BorderRadius, FontSize} from '../../theme/Variables';
-import RightArrow from '../../theme/assets/images/arrow-right-solid.svg';
 import Geolocation from '@react-native-community/geolocation';
-import Sample5 from '../../theme/assets/images/sample/sample5.png';
-import {Buffer} from 'buffer';
 import {Switch} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,11 +20,10 @@ import {API_URL} from '../../utils/constants';
 import GpsAlert from '../../components/Content/GpsAlert';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import SubmitButton from '../../components/SubmitButton';
+import Plus from '../../theme/assets/images/light/plus.svg';
 import {useTheme} from '../../hooks';
 import * as RNFS from 'react-native-fs';
 import {reIssue} from '../../utils/login';
-import FastImage from 'react-native-fast-image';
-// 동영상일 때는 썸네일 파일도 같이 넘겨줘야해서 수정 필요
 
 const WriteContent = ({navigation, route}) => {
   const [text, setText] = useState('');
@@ -251,19 +239,24 @@ const WriteContent = ({navigation, route}) => {
 
         <View style={{flex: 1, paddingHorizontal: responsiveWidth(10)}}>
           <View style={styles.listContent}>
-            <View style={{flexDirection: 'row'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
               <Text style={styles.subTitle}>위치</Text>
-              <View style={{marginBottom: responsiveHeight(5)}} />
+              <View
+                style={{
+                  marginBottom: responsiveHeight(5),
+                }}
+              />
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('FindingLocation', {lat: lat, lon: lon})
                 }>
-                <Image
-                  source={Images.plus}
-                  style={{
-                    width: responsiveWidth(20),
-                    height: responsiveHeight(20),
-                  }}
+                <Plus
+                  width={responsiveWidth(20)}
+                  height={responsiveHeight(20)}
+                  style={{marginTop: responsiveHeight(2)}}
                 />
               </TouchableOpacity>
             </View>
@@ -286,12 +279,10 @@ const WriteContent = ({navigation, route}) => {
               <Text style={styles.subTitle}>함께한 친구</Text>
               <View style={{marginBottom: responsiveHeight(5)}} />
               <TouchableOpacity onPress={moveToFindingFriends}>
-                <Image
-                  source={Images.plus}
-                  style={{
-                    width: responsiveWidth(20),
-                    height: responsiveHeight(20),
-                  }}
+                <Plus
+                  width={responsiveWidth(20)}
+                  height={responsiveHeight(20)}
+                  style={{marginTop: responsiveHeight(2)}}
                 />
               </TouchableOpacity>
             </View>

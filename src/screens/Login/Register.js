@@ -12,7 +12,7 @@ import {
   Dimensions,
   SafeAreaView,
 } from 'react-native';
-import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
+import {Colors} from '../../theme/Variables';
 import {check_email as checkEmail} from '../../utils/email';
 import {useEffect, useState, useLayoutEffect, useRef} from 'react';
 import {password_test} from '../../utils/password';
@@ -23,9 +23,10 @@ import SubmitButton2 from '../../components/SubmitButton2';
 import SubmitButton from '../../components/SubmitButton';
 import {useTheme} from '../../hooks';
 import {WithLocalSvg} from 'react-native-svg';
-import checkBtn from '../../theme/assets/images/check-btn.svg';
-import checkBtnChecked from '../../theme/assets/images/check-btn-checked.svg';
-import verifiedBtn from '../../theme/assets/images/confirmed.svg';
+import CheckNot from '../../theme/assets/images/light/check-not-select.svg';
+import Check from '../../theme/assets/images/light/check-select.svg';
+import Confirmed from '../../theme/assets/images/light/confirmed.svg';
+import LeftChevron from '../../theme/assets/images/light/left-chevron.svg';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 const Register = ({navigation}) => {
   const {Fonts, Images} = useTheme();
@@ -67,11 +68,12 @@ const Register = ({navigation}) => {
             width: responsiveWidth(60),
             height: responsiveHeight(30),
             justifyContent: 'center',
-            alignItems: 'center',
+            alignItems: 'flex-start',
+            paddingLeft: responsiveWidth(10),
           }}>
-          <Image
-            source={Images.backBtn}
-            style={{width: responsiveWidth(10), height: responsiveHeight(18)}}
+          <LeftChevron
+            width={responsiveWidth(20)}
+            height={responsiveHeight(20)}
           />
         </TouchableOpacity>
       ),
@@ -433,10 +435,9 @@ const Register = ({navigation}) => {
                     borderRadius: responsiveWidth(12),
                     flexDirection: 'row',
                   }}>
-                  <WithLocalSvg
-                    width={responsiveWidth(40)}
-                    height={responsiveHeight(40)}
-                    asset={verifiedBtn}
+                  <Confirmed
+                    width={responsiveWidth(35)}
+                    height={responsiveHeight(35)}
                   />
                 </View>
               )}
@@ -556,12 +557,22 @@ const Register = ({navigation}) => {
 
         <View style={{marginBottom: responsiveHeight(10)}} />
         <View style={styles.checkBox}>
-          <WithLocalSvg
-            width={26}
-            height={26}
-            asset={!policyCheck ? checkBtn : checkBtnChecked}
-            onPress={() => setPolicyCheck(!policyCheck)}
-          />
+          {policyCheck ? (
+            <Pressable onPress={() => setPolicyCheck(!policyCheck)}>
+              <Check
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+              />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => setPolicyCheck(!policyCheck)}>
+              <CheckNot
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+              />
+            </Pressable>
+          )}
+
           <View style={{marginRight: responsiveWidth(10)}} />
           <Pressable>
             <Text style={[styles.policyCheckTitle]}>{t('check.policy')}</Text>
@@ -569,12 +580,22 @@ const Register = ({navigation}) => {
         </View>
 
         <View style={styles.checkBox}>
-          <WithLocalSvg
-            width={26}
-            height={26}
-            asset={!marketingCheck ? checkBtn : checkBtnChecked}
-            onPress={() => setMarketingCheck(!marketingCheck)}
-          />
+          {marketingCheck ? (
+            <Pressable onPress={() => setMarketingCheck(!marketingCheck)}>
+              <Check
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+              />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => setMarketingCheck(!marketingCheck)}>
+              <CheckNot
+                width={responsiveWidth(25)}
+                height={responsiveHeight(25)}
+              />
+            </Pressable>
+          )}
+
           <View style={{marginRight: responsiveWidth(10)}} />
           <Pressable>
             <Text style={[styles.policyCheckTitle]}>
