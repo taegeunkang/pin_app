@@ -19,11 +19,11 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 
 const Medias = () => {
   const [photos, setPhotos] = useState([]);
-  const [target, setTarget] = useState(null);
   const [galleryCursor, setGalleryCursor] = useState(null);
   const [last, setLast] = useState(false);
   const [array, setArray] = useState([]);
   const {Images, Fonts, Colors} = useTheme();
+  const [tmpLoading, setTmpLoading] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const Medias = () => {
   const isArrayContain = target => {
     let arr = array;
     for (let i = 0; i < arr.length; i++) {
-      if (arr[i].id == target.id) {
+      if (arr[i].accessUri === target.accessUri) {
         return true;
       }
     }
@@ -99,17 +99,16 @@ const Medias = () => {
 
   const addArray = async target => {
     if (array && array.length >= 10) return;
-    let arr = array;
-    if (!isArrayContain(target) && arr.length <= 10) {
-      arr.push(target);
-      setArray(arr);
+    let newArr = [...array];
+    if (!isArrayContain(target) && newArr.length <= 10) {
+      newArr.push(target);
+      setArray(newArr);
     }
-    setTarget(target.uri); // viewer에 표시
   };
 
   const findArrayIdx = target => {
     for (let i = 0; i < array.length; i++) {
-      if (array[i].id == target.id) return i + 1;
+      if (array[i].accessUri === target.accessUri) return i + 1;
     }
     return -1;
   };
@@ -117,7 +116,7 @@ const Medias = () => {
     let arr = array;
     let i;
     for (i = 0; i < arr.length; i++) {
-      if (arr[i].id === target.id) {
+      if (arr[i].accessUri === target.accessUri) {
         break;
       }
     }

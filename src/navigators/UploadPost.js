@@ -29,7 +29,7 @@ const Stack = createStackNavigator();
 //   );
 // };
 // @refresh reset
-const UploadPost = () => {
+const UploadPost = ({navigation}) => {
   const {t} = useTranslation('newPost');
   const {Fonts, Colors, Images} = useTheme();
 
@@ -43,7 +43,9 @@ const UploadPost = () => {
           ...Fonts.contentMediumBold,
         },
         headerStyle: {backgroundColor: Colors.contentBackground},
-        headerBackImage: () => <HeaderLeftButton />,
+        headerBackImage: () => (
+          <HeaderLeftButton onPress={() => navigation.pop()} />
+        ),
         cardStyleInterpolator: ({current, next, layouts}) => {
           return {
             cardStyle: {

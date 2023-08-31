@@ -29,7 +29,9 @@ const MapNavigator = props => {
           ...Fonts.contentMediumBold,
         },
         headerStyle: {backgroundColor: Colors.contentBackground},
-        headerBackImage: () => <HeaderLeftButton />,
+        headerBackImage: () => (
+          <HeaderLeftButton onPress={() => props.navigation.pop()} />
+        ),
         cardStyleInterpolator: ({current, next, layouts}) => {
           return {
             cardStyle: {
@@ -105,14 +107,6 @@ const MapNavigator = props => {
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('profile.nickname'),
-        }}
-      />
-      <Stack.Screen
-        name="Setting"
-        component={Detail}
-        options={{
-          headerBackTitleVisible: false,
-          headerTitle: t('profile.setting'),
         }}
       />
     </Stack.Navigator>

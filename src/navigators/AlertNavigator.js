@@ -9,7 +9,7 @@ import {useTheme} from '../hooks';
 const Stack = createStackNavigator();
 
 // @refresh reset
-const Content = () => {
+const Content = ({navigation}) => {
   const {t} = useTranslation('content');
   const {Fonts, Colors} = useTheme();
   return (
@@ -22,7 +22,9 @@ const Content = () => {
           ...Fonts.contentMediumBold,
         },
         headerStyle: {backgroundColor: Colors.contentBackground},
-        headerBackImage: () => <HeaderLeftButton />,
+        headerBackImage: () => (
+          <HeaderLeftButton onPress={() => navigation.pop()} />
+        ),
         cardStyleInterpolator: ({current, next, layouts}) => {
           return {
             cardStyle: {

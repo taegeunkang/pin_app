@@ -10,7 +10,7 @@ const Alram = ({navigation}) => {
       headerRight: () => (
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('Setting');
+            navigation.push('Setting');
           }}>
           <Image
             source={Images.detail}
