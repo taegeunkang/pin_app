@@ -225,6 +225,7 @@ const MyPage = ({navigation}) => {
     },
     nickname: {
       marginBottom: responsiveHeight(10),
+      color: Colors.textBold,
     },
   });
 

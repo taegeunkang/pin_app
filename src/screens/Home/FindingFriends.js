@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   Image,
 } from 'react-native';
-import {Colors} from '../../theme/Variables';
 import {useTranslation} from 'react-i18next';
 import {useState, useRef, useLayoutEffect, useEffect} from 'react';
 import FriendsCell from '../../components/Content/FriendsCell';
@@ -28,7 +27,7 @@ const FindingFriends = ({navigation, route}) => {
   const [userList, setUserList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [friendsList, setFriendsList] = useState([]);
-  const {Images} = useTheme();
+  const {Images, Colors, Fonts} = useTheme();
 
   const search = async () => {
     if (inpt && inpt.trim().length > 0) {
@@ -208,6 +207,26 @@ const FindingFriends = ({navigation, route}) => {
     setFriendsList(a);
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.contentBackground,
+      alignItems: 'center',
+      paddingVertical: responsiveHeight(20),
+    },
+    loginInput: {
+      height: responsiveHeight(48),
+      width: responsiveWidth(370),
+      borderRadius: responsiveWidth(12),
+      backgroundColor: Colors.inputBackground,
+      paddingHorizontal: responsiveWidth(10),
+      color: Colors.inputContent,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginInput}>
@@ -218,9 +237,14 @@ const FindingFriends = ({navigation, route}) => {
 
         <TextInput
           ref={inputRef}
-          style={{flex: 1, textAlign: 'left', marginLeft: responsiveWidth(10)}}
+          style={{
+            flex: 1,
+            textAlign: 'left',
+            marginLeft: responsiveWidth(10),
+            color: Colors.inputContent,
+          }}
           placeholder={t('search.user')}
-          placeholderTextColor={'#6D7582'}
+          placeholderTextColor={Colors.inputPlaceHolder}
           onChangeText={e => setInpt(e)}
           value={inpt}
         />
@@ -266,18 +290,17 @@ const FindingFriends = ({navigation, route}) => {
           style={{
             width: '100%',
             height: '100%',
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.contentBackground,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Medium',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(20),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#505866',
-            }}>
+            style={[
+              Fonts.contentMediumMedium,
+              {
+                color: Colors.textNormal,
+              },
+            ]}>
             {t('search.notFound')}
           </Text>
         </View>
@@ -286,23 +309,4 @@ const FindingFriends = ({navigation, route}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    alignItems: 'center',
-    paddingVertical: responsiveHeight(20),
-  },
-  loginInput: {
-    height: responsiveHeight(48),
-    width: responsiveWidth(370),
-    borderRadius: responsiveWidth(12),
-    backgroundColor: '#F2F4F6',
-    paddingHorizontal: responsiveWidth(10),
-    color: '#505866',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-});
 export default FindingFriends;

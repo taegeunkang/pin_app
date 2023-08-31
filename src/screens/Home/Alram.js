@@ -26,7 +26,7 @@ const Alram = ({navigation}) => {
   });
 
   return (
-    <ScrollView style={{backgroundColor: Colors.primary}}>
+    <ScrollView style={{backgroundColor: Colors.screenBackground}}>
       {/* <Notify
         image={Sample5}
         title={'mars2727 님이 새로운 게시글을 업로드 하였습니다.'}

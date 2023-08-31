@@ -18,7 +18,7 @@ const FindingLocation = ({navigation, route}) => {
   const [typing, setTyping] = useState(false);
   const {t} = useTranslation('newPost');
   const inputRef = useRef(null);
-  const {Colors, Images} = useTheme();
+  const {Colors, Images, Fonts} = useTheme();
 
   const getNearByLocations = async () => {
     const response = await fetch(
@@ -48,19 +48,52 @@ const FindingLocation = ({navigation, route}) => {
     getNearByLocations();
   }, []);
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.contentBackground,
+      alignItems: 'center',
+      paddingVertical: responsiveHeight(20),
+    },
+    locationList: {
+      width: responsiveWidth(370),
+      height: responsiveHeight(45),
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    },
+
+    loginInput: {
+      height: responsiveHeight(48),
+      width: responsiveWidth(370),
+      borderRadius: responsiveWidth(12),
+      backgroundColor: Colors.inputBackground,
+      paddingHorizontal: responsiveWidth(10),
+
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginInput}>
         <Image
-          source={Images}
+          source={Images.searchNotSelect}
           style={{width: responsiveWidth(25), height: responsiveHeight(25)}}
         />
 
         <TextInput
           ref={inputRef}
-          style={{flex: 1, textAlign: 'left', marginLeft: responsiveWidth(10)}}
+          style={{
+            flex: 1,
+            textAlign: 'left',
+            marginLeft: responsiveWidth(10),
+            color: Colors.inputContent,
+          }}
           placeholder={t('media.location')}
-          placeholderTextColor={'#6D7582'}
+          placeholderTextColor={Colors.inputPlaceHolder}
           onChangeText={e => {
             onChangeTyping(e);
           }}
@@ -89,13 +122,19 @@ const FindingLocation = ({navigation, route}) => {
           <Pressable
             style={styles.locationList}
             onPress={() => goBack(customTyping)}>
-            <Text style={styles.locationName}>{customTyping}</Text>
+            <Text
+              style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+              {customTyping}
+            </Text>
           </Pressable>
         ) : (
           <Pressable
             style={styles.locationList}
             onPress={() => goBack(customTyping)}>
-            <Text style={styles.locationName}>직접 입력</Text>
+            <Text
+              style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+              직접 입력
+            </Text>
           </Pressable>
         )}
         {nearByLocations &&
@@ -106,7 +145,10 @@ const FindingLocation = ({navigation, route}) => {
               style={styles.locationList}
               id={item}
               onPress={() => goBack(item)}>
-              <Text style={styles.locationName}>{item}</Text>
+              <Text
+                style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+                {item}
+              </Text>
             </Pressable>
           ))}
       </ScrollView>
@@ -114,38 +156,4 @@ const FindingLocation = ({navigation, route}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    paddingVertical: responsiveHeight(20),
-  },
-  locationList: {
-    width: responsiveWidth(370),
-    height: responsiveHeight(45),
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  locationName: {
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(20),
-    letterSpacing: responsiveWidth(-0.6),
-    marginLeft: responsiveWidth(5),
-    color: '#505866',
-  },
-  loginInput: {
-    height: responsiveHeight(48),
-    width: responsiveWidth(370),
-    borderRadius: responsiveWidth(12),
-    backgroundColor: '#F2F4F6',
-    paddingHorizontal: responsiveWidth(10),
-    color: '#505866',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-});
 export default FindingLocation;

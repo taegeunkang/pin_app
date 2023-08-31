@@ -23,7 +23,6 @@ const Medias = () => {
   const [last, setLast] = useState(false);
   const [array, setArray] = useState([]);
   const {Images, Fonts, Colors} = useTheme();
-  const [tmpLoading, setTmpLoading] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -129,7 +128,12 @@ const Medias = () => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: Colors.screenBackground,
+      }}>
       {/* 갤러리 사진 */}
 
       <FlatList
@@ -137,7 +141,7 @@ const Medias = () => {
         onEndReached={getGalleryPhotos} // 스크롤이 끝나면 사진 불러오기 함수 호출
         onEndReachedThreshold={0.5}
         renderItem={({item}) => (
-          <View>
+          <View style={{backgroundColor: Colors.screenBackground}}>
             <Pressable
               onPress={() =>
                 watchPreview(Platform.OS === 'ios' ? item.accessUri : item.uri)
@@ -197,7 +201,7 @@ const Medias = () => {
           </View>
         )}
         numColumns={4}
-        style={{backgroundColor: Colors.white, flex: 1}}
+        style={{backgroundColor: Colors.screenBackground, flex: 1}}
       />
       <View
         style={{

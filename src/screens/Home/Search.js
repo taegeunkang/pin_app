@@ -159,7 +159,12 @@ const Search = ({navigation}) => {
 
         <TextInput
           ref={inputRef}
-          style={{flex: 1, textAlign: 'left', marginLeft: responsiveWidth(10)}}
+          style={{
+            flex: 1,
+            textAlign: 'left',
+            marginLeft: responsiveWidth(10),
+            color: Colors.inputContent,
+          }}
           placeholder={t('search.user')}
           placeholderTextColor={Colors.inputPlaceHolder}
           onChangeText={e => setInpt(e)}
