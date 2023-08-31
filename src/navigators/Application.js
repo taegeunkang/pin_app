@@ -38,26 +38,22 @@ const Stack = createStackNavigator();
 // @refresh reset
 const ApplicationNavigator = () => {
   const {t} = useTranslation(['login', 'myPage']);
-  const {Layout, darkMode, NavigationTheme} = useTheme();
-  const {colors} = NavigationTheme;
+  const {Layout, darkMode, NavigationTheme, Fonts, Colors} = useTheme();
   const navigationRef = useNavigationContainerRef();
   useFlipper(navigationRef);
   return (
-    <View style={[Layout.fill, {backgroundColor: colors.card}]}>
+    <View style={[Layout.fill, {backgroundColor: Colors.card}]}>
       <NavigationContainer theme={NavigationTheme} ref={navigationRef}>
         <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} />
         <Stack.Navigator
           screenOptions={{
             headerShown: true,
-            headerTintColor: '#1A1E27',
+            headerTintColor: Colors.headerTitle,
             headerTitleStyle: {
-              color: '#1A1E27',
-              fontFamily: 'SpoqaHanSansNeo-Bold',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
+              color: Colors.headerTitle,
+              ...Fonts.contentMediumBold,
             },
-            headerStyle: {backgroundColor: Colors.white},
+            headerStyle: {backgroundColor: Colors.contentBackground},
             headerBackTitleVisible: false,
             cardStyleInterpolator: ({current, next, layouts}) => {
               return {

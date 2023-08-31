@@ -5,12 +5,10 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Modal,
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
 import {useEffect, useRef, useState} from 'react';
-import {useIsFocused} from '@react-navigation/native';
 import {BorderRadius, FontSize} from '../../theme/Variables';
 import Geolocation from '@react-native-community/geolocation';
 import {Switch} from 'react-native-paper';
@@ -19,7 +17,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import SubmitButton from '../../components/SubmitButton';
-import Plus from '../../theme/assets/images/light/plus.svg';
 import {useTheme} from '../../hooks';
 import * as RNFS from 'react-native-fs';
 import {reIssue} from '../../utils/login';
@@ -28,16 +25,16 @@ const WriteContent = ({navigation, route}) => {
   const [text, setText] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
   const [gpsPermission, setGpsPermission] = useState(false);
-  const isFocused = useIsFocused();
   const {t} = useTranslation('newPost');
   const [media, setMeida] = useState(null);
   const [loc, setLoc] = useState('');
   const [f, setF] = useState([]);
   const {mediaFiles, locationName, friends} = route.params;
-  const {Images} = useTheme();
+  const {Images, Fonts, Colors} = useTheme();
   const [loading, setLoading] = useState(false);
   const [lat, setLat] = useState(null);
   const [lon, setLon] = useState(null);
+
   const inptRef = useRef(null);
   useEffect(() => {
     checkRefreshMediaFiles();
@@ -168,9 +165,45 @@ const WriteContent = ({navigation, route}) => {
     });
   };
 
+  const styles = StyleSheet.create({
+    imageContainer: {
+      width: responsiveWidth(100),
+      height: responsiveHeight(100),
+      borderRadius: responsiveWidth(12),
+      marginRight: responsiveWidth(5),
+      position: 'relative',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    inptContainer: {
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    listContent: {
+      width: '100%',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      flexDirection: 'column',
+      marginBottom: responsiveHeight(10),
+    },
+    friendsList: {
+      width: '100%',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      flexDirection: 'column',
+      marginBottom: responsiveHeight(10),
+    },
+    friendsImage: {
+      width: responsiveWidth(35),
+      height: responsiveHeight(35),
+      borderRadius: responsiveWidth(8),
+      marginRight: responsiveWidth(5),
+    },
+  });
+
   return (
     <TouchableWithoutFeedback onPress={() => inptRef.current.blur()}>
-      <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+      <View style={{flex: 1, backgroundColor: Colors.contentBackground}}>
         <View style={styles.inptContainer}>
           {media && media.length > 0 && (
             <>
@@ -206,28 +239,27 @@ const WriteContent = ({navigation, route}) => {
               height: responsiveHeight(180),
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#F2F4F6',
+              backgroundColor: Colors.screenBackground,
               marginBottom: responsiveHeight(20),
             }}>
             <TextInput
               value={text}
               placeholder={t('write.content.placeholder')}
-              placeholderTextColor={'#6D7582'}
+              placeholderTextColor={Colors.inputPlaceHolder}
               multiline={true}
-              style={{
-                width: responsiveWidth(370),
-                height: responsiveHeight(160),
-                textAlignVertical: 'top',
-                fontFamily: 'SpoqaHanSansNeo-Medium',
-                fontSize: responsiveWidth(14),
-                lineHeight: responsiveHeight(24),
-                letterSpacing: responsiveWidth(-0.6),
-                color: '#505866',
-                backgroundColor: '#FFFFFF',
-                borderRadius: responsiveWidth(12),
-                paddingVertical: responsiveHeight(10),
-                paddingHorizontal: responsiveWidth(10),
-              }}
+              style={[
+                Fonts.contentMediumMedium,
+                {
+                  width: responsiveWidth(370),
+                  height: responsiveHeight(160),
+                  textAlignVertical: 'top',
+                  color: Colors.textNormal,
+                  backgroundColor: Colors.contentBackground,
+                  borderRadius: responsiveWidth(12),
+                  paddingVertical: responsiveHeight(10),
+                  paddingHorizontal: responsiveWidth(10),
+                },
+              ]}
               onChangeText={e => setText(e)}
               ref={inptRef}
               maxLength={500}
@@ -241,7 +273,9 @@ const WriteContent = ({navigation, route}) => {
               style={{
                 flexDirection: 'row',
               }}>
-              <Text style={styles.subTitle}>위치</Text>
+              <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
+                위치
+              </Text>
               <View
                 style={{
                   marginBottom: responsiveHeight(5),
@@ -251,22 +285,25 @@ const WriteContent = ({navigation, route}) => {
                 onPress={() =>
                   navigation.navigate('FindingLocation', {lat: lat, lon: lon})
                 }>
-                <Plus
-                  width={responsiveWidth(20)}
-                  height={responsiveHeight(20)}
-                  style={{marginTop: responsiveHeight(2)}}
+                <Image
+                  source={Images.plus}
+                  style={{
+                    width: responsiveWidth(20),
+                    height: responsiveHeight(20),
+                    marginTop: responsiveHeight(2),
+                    marginLeft: responsiveWidth(5),
+                  }}
                 />
               </TouchableOpacity>
             </View>
             {loc && (
               <Text
-                style={{
-                  fontFamily: 'SpoqaHanSansNeo-Regular',
-                  fontSize: responsiveWidth(14),
-                  lineHeight: responsiveHeight(24),
-                  letterSpacing: responsiveWidth(-0.6),
-                  color: '#505866',
-                }}>
+                style={[
+                  Fonts.contentMediumRegualr,
+                  {
+                    color: Colors.textNormal,
+                  },
+                ]}>
                 {loc}
               </Text>
             )}
@@ -274,13 +311,19 @@ const WriteContent = ({navigation, route}) => {
 
           <View style={styles.friendsList}>
             <View style={{flexDirection: 'row'}}>
-              <Text style={styles.subTitle}>함께한 친구</Text>
+              <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
+                함께한 친구
+              </Text>
               <View style={{marginBottom: responsiveHeight(5)}} />
               <TouchableOpacity onPress={moveToFindingFriends}>
-                <Plus
-                  width={responsiveWidth(20)}
-                  height={responsiveHeight(20)}
-                  style={{marginTop: responsiveHeight(2)}}
+                <Image
+                  source={Images.plus}
+                  style={{
+                    width: responsiveWidth(20),
+                    height: responsiveHeight(20),
+                    marginTop: responsiveHeight(2),
+                    marginLeft: responsiveWidth(5),
+                  }}
                 />
               </TouchableOpacity>
             </View>
@@ -302,13 +345,10 @@ const WriteContent = ({navigation, route}) => {
                     style={styles.friendsImage}
                   />
                   <Text
-                    style={{
-                      fontFamily: 'SpoqaHanSansNeo-Medium',
-                      fontSize: responsiveWidth(14),
-                      lineHeight: responsiveHeight(24),
-                      letterSpacing: responsiveWidth(-0.6),
-                      color: '#505866',
-                    }}>
+                    style={[
+                      Fonts.contentMediumMedium,
+                      {color: Colors.textNormal},
+                    ]}>
                     {u.nickname}
                   </Text>
                 </View>
@@ -321,11 +361,17 @@ const WriteContent = ({navigation, route}) => {
           <WithLocalSvg asset={RightArrow} width={20} height={20} />
         </View> */}
           <View style={styles.listContent}>
-            <Text style={styles.subTitle}>비공개</Text>
+            <Text
+              style={[
+                Fonts.contentMediumBold,
+                {color: Colors.textBold, marginBottom: responsiveHeight(5)},
+              ]}>
+              비공개
+            </Text>
             <Switch
               value={isPrivate}
               onValueChange={() => setIsPrivate(!isPrivate)}
-              color="#4880EE"
+              color={Colors.buttonSecondContent}
             />
           </View>
           <View
@@ -346,57 +392,5 @@ const WriteContent = ({navigation, route}) => {
     </TouchableWithoutFeedback>
   );
 };
-
-const styles = StyleSheet.create({
-  imageContainer: {
-    width: responsiveWidth(100),
-    height: responsiveHeight(100),
-    borderRadius: responsiveWidth(12),
-    marginRight: responsiveWidth(5),
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inptContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  inputBox: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    width: '100%',
-    height: '100%',
-    borderRadius: BorderRadius.medium,
-  },
-  listContent: {
-    width: '100%',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-    marginBottom: responsiveHeight(10),
-  },
-  friendsList: {
-    width: '100%',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-    marginBottom: responsiveHeight(10),
-  },
-  subTitle: {
-    fontFamily: 'SpoqaHanSansNeo-Bold',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(24),
-    letterSpacing: responsiveWidth(-0.6),
-    color: '#353C49',
-    marginRight: responsiveWidth(5),
-    marginBottom: responsiveHeight(10),
-  },
-  friendsImage: {
-    width: responsiveWidth(35),
-    height: responsiveHeight(35),
-    borderRadius: responsiveWidth(8),
-    marginRight: responsiveWidth(5),
-  },
-});
 
 export default WriteContent;

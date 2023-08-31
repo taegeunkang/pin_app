@@ -2,23 +2,19 @@ import {
   StyleSheet,
   View,
   TextInput,
-  TouchableWithoutFeedback,
-  Keyboard,
   ScrollView,
   Text,
   SafeAreaView,
-  ActivityIndicator,
+  Image,
 } from 'react-native';
-import {Colors} from '../../theme/Variables';
-import SearchIconNot from '../../theme/assets/images/light/search-not-select.svg';
 import {useTranslation} from 'react-i18next';
 import {useState, useRef, useEffect} from 'react';
-import {WithLocalSvg} from 'react-native-svg';
 import UserCell from '../../components/Content/UserCell';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {reIssue} from '../../utils/login';
+import {useTheme} from '../../hooks';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
@@ -29,9 +25,8 @@ const Search = ({navigation}) => {
   const [userList, setUserList] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
   const inputRef = useRef(null);
-
+  const {Images, Fonts, Colors} = useTheme();
   const getSearchHistory = async () => {
     const history = await AsyncStorage.getItem('searchHistory');
     setSearchHistory(JSON.parse(history));
@@ -134,19 +129,39 @@ const Search = ({navigation}) => {
     search();
   }, [inpt]);
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.contentBackground,
+      alignItems: 'center',
+      paddingVertical: responsiveHeight(20),
+    },
+    loginInput: {
+      height: responsiveHeight(48),
+      width: responsiveWidth(370),
+      borderRadius: responsiveWidth(12),
+      backgroundColor: Colors.screenBackground,
+      paddingHorizontal: responsiveWidth(10),
+      color: Colors.textNormal,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginInput}>
-        <SearchIconNot
-          width={responsiveWidth(25)}
-          height={responsiveHeight(25)}
+        <Image
+          source={Images.searchNotSelect}
+          style={{width: responsiveWidth(25), height: responsiveHeight(25)}}
         />
 
         <TextInput
           ref={inputRef}
           style={{flex: 1, textAlign: 'left', marginLeft: responsiveWidth(10)}}
           placeholder={t('search.user')}
-          placeholderTextColor={'#6D7582'}
+          placeholderTextColor={Colors.inputPlaceHolder}
           onChangeText={e => setInpt(e)}
           value={inpt}
         />
@@ -161,13 +176,7 @@ const Search = ({navigation}) => {
               flexDirection: 'row',
               justifyContent: 'flex-start',
             }}>
-            <Text
-              style={{
-                fontFamily: 'SpoqaHanSansNeo-Bold',
-                fontSize: responsiveWidth(12),
-                lineHeight: responsiveHeight(18),
-                letterSpacing: responsiveWidth(-0.6),
-              }}>
+            <Text style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
               {t('search.history')}
             </Text>
           </View>
@@ -228,18 +237,17 @@ const Search = ({navigation}) => {
         <View
           style={{
             flex: 1,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.contentBackground,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Medium',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(20),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#505866',
-            }}>
+            style={[
+              Fonts.contentMediumBold,
+              {
+                color: Colors.textNormal,
+              },
+            ]}>
             {t('search.notFound')}
           </Text>
         </View>
@@ -248,23 +256,4 @@ const Search = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    alignItems: 'center',
-    paddingVertical: responsiveHeight(20),
-  },
-  loginInput: {
-    height: responsiveHeight(48),
-    width: responsiveWidth(370),
-    borderRadius: responsiveWidth(12),
-    backgroundColor: '#F2F4F6',
-    paddingHorizontal: responsiveWidth(10),
-    color: '#505866',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-});
 export default Search;

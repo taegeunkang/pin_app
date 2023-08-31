@@ -11,14 +11,18 @@ import {API_URL} from '../../utils/constants';
 import {useEffect, useRef, useState} from 'react';
 import WebView from 'react-native-webview';
 import FastImage from 'react-native-fast-image';
+import {useTheme} from '../../hooks';
 
 export const Slider = ({media}) => {
+  const {Colors} = useTheme();
   // 게시글 업로드시 포스터 생성 후 포스터도 같이 표시를 해주어ㅑ 한다.
   const [fastImageResizeMode, setFastImageResizeMode] = useState(
     FastImage.resizeMode.cover,
   );
   return (
-    <Swiper style={styles.wrapper} showsButtons={false}>
+    <Swiper
+      style={{backgroundColor: Colors.contentBackground}}
+      showsButtons={false}>
       {media.map((file, index) => {
         const ext = file.substring(file.length - 4, file.length);
         const fileHtml = ` <!DOCTYPE html>
@@ -98,10 +102,3 @@ export const Slider = ({media}) => {
     </Swiper>
   );
 };
-const styles = StyleSheet.create({
-  wrapper: {
-    // width: screenWidth,
-    // height: screenWidth,
-    backgroundColor: '#17171B',
-  },
-});

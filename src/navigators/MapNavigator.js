@@ -25,14 +25,11 @@ const MapNavigator = props => {
         headerShown: true,
         headerBackTitleVisible: false,
         headerTitleStyle: {
-          color: '#1A1E27',
-          fontFamily: 'SpoqaHanSansNeo-Bold',
-          fontSize: responsiveWidth(14),
-          lineHeight: responsiveHeight(24),
-          letterSpacing: responsiveWidth(-0.6),
+          color: Colors.headerTitle,
+          ...Fonts.contentMediumBold,
         },
+        headerStyle: {backgroundColor: Colors.contentBackground},
         headerBackImage: () => <HeaderLeftButton />,
-        headerStyle: {backgroundColor: Colors.white},
         cardStyleInterpolator: ({current, next, layouts}) => {
           return {
             cardStyle: {
@@ -51,7 +48,7 @@ const MapNavigator = props => {
       <Stack.Screen
         name="MapUserPage"
         component={UserPage}
-        initialParams={{userId : props.userId}}
+        initialParams={{userId: props.userId}}
         options={{headerShown: true, headerTitle: '프로필'}}
       />
       <Stack.Screen

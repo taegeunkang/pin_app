@@ -36,13 +36,12 @@ const Nickname = ({navigation}) => {
             alignItems: 'center',
           }}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Bold',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#4880EE',
-            }}>
+            style={[
+              Fonts.contentMediumBold,
+              {
+                color: Colors.primary,
+              },
+            ]}>
             완료
           </Text>
         </TouchableOpacity>
@@ -93,7 +92,12 @@ const Nickname = ({navigation}) => {
   };
   return (
     <TouchableWithoutFeedback onPress={() => inputRef.current.blur()}>
-      <View style={{flex: 1, alignItems: 'center', backgroundColor: '#FFFFFF'}}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          backgroundColor: Colors.contentBackground,
+        }}>
         <View style={{marginTop: responsiveHeight(20)}} />
         <InputBox
           title={'닉네임'}
@@ -107,14 +111,11 @@ const Nickname = ({navigation}) => {
           <View style={{width: responsiveWidth(370), alignItems: 'flex-start'}}>
             <Text
               style={[
+                Fonts.contentRegualrMedium,
                 {
-                  fontFamily: 'SpoqaHanSansNeo-Medium',
-                  color: '#E44949',
-                  fontSize: responsiveWidth(12),
-                  lineHeight: responsiveHeight(18),
-                  letterSpacing: responsiveWidth(-0.6),
+                  color: Colors.warn,
+                  marginTop: responsiveHeight(5),
                 },
-                {marginTop: responsiveHeight(5)},
               ]}>
               {t('input.duplicateNickname')}
             </Text>
@@ -124,14 +125,11 @@ const Nickname = ({navigation}) => {
           <View style={{width: responsiveWidth(370), alignItems: 'flex-start'}}>
             <Text
               style={[
+                Fonts.contentRegualrMedium,
                 {
-                  fontFamily: 'SpoqaHanSansNeo-Medium',
-                  color: '#E44949',
-                  fontSize: responsiveWidth(12),
-                  lineHeight: responsiveHeight(18),
-                  letterSpacing: responsiveWidth(-0.6),
+                  color: Colors.warn,
+                  marginTop: responsiveHeight(5),
                 },
-                {marginTop: responsiveHeight(5)},
               ]}>
               {'닉네임을 입력해 주세요.'}
             </Text>
@@ -141,14 +139,11 @@ const Nickname = ({navigation}) => {
           <View style={{width: responsiveWidth(370), alignItems: 'flex-start'}}>
             <Text
               style={[
+                Fonts.contentRegualrMedium,
                 {
-                  fontFamily: 'SpoqaHanSansNeo-Medium',
-                  color: '#E44949',
-                  fontSize: responsiveWidth(12),
-                  lineHeight: responsiveHeight(18),
-                  letterSpacing: responsiveWidth(-0.6),
+                  color: Colors.warn,
+                  marginTop: responsiveHeight(5),
                 },
-                {marginTop: responsiveHeight(5)},
               ]}>
               {t('input.nickname')}
             </Text>
@@ -159,5 +154,4 @@ const Nickname = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({});
 export default Nickname;

@@ -36,13 +36,12 @@ const ProfileImage = ({navigation, route}) => {
             alignItems: 'center',
           }}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Bold',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#4880EE',
-            }}>
+            style={[
+              Fonts.contentMediumBold,
+              {
+                color: Colors.primary,
+              },
+            ]}>
             완료
           </Text>
         </TouchableOpacity>
@@ -102,7 +101,12 @@ const ProfileImage = ({navigation, route}) => {
   };
 
   return (
-    <View style={{flex: 1, alignItems: 'center', backgroundColor: '#ffffff'}}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: Colors.contentBackground,
+      }}>
       <Modal visible={pressed} animationType={'slide'} transparent={true}>
         <ChoosePic onPress={closeModal} cancel={() => setPressed(false)} />
       </Modal>
@@ -121,7 +125,7 @@ const ProfileImage = ({navigation, route}) => {
             width: responsiveWidth(100),
             height: responsiveHeight(100),
             borderRadius: responsiveWidth(12),
-            backgroundColor: 'black',
+            backgroundColor: Colors.screenBackground,
           }}
         />
       </View>
@@ -135,13 +139,12 @@ const ProfileImage = ({navigation, route}) => {
             setPic(null);
           }}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Medium',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#6D7582',
-            }}>
+            style={[
+              Fonts.contentMediumMedium,
+              {
+                color: Colors.navNotSelect,
+              },
+            ]}>
             기본 이미지 선택
           </Text>
         </TouchableOpacity>
@@ -150,5 +153,4 @@ const ProfileImage = ({navigation, route}) => {
   );
 };
 
-const styles = StyleSheet.create({});
 export default ProfileImage;

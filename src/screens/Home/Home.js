@@ -14,7 +14,6 @@ import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
 import Geolocation from '@react-native-community/geolocation';
 import {useEffect, useState, useRef} from 'react';
-import CurrentLocationBtn from '../../theme/assets/images/light/current-location.svg';
 import {useTheme} from '../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
@@ -27,6 +26,7 @@ import FastImage from 'react-native-fast-image';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import Detail from './Detail';
 import MapDetail from './MapDetail';
+import {coreModule} from '@reduxjs/toolkit/dist/query';
 const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -34,9 +34,8 @@ const Home = ({navigation}) => {
   const [permission, setPermission] = useState(true);
   const [detailPressed, setDetailPressed] = useState(false);
   const [focusedPin, setFocusedPin] = useState(null);
-  const [modalHeight, setModalHeight] = useState(0);
   const mapRef = useRef(null);
-  const {Gutters, Images} = useTheme();
+  const {Gutters, Images, Colors} = useTheme();
   const scaleValue = useState(new Ani.Value(1))[0];
 
   const onButtonPressIn = () => {
@@ -180,8 +179,21 @@ const Home = ({navigation}) => {
     };
   }, []);
 
+  const styles = StyleSheet.create({
+    container: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: Colors.contentBackground,
+      // alignItems: 'center',
+      // justifyContent: 'center',
+    },
+    map: {
+      flex: 1,
+    },
+  });
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {!latitude && !longitude && (
         <View
           style={{
@@ -189,11 +201,11 @@ const Home = ({navigation}) => {
             height: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: Colors.contentBackground,
           }}>
           <ActivityIndicator
             size={'large'}
-            color={'#4880EE'}
+            color={Colors.primary}
             style={[Gutters.largeVMargin]}
           />
         </View>
@@ -207,7 +219,7 @@ const Home = ({navigation}) => {
               position: 'absolute',
               bottom: responsiveHeight(30),
               left: responsiveWidth(20),
-              backgroundColor: '#EAF3FE',
+              backgroundColor: Colors.buttonSecondBackground,
               borderRadius: responsiveWidth(100),
               zIndex: detailPressed ? 0 : 100,
               shadowOffset: {width: 0, height: responsiveHeight(3)},
@@ -224,9 +236,12 @@ const Home = ({navigation}) => {
               onPressOut={onButtonPressOut}
               style={{}}
               onPress={returnCurrentLocation}>
-              <CurrentLocationBtn
-                width={responsiveWidth(35)}
-                height={responsiveHeight(35)}
+              <Image
+                source={Images.currentLocation}
+                style={{
+                  width: responsiveWidth(35),
+                  height: responsiveHeight(35),
+                }}
               />
             </Pressable>
           </Ani.View>
@@ -271,7 +286,7 @@ const Home = ({navigation}) => {
                         width: '91%',
                         height: '91%',
                         borderRadius: 300,
-                        backgroundColor: '#EAF3FE',
+                        backgroundColor: Colors.buttonSecondBackground,
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
@@ -281,7 +296,7 @@ const Home = ({navigation}) => {
                           fontFamily: 'SpoqaHanSansNeo-Bold',
                           lineHeight: responsiveHeight(70),
                           letterSpacing: responsiveWidth(-0.6),
-                          color: '#353C49',
+                          color: Colors.textBold,
                         }}>{`+${points}`}</Text>
                     </View>
                     <Image
@@ -291,13 +306,6 @@ const Home = ({navigation}) => {
                         height: '100%',
                         borderRadius: 100,
                         position: 'absolute',
-                        // top: responsiveHeight(10),
-                        // left: '50%',
-                        // top: '50%',
-                        // transform: [
-                        //   {translateX: -50}, // Adjust these values accordingly
-                        //   {translateY: -12}, // For instance, -50% of your element width and height
-                        // ],
                       }}
                     />
                   </View>
@@ -339,7 +347,7 @@ const Home = ({navigation}) => {
                           width: '91%',
                           height: '91%',
                           borderRadius: 300,
-                          backgroundColor: 'black',
+                          backgroundColor: Colors.contentBackground,
                           marginBottom: responsiveHeight(10),
                         }}
                         resizeMode="contain"
@@ -380,21 +388,8 @@ const Home = ({navigation}) => {
           thumbsUp={thumbsUp}
         />
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#FFFFFF',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
-  map: {
-    flex: 1,
-  },
-});
 
 export default Home;

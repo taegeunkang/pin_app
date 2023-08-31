@@ -11,6 +11,7 @@ import {useTranslation} from 'react-i18next';
 import SubmitButton2 from '../SubmitButton2';
 import SubmitButton from '../SubmitButton';
 import {responsiveHeight, responsiveWidth} from '../Scale';
+import {useTheme} from '../../hooks';
 const Edit = ({
   myPage,
   close,
@@ -19,6 +20,33 @@ const Edit = ({
   setNickname,
 }) => {
   const {t} = useTranslation('register');
+  const {Fonts, Colors} = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0, 0.3)',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    },
+    content: {
+      width: responsiveWidth(370),
+      borderRadius: responsiveWidth(12),
+      backgroundColor: Colors.contentBackground,
+    },
+    btn: {
+      width: responsiveWidth(370),
+      height: responsiveHeight(70),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+
+    last: {
+      marginVertical: responsiveHeight(10),
+      backgroundColor: Colors.contentBackground,
+      borderRadius: responsiveWidth(12),
+    },
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -26,67 +54,39 @@ const Edit = ({
         <TouchableOpacity
           onPress={setBackgroundImage}
           style={[styles.btn, styles.normal]}>
-          <Text style={styles.main}>배경 이미지 변경</Text>
+          <Text style={[{color: Colors.primary}, Fonts.contentMediumMedium]}>
+            배경 이미지 변경
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={setProfileImage}
           style={[styles.btn, styles.normal]}>
-          <Text style={styles.main}>프로필 이미지 변경</Text>
+          <Text style={[{color: Colors.primary}, Fonts.contentMediumMedium]}>
+            프로필 이미지 변경
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={setNickname}
           style={[styles.btn, styles.normal]}>
-          <Text style={styles.main}>닉네임 편집</Text>
+          <Text style={[{color: Colors.primary}, Fonts.contentMediumMedium]}>
+            닉네임 편집
+          </Text>
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity onPress={close} style={[styles.btn, styles.last]}>
         <Text
-          style={{
-            fontFamily: 'SpoqaHanSansNeo-Medium',
-            fontSize: responsiveWidth(14),
-            lineHeight: responsiveHeight(24),
-            letterSpacing: responsiveWidth(-0.6),
-            color: '#E44949',
-          }}>
+          style={[
+            Fonts.contentMediumMedium,
+            {
+              color: Colors.warn,
+            },
+          ]}>
           취소
         </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0, 0.3)',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  content: {
-    width: responsiveWidth(370),
-    borderRadius: responsiveWidth(12),
-    backgroundColor: '#FFFFFF',
-  },
-  main: {
-    color: '#4880EE',
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(24),
-    letterSpacing: responsiveWidth(-0.6),
-  },
-  btn: {
-    width: responsiveWidth(370),
-    height: responsiveHeight(70),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  last: {
-    marginVertical: responsiveHeight(10),
-    backgroundColor: '#FFFFFF',
-    borderRadius: responsiveWidth(12),
-  },
-});
 
 export default Edit;

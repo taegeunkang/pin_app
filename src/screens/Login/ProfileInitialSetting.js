@@ -3,14 +3,12 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Pressable,
   TouchableWithoutFeedback,
   SafeAreaView,
 } from 'react-native';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {useLayoutEffect, useState, useRef} from 'react';
 import {useTheme} from '../../hooks';
-import SubmitButton from '../../components/SubmitButton';
 import InputBox from '../../components/InputBox';
 import {API_URL} from '../../utils/constants';
 import {useTranslation} from 'react-i18next';
@@ -38,13 +36,12 @@ const ProfileInitialSetting = ({navigation}) => {
             alignItems: 'center',
           }}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Bold',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#4880EE',
-            }}>
+            style={[
+              Fonts.contentMediumBold,
+              {
+                color: Colors.primary,
+              },
+            ]}>
             완료
           </Text>
         </TouchableOpacity>
@@ -92,7 +89,11 @@ const ProfileInitialSetting = ({navigation}) => {
   return (
     <TouchableWithoutFeedback onPress={() => inputRef.current.blur()}>
       <SafeAreaView
-        style={{flex: 1, alignItems: 'center', backgroundColor: '#FFFFFF'}}>
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          backgroundColor: Colors.contentBackground,
+        }}>
         <View style={{marginTop: responsiveHeight(20)}} />
         <InputBox
           title={t('input.nickname')}
@@ -110,13 +111,12 @@ const ProfileInitialSetting = ({navigation}) => {
               marginTop: responsiveHeight(5),
             }}>
             <Text
-              style={{
-                fontFamily: 'SpoqaHanSansNeo-Medium',
-                color: '#E44949',
-                fontSize: responsiveWidth(12),
-                lineHeight: responsiveHeight(18),
-                letterSpacing: responsiveWidth(-0.6),
-              }}>
+              style={[
+                Fonts.contentRegualrMedium,
+                {
+                  color: Colors.warn,
+                },
+              ]}>
               {t('nickname.duplicate')}
             </Text>
           </View>
@@ -130,13 +130,12 @@ const ProfileInitialSetting = ({navigation}) => {
               marginTop: responsiveHeight(5),
             }}>
             <Text
-              style={{
-                fontFamily: 'SpoqaHanSansNeo-Medium',
-                color: '#E44949',
-                fontSize: responsiveWidth(12),
-                lineHeight: responsiveHeight(18),
-                letterSpacing: responsiveWidth(-0.6),
-              }}>
+              style={[
+                Fonts.contentRegualrMedium,
+                {
+                  color: Colors.warn,
+                },
+              ]}>
               {t('nickname.empty')}
             </Text>
           </View>
@@ -150,31 +149,19 @@ const ProfileInitialSetting = ({navigation}) => {
               marginTop: responsiveHeight(5),
             }}>
             <Text
-              style={{
-                fontFamily: 'SpoqaHanSansNeo-Medium',
-                color: '#E44949',
-                fontSize: responsiveWidth(12),
-                lineHeight: responsiveHeight(18),
-                letterSpacing: responsiveWidth(-0.6),
-              }}>
+              style={[
+                Fonts.contentRegualrMedium,
+                {
+                  color: Colors.warn,
+                },
+              ]}>
               {t('nickname.tooLong')}
             </Text>
           </View>
         )}
-
-        {/* <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            marginBottom: responsiveHeight(30),
-          }}>
-          <SubmitButton onPress={submit} title={t('nickname.next')} />
-        </View> */}
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 };
 
-const styles = StyleSheet.create({});
 export default ProfileInitialSetting;

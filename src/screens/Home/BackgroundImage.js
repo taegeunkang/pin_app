@@ -35,13 +35,12 @@ const BackgroundImage = ({navigation, route}) => {
             alignItems: 'center',
           }}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Bold',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#4880EE',
-            }}>
+            style={[
+              Fonts.contentMediumBold,
+              {
+                color: Colors.primary,
+              },
+            ]}>
             완료
           </Text>
         </TouchableOpacity>
@@ -132,13 +131,12 @@ const BackgroundImage = ({navigation, route}) => {
             setPic(null);
           }}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Medium',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#6D7582',
-            }}>
+            style={[
+              Fonts.contentMediumMedium,
+              {
+                color: Colors.navNotSelect,
+              },
+            ]}>
             기본 이미지 선택
           </Text>
         </TouchableOpacity>
@@ -147,5 +145,4 @@ const BackgroundImage = ({navigation, route}) => {
   );
 };
 
-const styles = StyleSheet.create({});
 export default BackgroundImage;

@@ -1,11 +1,10 @@
 import {useTheme} from '../hooks';
-import {Image, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import {responsiveHeight, responsiveWidth} from './Scale';
-import LeftChevron from '../theme/assets/images/light/left-chevron.svg';
-const HeaderLeftButton = () => {
+const HeaderLeftButton = ({onPress}) => {
   const {Images} = useTheme();
   return (
-    <View
+    <TouchableOpacity
       style={{
         width: responsiveWidth(35),
         height: responsiveHeight(25),
@@ -13,9 +12,13 @@ const HeaderLeftButton = () => {
         justifyContent: 'flex-start',
         alignItems: 'center',
         paddingLeft: responsiveWidth(10),
-      }}>
-      <LeftChevron width={responsiveWidth(20)} height={responsiveHeight(20)} />
-    </View>
+      }}
+      onPress={onPress}>
+      <Image
+        source={Images.leftChevron}
+        style={{width: responsiveWidth(15), height: responsiveHeight(15)}}
+      />
+    </TouchableOpacity>
   );
 };
 

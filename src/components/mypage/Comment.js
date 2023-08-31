@@ -5,7 +5,6 @@ import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState} from 'react';
 import FastImage from 'react-native-fast-image';
-import More from '../../theme/assets/images/light/detail.svg';
 import {timeAgo} from '../../utils/util';
 const Comment = ({
   commentId,
@@ -19,7 +18,7 @@ const Comment = ({
   onPress,
   onReplyPress,
 }) => {
-  const {Fonts, Images} = useTheme();
+  const {Fonts, Images, Colors} = useTheme();
   const [closed, setClosed] = useState(true);
   const myComment = async () => {
     const id = await AsyncStorage.getItem('id');
@@ -58,7 +57,9 @@ const Comment = ({
                 marginRight: responsiveWidth(5),
               }}
             />
-            <Text style={Fonts.contentMediumBold}>{nickname}</Text>
+            <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
+              {nickname}
+            </Text>
           </View>
 
           <View
@@ -70,15 +71,18 @@ const Comment = ({
             <Text
               style={[
                 Fonts.contentRegualrMedium,
-                {marginRight: responsiveWidth(10)},
+                {marginRight: responsiveWidth(10), color: Colors.textNormal},
               ]}>
               {timeAgo(createdDate)}
             </Text>
             {myComment() && (
               <Pressable onPress={onPress}>
-                <More
-                  width={responsiveWidth(20)}
-                  height={responsiveHeight(20)}
+                <Image
+                  source={Images.more}
+                  style={{
+                    width: responsiveWidth(20),
+                    height: responsiveHeight(20),
+                  }}
                 />
               </Pressable>
             )}
@@ -89,13 +93,21 @@ const Comment = ({
             width: responsiveWidth(320),
             marginLeft: responsiveWidth(10),
           }}>
-          <Text style={Fonts.contentMediumMedium}>{content}</Text>
+          <Text style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+            {content}
+          </Text>
 
           {/* 답글 작성 &  대댓글 있으면 개수 표시 및 더보기 */}
 
           <View style={{flexDirection: 'row', marginTop: responsiveHeight(5)}}>
             <Pressable onPress={onReplyPress}>
-              <Text style={[Fonts.contentRegularRegualr]}>답글 달기</Text>
+              <Text
+                style={[
+                  Fonts.contentRegularRegualr,
+                  {color: Colors.textNormal},
+                ]}>
+                답글 달기
+              </Text>
             </Pressable>
           </View>
           {closed && replyCount > 0 && (
@@ -107,7 +119,11 @@ const Comment = ({
                 marginRight: responsiveWidth(10),
               }}
               onPress={() => showReplyProxy(commentId)}>
-              <Text style={[Fonts.contentRegularRegualr]}>
+              <Text
+                style={[
+                  Fonts.contentRegularRegualr,
+                  {color: Colors.textNormal},
+                ]}>
                 --------- 답글 {replyCount}개 더 보기
               </Text>
             </Pressable>

@@ -10,7 +10,6 @@ import {
   Image,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import {Colors} from '../../theme/Variables';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {useTheme} from '../../hooks';
 import SubmitButton from '../../components/SubmitButton';
@@ -24,7 +23,7 @@ const Medias = () => {
   const [galleryCursor, setGalleryCursor] = useState(null);
   const [last, setLast] = useState(false);
   const [array, setArray] = useState([]);
-  const {Images} = useTheme();
+  const {Images, Fonts, Colors} = useTheme();
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -131,7 +130,7 @@ const Medias = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
       {/* 갤러리 사진 */}
 
       <FlatList
@@ -177,7 +176,7 @@ const Medias = () => {
                   width: responsiveWidth(20),
                   height: responsiveHeight(20),
                   borderRadius: responsiveWidth(100),
-                  backgroundColor: '#4880EE',
+                  backgroundColor: Colors.buttonSecondContent,
                   justifyContent: 'center',
                   alignItems: 'center',
                   position: 'absolute',
@@ -223,23 +222,5 @@ const Medias = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center'},
-  headerTitle: {
-    fontFamily: 'SpoqaHanSansNeo-Bold',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(20),
-    letterSpacing: responsiveWidth(-0.6),
-    color: '#1A1E27',
-  },
-  subscription: {
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(20),
-    letterSpacing: responsiveWidth(-0.6),
-    color: '#505866',
-  },
-});
 
 export default Medias;

@@ -5,7 +5,6 @@ import {
   Image,
   ScrollView,
   RefreshControl,
-  ActivityIndicator,
   SafeAreaView,
   Pressable,
   Modal,
@@ -27,7 +26,7 @@ import FastImage from 'react-native-fast-image';
 
 const MyPage = ({navigation}) => {
   const {t} = useTranslation('myPage');
-  const {Fonts} = useTheme();
+  const {Fonts, Colors, Images} = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -200,6 +199,35 @@ const MyPage = ({navigation}) => {
     initData();
   }, []);
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.contentBackground,
+      alignItems: 'center',
+    },
+    backgroundImage: {
+      height: responsiveHeight(200),
+      width: '100%',
+    },
+    profileContainer: {
+      height: responsiveHeight(110),
+      width: responsiveWidth(370),
+      backgroundColor: Colors.contentBackground,
+    },
+    profileImage: {
+      width: responsiveWidth(75),
+      height: responsiveHeight(75),
+      borderRadius: responsiveWidth(12),
+      marginTop: responsiveHeight(-40),
+      borderWidth: responsiveWidth(3),
+      borderColor: Colors.contentBackground,
+      marginRight: responsiveWidth(10),
+    },
+    nickname: {
+      marginBottom: responsiveHeight(10),
+    },
+  });
+
   return (
     <SafeAreaView style={[styles.container]}>
       <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
@@ -228,9 +256,9 @@ const MyPage = ({navigation}) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#4880EE"
-            colors={['#4880EE']}
-            style={{backgroundColor: '#FFFFFF'}}
+            tintColor={Colors.primary}
+            colors={[Colors.primary]}
+            style={{backgroundColor: Colors.contentBackground}}
           />
         }
         onScroll={({nativeEvent}) => {
@@ -248,7 +276,7 @@ const MyPage = ({navigation}) => {
         style={{
           flex: 1,
           width: '100%',
-          backgroundColor: '#F2F4F6',
+          backgroundColor: Colors.screenBackground,
         }}>
         <FastImage
           source={{
@@ -262,7 +290,7 @@ const MyPage = ({navigation}) => {
           style={{
             width: '100%',
             alignItems: 'center',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: Colors.contentBackground,
           }}>
           <View style={styles.profileContainer}>
             <View
@@ -302,10 +330,15 @@ const MyPage = ({navigation}) => {
                   justifyContent: 'flex-start',
                   marginRight: responsiveWidth(30),
                 }}>
-                <Text style={[{marginRight: 5}, Fonts.contentMediumRegular]}>
+                <Text
+                  style={[
+                    {marginRight: 5, color: Colors.textBold},
+                    Fonts.contentMediumRegular,
+                  ]}>
                   {t('profile.posts')}
                 </Text>
-                <Text style={Fonts.contentRegularBold}>
+                <Text
+                  style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
                   {formatNumber(userInfo.post)}
                 </Text>
               </View>
@@ -320,10 +353,15 @@ const MyPage = ({navigation}) => {
                   justifyContent: 'flex-start',
                   marginRight: responsiveWidth(30),
                 }}>
-                <Text style={[{marginRight: 5}, Fonts.contentMediumRegular]}>
+                <Text
+                  style={[
+                    {marginRight: 5, color: Colors.textBold},
+                    Fonts.contentMediumRegular,
+                  ]}>
                   {t('profile.follower')}
                 </Text>
-                <Text style={Fonts.contentRegularBold}>
+                <Text
+                  style={(Fonts.contentRegularBold, {color: Colors.textBold})}>
                   {formatNumber(userInfo.follower)}
                 </Text>
               </Pressable>
@@ -338,12 +376,13 @@ const MyPage = ({navigation}) => {
                 }>
                 <Text
                   style={[
-                    {marginRight: responsiveWidth(5)},
+                    {marginRight: responsiveWidth(5), color: Colors.textBold},
                     Fonts.contentMediumRegular,
                   ]}>
                   {t('profile.following')}
                 </Text>
-                <Text style={Fonts.contentRegularBold}>
+                <Text
+                  style={(Fonts.contentRegularBold, {color: Colors.textBold})}>
                   {formatNumber(userInfo.following)}
                 </Text>
               </Pressable>
@@ -408,34 +447,5 @@ const formatNumber = num => {
     return num;
   }
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-  },
-  backgroundImage: {
-    height: responsiveHeight(200),
-    width: '100%',
-  },
-  profileContainer: {
-    height: responsiveHeight(110),
-    width: responsiveWidth(370),
-    backgroundColor: '#FFFFFF',
-  },
-  profileImage: {
-    width: responsiveWidth(75),
-    height: responsiveHeight(75),
-    borderRadius: responsiveWidth(12),
-    marginTop: responsiveHeight(-40),
-    borderWidth: responsiveWidth(3),
-    borderColor: '#ffffff',
-    marginRight: responsiveWidth(10),
-  },
-  nickname: {
-    marginBottom: responsiveHeight(10),
-  },
-});
 
 export default MyPage;

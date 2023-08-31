@@ -4,7 +4,6 @@ import {useTheme} from '../../hooks';
 import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
-import More from '../../theme/assets/images/light/detail.svg';
 import {timeAgo} from '../../utils/util';
 const CommentComment = ({
   commentId,
@@ -16,7 +15,7 @@ const CommentComment = ({
   onPress,
   onReplyPress,
 }) => {
-  const {Fonts, Images} = useTheme();
+  const {Fonts, Images, Colors} = useTheme();
   const isMine = async () => {
     return (await AsyncStorage.getItem('id')) == writerId;
   };
@@ -48,7 +47,9 @@ const CommentComment = ({
                 marginRight: responsiveWidth(5),
               }}
             />
-            <Text style={Fonts.contentMediumBold}>{nickname}</Text>
+            <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
+              {nickname}
+            </Text>
           </View>
 
           <View
@@ -60,15 +61,18 @@ const CommentComment = ({
             <Text
               style={[
                 Fonts.contentRegualrMedium,
-                {marginRight: responsiveWidth(10)},
+                {marginRight: responsiveWidth(10), color: Colors.textNormal},
               ]}>
               {timeAgo(createdDate)}
             </Text>
             {isMine() && (
               <Pressable onPress={onPress}>
-                <More
-                  width={responsiveWidth(20)}
-                  height={responsiveHeight(20)}
+                <Image
+                  source={Images.more}
+                  style={{
+                    width: responsiveWidth(20),
+                    height: responsiveHeight(20),
+                  }}
                 />
               </Pressable>
             )}
@@ -79,7 +83,9 @@ const CommentComment = ({
             width: responsiveWidth(270),
             marginLeft: responsiveWidth(10),
           }}>
-          <Text style={Fonts.contentMediumMedium}>{content}</Text>
+          <Text style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+            {content}
+          </Text>
 
           {/* 답글 작성 &  대댓글 있으면 개수 표시 및 더보기 */}
           <View
@@ -88,7 +94,13 @@ const CommentComment = ({
               marginTop: responsiveHeight(5),
             }}>
             <Pressable onPress={onReplyPress}>
-              <Text style={[Fonts.contentRegularRegualr]}>답글 달기</Text>
+              <Text
+                style={[
+                  Fonts.contentRegularRegualr,
+                  {color: Colors.textNormal},
+                ]}>
+                답글 달기
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -108,14 +120,6 @@ const styles = StyleSheet.create({
     width: responsiveWidth(340),
     alignItems: 'center',
     marginLeft: responsiveWidth(10),
-  },
-  sub: {
-    marginRight: responsiveWidth(5),
-    color: '#6D7582',
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(24),
-    letterSpacing: responsiveWidth(-0.6),
   },
 });
 

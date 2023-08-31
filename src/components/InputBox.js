@@ -18,10 +18,7 @@ const InputBox = React.forwardRef(
     },
     ref,
   ) => {
-    const {Fonts} = useTheme();
-    const screen = Dimensions.get('screen');
-    const screenWidth = screen.width;
-    const screenHeight = screen.height;
+    const {Fonts, Colors} = useTheme();
 
     const styles = StyleSheet.create({
       headerContainer: {
@@ -32,28 +29,32 @@ const InputBox = React.forwardRef(
         height: responsiveHeight(48),
         width: !width ? responsiveWidth(370) : responsiveWidth(width),
         borderRadius: responsiveWidth(12),
-        backgroundColor: '#F2F4F6',
+        backgroundColor: Colors.screenBackground,
         paddingHorizontal: responsiveWidth(10),
+        color: Colors.inputContent,
       },
       wrongInput: {
         borderWidth: responsiveWidth(1),
-        borderColor: '#E44949',
+        borderColor: Colors.warn,
       },
     });
 
     return (
       <>
         <View style={styles.headerContainer}>
-          <Text style={Fonts.inputHeader}>{title}</Text>
+          <Text style={[Fonts.inputHeader, {color: Colors.textBold}]}>
+            {title}
+          </Text>
         </View>
         <TextInput
           style={[
             Fonts.contentRegualrMedium,
             styles.loginInput,
             isWrong ? styles.wrongInput : '',
+            {backgroundColor: Colors.inputBackground},
           ]}
           placeholder={placeholder}
-          placeholderTextColor={'#6D7582'}
+          placeholderTextColor={Colors.inputPlaceHolder}
           onChangeText={onChangeText}
           secureTextEntry={passwordInvisible}
           value={value}

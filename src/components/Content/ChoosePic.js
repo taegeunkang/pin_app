@@ -22,7 +22,7 @@ const ChoosePic = ({onPress, cancel}) => {
   const [galleryCursor, setGalleryCursor] = useState(null);
   const [array, setArray] = useState([]);
   const [last, setLast] = useState(false);
-  const {Images} = useTheme();
+  const {Images, Colors, Fonts} = useTheme();
 
   useEffect(() => {
     const t = async () => {
@@ -88,13 +88,13 @@ const ChoosePic = ({onPress, cancel}) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
       {/* 헤더*/}
       <View
         style={{
           flexDirection: 'row',
           height: '5%',
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.contentBackground,
         }}>
         <TouchableOpacity
           style={{
@@ -105,14 +105,13 @@ const ChoosePic = ({onPress, cancel}) => {
           }}
           onPress={cancel}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Medium',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#E44949',
-              marginLeft: responsiveWidth(10),
-            }}>
+            style={[
+              Fonts.contentMediumMedium,
+              {
+                color: Colors.warn,
+                marginLeft: responsiveWidth(10),
+              },
+            ]}>
             취소
           </Text>
         </TouchableOpacity>
@@ -124,13 +123,12 @@ const ChoosePic = ({onPress, cancel}) => {
             justifyContent: 'center',
           }}>
           <Text
-            style={{
-              color: '#1A1E27',
-              fontFamily: 'SpoqaHanSansNeo-Bold',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-            }}>
+            style={[
+              Fonts.contentMediumBold,
+              {
+                color: Colors.headerTitle,
+              },
+            ]}>
             사진선택
           </Text>
         </View>
@@ -163,23 +161,5 @@ const ChoosePic = ({onPress, cancel}) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center'},
-  headerTitle: {
-    fontFamily: 'SpoqaHanSansNeo-Bold',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(20),
-    letterSpacing: responsiveWidth(-0.6),
-    color: '#1A1E27',
-  },
-  subscription: {
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(20),
-    letterSpacing: responsiveWidth(-0.6),
-    color: '#505866',
-  },
-});
 
 export default ChoosePic;

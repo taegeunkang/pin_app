@@ -1,13 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  Text,
-  Pressable,
-  SafeAreaView,
-  Animated,
-  Image,
-  Platform,
-} from 'react-native';
+import {View, Text, SafeAreaView, Platform} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {useTheme} from '../../hooks';
@@ -17,7 +8,7 @@ import ActiveButton from '../../components/Content/ActiveButton';
 import {request, check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 const Permission = ({close}) => {
   const {t} = useTranslation('content');
-  const {Fonts, Images} = useTheme();
+  const {Fonts, Images, Colors} = useTheme();
   const [permissions, setPermissions] = useState({
     photo: false,
     location: false,
@@ -109,15 +100,24 @@ const Permission = ({close}) => {
     // modalClose();
   }, []);
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: Colors.contentBackground,
+        justifyContent: 'flex-end',
+      }}>
       <View
         style={{
           justifyContent: 'center',
           alignItems: 'center',
           flex: 1,
         }}>
-        <Text style={[Fonts.contentLargeBold]}>Pin 이용에 필요한 기능을</Text>
-        <Text style={[Fonts.contentLargeBold]}>허용해 주세요.</Text>
+        <Text style={[Fonts.contentLargeBold, {color: Colors.textBold}]}>
+          Pin 이용에 필요한 기능을
+        </Text>
+        <Text style={[Fonts.contentLargeBold, {color: Colors.textBold}]}>
+          허용해 주세요.
+        </Text>
       </View>
 
       <View
@@ -157,13 +157,5 @@ const Permission = ({close}) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'flex-end',
-  },
-});
 
 export default Permission;

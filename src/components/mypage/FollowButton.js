@@ -1,29 +1,26 @@
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useTheme} from '../../hooks';
 const FollowButton = ({title, onPress}) => {
+  const {Fonts, Colors} = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      width: 77,
+      height: 23,
+      borderRadius: 12,
+      backgroundColor: Colors.buttonFirstBackground,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
   return (
     <Pressable onPress={onPress} style={styles.container}>
-      <Text style={styles.tt}>{title}</Text>
+      <Text
+        style={[Fonts.contentRegularBold, {color: Colors.buttonFirstContent}]}>
+        {title}
+      </Text>
     </Pressable>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: 77,
-    height: 23,
-    borderRadius: 12,
-    backgroundColor: '#4880EE',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tt: {
-    fontFamily: 'SpoqaHanSansNeo-Bold',
-    fontSize: 12,
-    lineHeight: 18,
-    letterSpacing: -0.6,
-    color: '#ffffff',
-  },
-});
 
 export default FollowButton;

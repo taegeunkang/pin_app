@@ -11,7 +11,7 @@ import {useTheme} from '../hooks';
 import {responsiveHeight, responsiveWidth} from './Scale';
 
 const SubmitButton3 = ({onPress, title, width, height, loading}) => {
-  const {Fonts, Gutters} = useTheme();
+  const {Fonts, Gutters, Colors} = useTheme();
   const scaleValue = useState(new Animated.Value(1))[0];
 
   const onButtonPressIn = () => {
@@ -30,6 +30,17 @@ const SubmitButton3 = ({onPress, title, width, height, loading}) => {
     }).start();
   };
 
+  const styles = StyleSheet.create({
+    btn: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: Colors.buttonThirdBackground,
+      borderRadius: responsiveWidth(12),
+      flexDirection: 'row',
+      position: 'relative',
+    },
+  });
+
   return (
     <View>
       <Animated.View style={{transform: [{scale: scaleValue}]}}>
@@ -47,7 +58,13 @@ const SubmitButton3 = ({onPress, title, width, height, loading}) => {
               : {height: responsiveHeight(height)},
             styles.btn,
           ]}>
-          <Text style={styles.submitBtnTitleReverse}>{title}</Text>
+          <Text
+            style={[
+              Fonts.contentMediumBold,
+              {color: Colors.buttonThirdContent},
+            ]}>
+            {title}
+          </Text>
           {loading && (
             <ActivityIndicator
               size={'small'}
@@ -68,23 +85,5 @@ const SubmitButton3 = ({onPress, title, width, height, loading}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  btn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F2F3F4',
-    borderRadius: responsiveWidth(12),
-    flexDirection: 'row',
-    position: 'relative',
-  },
-  submitBtnTitleReverse: {
-    fontFamily: 'SpoqaHanSansNeo-Bold',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(24),
-    letterSpacing: responsiveWidth(-0.6),
-    color: '#505866',
-  },
-});
 
 export default SubmitButton3;

@@ -11,7 +11,7 @@ import {responsiveHeight, responsiveWidth} from '../Scale';
 import {API_URL} from '../../utils/constants';
 import FastImage from 'react-native-fast-image';
 const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
-  const {Images} = useTheme();
+  const {Images, Fonts, Colors} = useTheme();
 
   return (
     <Pressable onPress={onPress} style={styles.container}>
@@ -27,7 +27,13 @@ const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
             borderRadius: responsiveWidth(12),
           }}
         />
-        <Text style={styles.nickname}>{name}</Text>
+        <Text
+          style={[
+            Fonts.contentMediumMedium,
+            {color: Colors.textNormal, marginLeft: responsiveWidth(5)},
+          ]}>
+          {name}
+        </Text>
       </View>
       {closeAvailable ? (
         <TouchableOpacity onPress={onClose}>
@@ -55,13 +61,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  nickname: {
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(20),
-    letterSpacing: responsiveWidth(-0.6),
-    marginLeft: responsiveWidth(5),
   },
 });
 export default UserCell;

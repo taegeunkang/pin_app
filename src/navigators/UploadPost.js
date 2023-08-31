@@ -15,6 +15,7 @@ import FindingLocation from '../screens/Home/FindingLocation';
 import HeaderLeftButton from '../components/HeaderLeftButton';
 import FindingFriends from '../screens/Home/FindingFriends';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
+import {useTheme} from '../hooks';
 // import Nav from './Nav';
 const Stack = createStackNavigator();
 
@@ -30,6 +31,7 @@ const Stack = createStackNavigator();
 // @refresh reset
 const UploadPost = () => {
   const {t} = useTranslation('newPost');
+  const {Fonts, Colors, Images} = useTheme();
 
   return (
     <Stack.Navigator
@@ -37,13 +39,10 @@ const UploadPost = () => {
         headerBackTitleVisible: true,
         presentation: 'card',
         headerTitleStyle: {
-          color: '#1A1E27',
-          fontFamily: 'SpoqaHanSansNeo-Bold',
-          fontSize: responsiveWidth(14),
-          lineHeight: responsiveHeight(24),
-          letterSpacing: responsiveWidth(-0.6),
+          color: Colors.headerTitle,
+          ...Fonts.contentMediumBold,
         },
-        headerStyle: {backgroundColor: '#FFFFFF'},
+        headerStyle: {backgroundColor: Colors.contentBackground},
         headerBackImage: () => <HeaderLeftButton />,
         cardStyleInterpolator: ({current, next, layouts}) => {
           return {

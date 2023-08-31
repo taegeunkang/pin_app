@@ -5,24 +5,23 @@ import HeaderLeftButton from '../components/HeaderLeftButton';
 import {responsiveWidth, responsiveHeight} from '../components/Scale';
 import Alram from '../screens/Home/Alram';
 import Setting from '../screens/Home/Setting';
+import {useTheme} from '../hooks';
 const Stack = createStackNavigator();
 
 // @refresh reset
 const Content = () => {
   const {t} = useTranslation('content');
+  const {Fonts, Colors} = useTheme();
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: true,
         headerBackTitleVisible: false,
         headerTitleStyle: {
-          color: '#1A1E27',
-          fontFamily: 'SpoqaHanSansNeo-Bold',
-          fontSize: responsiveWidth(14),
-          lineHeight: responsiveHeight(24),
-          letterSpacing: responsiveWidth(-0.6),
+          color: Colors.headerTitle,
+          ...Fonts.contentMediumBold,
         },
-        headerStyle: {backgroundColor: '#FFFFFF'},
+        headerStyle: {backgroundColor: Colors.contentBackground},
         headerBackImage: () => <HeaderLeftButton />,
         cardStyleInterpolator: ({current, next, layouts}) => {
           return {
@@ -45,13 +44,6 @@ const Content = () => {
         options={{
           headerShown: true,
           headerTitle: t('nav.alram'),
-          headerTitleStyle: {
-            color: '#1A1E27',
-            fontFamily: 'SpoqaHanSansNeo-Bold',
-            fontSize: responsiveWidth(14),
-            lineHeight: responsiveHeight(24),
-            letterSpacing: responsiveWidth(-0.6),
-          },
         }}
       />
       <Stack.Screen

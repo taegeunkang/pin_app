@@ -22,14 +22,11 @@ import InputBox from '../../components/InputBox';
 import SubmitButton2 from '../../components/SubmitButton2';
 import SubmitButton from '../../components/SubmitButton';
 import {useTheme} from '../../hooks';
-import {WithLocalSvg} from 'react-native-svg';
-import CheckNot from '../../theme/assets/images/light/check-not-select.svg';
-import Check from '../../theme/assets/images/light/check-select.svg';
-import Confirmed from '../../theme/assets/images/light/confirmed.svg';
-import LeftChevron from '../../theme/assets/images/light/left-chevron.svg';
+
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import HeaderLeftButton from '../../components/HeaderLeftButton';
 const Register = ({navigation}) => {
-  const {Fonts, Images} = useTheme();
+  const {Fonts, Images, Colors} = useTheme();
   const {t} = useTranslation('register');
   const [email, setEmail] = useState('');
   const [wrongReg, setWrongReg] = useState(false);
@@ -52,30 +49,16 @@ const Register = ({navigation}) => {
   const [sendingEmail, setSendingEmail] = useState(false);
 
   const {height} = Dimensions.get('window');
-  const topHeight = height * 0.9;
-  const bottomHeight = height * 0.1;
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity
+        <HeaderLeftButton
           onPress={() => {
             setBackButton(true);
             setModalVisible(true);
           }}
-          style={{
-            backgroundColor: Colors.transparent,
-            width: responsiveWidth(60),
-            height: responsiveHeight(30),
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            paddingLeft: responsiveWidth(10),
-          }}>
-          <LeftChevron
-            width={responsiveWidth(20)}
-            height={responsiveHeight(20)}
-          />
-        </TouchableOpacity>
+        />
       ),
     });
   });
@@ -261,6 +244,31 @@ const Register = ({navigation}) => {
     }
   });
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.contentBackground,
+      flexDirection: 'column',
+    },
+    contentsBox: {
+      alignItems: 'center',
+      width: '100%',
+      marginTop: responsiveHeight(10),
+    },
+    checkBox: {
+      width: responsiveWidth(370),
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      marginTop: responsiveHeight(20),
+    },
+
+    wrongInput: {
+      borderWidth: 1,
+      borderColor: Colors.warn,
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       {backButton && (
@@ -288,13 +296,12 @@ const Register = ({navigation}) => {
               marginTop: responsiveHeight(5),
             }}>
             <Text
-              style={{
-                fontFamily: 'SpoqaHanSansNeo-Medium',
-                color: '#E44949',
-                fontSize: responsiveWidth(12),
-                lineHeight: responsiveHeight(18),
-                letterSpacing: responsiveWidth(-0.6),
-              }}>
+              style={[
+                Fonts.contentRegualrMedium,
+                {
+                  color: Colors.warn,
+                },
+              ]}>
               {t('input.wrongEmail')}
             </Text>
           </View>
@@ -314,18 +321,17 @@ const Register = ({navigation}) => {
               height: responsiveHeight(48),
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: '#F2F3F4',
+              backgroundColor: Colors.buttonSecondBackground,
               borderRadius: responsiveWidth(12),
               flexDirection: 'row',
             }}>
             <Text
-              style={{
-                fontFamily: 'SpoqaHanSansNeo-Bold',
-                fontSize: responsiveWidth(14),
-                lineHeight: responsiveHeight(24),
-                letterSpacing: responsiveWidth(-0.6),
-                color: '#4880EE',
-              }}>
+              style={[
+                Fonts.contentMediumBold,
+                {
+                  color: Colors.buttonSecondContent,
+                },
+              ]}>
               {t('verify.complete')}
             </Text>
           </View>
@@ -338,13 +344,12 @@ const Register = ({navigation}) => {
               marginTop: responsiveHeight(5),
             }}>
             <Text
-              style={{
-                fontFamily: 'SpoqaHanSansNeo-Medium',
-                color: '#E44949',
-                fontSize: responsiveWidth(12),
-                lineHeight: responsiveHeight(18),
-                letterSpacing: responsiveWidth(-0.6),
-              }}>
+              style={[
+                Fonts.contentRegualrMedium,
+                {
+                  color: Colors.warn,
+                },
+              ]}>
               {t('error.sentResent')}
             </Text>
           </View>
@@ -365,9 +370,15 @@ const Register = ({navigation}) => {
               <View>
                 <View
                   style={[
-                    {width: responsiveWidth(310), height: responsiveHeight(26)},
+                    {
+                      width: responsiveWidth(310),
+                      height: responsiveHeight(26),
+                      backgroundColor: Colors.contentBackground,
+                    },
                   ]}>
-                  <Text style={Fonts.inputHeader}>{'인증코드 입력'}</Text>
+                  <Text style={[Fonts.inputHeader, {color: Colors.textBold}]}>
+                    {'인증코드 입력'}
+                  </Text>
                 </View>
 
                 <View
@@ -376,8 +387,8 @@ const Register = ({navigation}) => {
                       width: responsiveWidth(310),
                       height: responsiveHeight(48),
                       borderRadius: responsiveWidth(12),
-                      backgroundColor: '#F2F4F6',
-                      color: '#505866',
+                      backgroundColor: Colors.inputBackground,
+                      color: Colors.inputContent,
                       flexDirection: 'row',
                       alignItems: 'center',
                       paddingHorizontal: responsiveWidth(10),
@@ -391,8 +402,8 @@ const Register = ({navigation}) => {
                   ]}>
                   <TextInput
                     placeholder={t('verify.placeholder')}
-                    placeholderTextColor={'#6D7582'}
-                    style={{flex: 1}}
+                    placeholderTextColor={Colors.inputPlaceHolder}
+                    style={{flex: 1, backgroundColor: Colors.inputBackground}}
                     onChangeText={e => setCode(e)}
                     keyboardType="numeric"
                     value={code}
@@ -429,9 +440,12 @@ const Register = ({navigation}) => {
                     borderRadius: responsiveWidth(12),
                     flexDirection: 'row',
                   }}>
-                  <Confirmed
-                    width={responsiveWidth(35)}
-                    height={responsiveHeight(35)}
+                  <Image
+                    source={Images.confirmed}
+                    style={{
+                      width: responsiveWidth(35),
+                      height: responsiveHeight(35),
+                    }}
                   />
                 </View>
               )}
@@ -553,46 +567,68 @@ const Register = ({navigation}) => {
         <View style={styles.checkBox}>
           {policyCheck ? (
             <Pressable onPress={() => setPolicyCheck(!policyCheck)}>
-              <Check
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
+              <Image
+                source={Images.checkSelect}
+                style={{
+                  width: responsiveWidth(25),
+                  height: responsiveHeight(25),
+                }}
               />
             </Pressable>
           ) : (
             <Pressable onPress={() => setPolicyCheck(!policyCheck)}>
-              <CheckNot
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
+              <Image
+                source={Images.checkNotSelect}
+                style={{
+                  width: responsiveWidth(25),
+                  height: responsiveHeight(25),
+                }}
               />
             </Pressable>
           )}
 
           <View style={{marginRight: responsiveWidth(10)}} />
           <Pressable>
-            <Text style={[styles.policyCheckTitle]}>{t('check.policy')}</Text>
+            <Text
+              style={[
+                Fonts.contentMediumMedium,
+                {color: Colors.inputPlaceHolder},
+              ]}>
+              {t('check.policy')}
+            </Text>
           </Pressable>
         </View>
 
         <View style={styles.checkBox}>
           {marketingCheck ? (
             <Pressable onPress={() => setMarketingCheck(!marketingCheck)}>
-              <Check
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
+              <Image
+                source={Images.checkSelect}
+                style={{
+                  width: responsiveWidth(25),
+                  height: responsiveHeight(25),
+                }}
               />
             </Pressable>
           ) : (
             <Pressable onPress={() => setMarketingCheck(!marketingCheck)}>
-              <CheckNot
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
+              <Image
+                source={Images.checkNotSelect}
+                style={{
+                  width: responsiveWidth(25),
+                  height: responsiveHeight(25),
+                }}
               />
             </Pressable>
           )}
 
           <View style={{marginRight: responsiveWidth(10)}} />
           <Pressable>
-            <Text style={[styles.policyCheckTitle]}>
+            <Text
+              style={[
+                Fonts.contentMediumMedium,
+                {color: Colors.inputPlaceHolder},
+              ]}>
               {t('check.marketing')}
             </Text>
           </Pressable>
@@ -610,33 +646,5 @@ const Register = ({navigation}) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: Colors.white, flexDirection: 'column'},
-  contentsBox: {
-    alignItems: 'center',
-    width: '100%',
-    marginTop: responsiveHeight(10),
-  },
-  checkBox: {
-    width: responsiveWidth(370),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginTop: responsiveHeight(20),
-  },
-
-  wrongInput: {
-    borderWidth: 1,
-    borderColor: Colors.red,
-  },
-  policyCheckTitle: {
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(24),
-    letterSpacing: responsiveWidth(-0.6),
-    color: '#5D6471',
-  },
-});
 
 export default Register;

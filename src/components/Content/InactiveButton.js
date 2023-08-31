@@ -1,7 +1,9 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import {responsiveHeight, responsiveWidth} from '../Scale';
+import {useTheme} from '../../hooks';
 
 const InactiveButton = ({img, title, onPress}) => {
+  const {Fonts, Colors} = useTheme();
   return (
     <View>
       <TouchableOpacity
@@ -12,7 +14,7 @@ const InactiveButton = ({img, title, onPress}) => {
           {
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: '#F2F3F4',
+            backgroundColor: Colors.buttonThirdBackground,
             borderRadius: responsiveWidth(12),
             flexDirection: 'row',
             position: 'relative',
@@ -20,13 +22,12 @@ const InactiveButton = ({img, title, onPress}) => {
           ,
         ]}>
         <Text
-          style={{
-            fontFamily: 'SpoqaHanSansNeo-Bold',
-            fontSize: responsiveWidth(14),
-            lineHeight: responsiveHeight(24),
-            letterSpacing: responsiveWidth(-0.6),
-            color: '#505866',
-          }}>
+          style={[
+            Fonts.contentMediumBold,
+            {
+              color: Colors.buttonThirdContent,
+            },
+          ]}>
           {title}
         </Text>
       </TouchableOpacity>

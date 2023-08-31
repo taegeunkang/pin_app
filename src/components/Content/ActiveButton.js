@@ -1,8 +1,10 @@
 import {useState} from 'react';
 import {View, Text, TouchableOpacity, Animated} from 'react-native';
 import {responsiveHeight, responsiveWidth} from '../Scale';
+import {useTheme} from '../../hooks';
 const ActiveButton = ({img, title, onPress}) => {
   const scaleValue = useState(new Animated.Value(1))[0];
+  const {Fonts, Colors} = useTheme();
 
   const onButtonPressIn = () => {
     Animated.timing(scaleValue, {
@@ -32,7 +34,7 @@ const ActiveButton = ({img, title, onPress}) => {
             {
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: '#4880EE',
+              backgroundColor: Colors.buttonFirstBackground,
               borderRadius: responsiveWidth(12),
               flexDirection: 'row',
               position: 'relative',
@@ -42,13 +44,12 @@ const ActiveButton = ({img, title, onPress}) => {
             ,
           ]}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Bold',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(24),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#FFFFFF',
-            }}>
+            style={[
+              Fonts.contentMediumBold,
+              {
+                color: Colors.buttonFirstContent,
+              },
+            ]}>
             {title}
           </Text>
         </TouchableOpacity>

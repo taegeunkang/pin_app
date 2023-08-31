@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   Image,
-  TouchableOpacity,
   ScrollView,
   RefreshControl,
   SafeAreaView,
@@ -15,11 +14,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {useTheme} from '../../hooks';
-import SmaileIcon from '../../theme/assets/images/light/smile-select.svg';
-import SmaileIconNot from '../../theme/assets/images/light/smile-not-select.svg';
-import CommentIconNot from '../../theme/assets/images/light/comment-not-select.svg';
-import LocationIconNot from '../../theme/assets/images/light/pin-not-select.svg';
-import {useState, useEffect, useRef, useLayoutEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Slider} from '../../components/Content/Slider';
 import Comment from '../../components/mypage/Comment';
@@ -29,7 +24,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditComment from '../../components/Content/EditComment';
 import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
-import More from '../../theme/assets/images/light/detail.svg';
 import {timeAgo} from '../../utils/util';
 const Detail = ({navigation, route}) => {
   const {
@@ -48,7 +42,6 @@ const Detail = ({navigation, route}) => {
     userId,
     reload,
   } = route.params;
-  const {Fonts, Images} = useTheme();
   const [isLiked, setIsLiked] = useState(liked);
   const [likedCount, setLikedCount] = useState(likesCount);
   const [commentCount, setCommentCount] = useState(commentsCount);
@@ -66,7 +59,7 @@ const Detail = ({navigation, route}) => {
   const [reply, setReply] = useState(null);
   const [replyPage, setReplyPage] = useState({});
   const [replyLoading, setReplyLoading] = useState(false);
-  const {Colors} = useTheme();
+  const {Colors, Fonts, Images} = useTheme();
   const inptRef = useRef(null);
 
   const onRefresh = () => {
@@ -339,8 +332,70 @@ const Detail = ({navigation, route}) => {
   useEffect(() => {
     fetchComment();
   }, []);
-  const moreHandler = () => {
-    setPostModalVisible(true);
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.contentBackground,
+      alignItems: 'center',
+      marginBottom: responsiveHeight(10),
+    },
+    postContainer: {width: responsiveWidth(370)},
+    writerImage: {
+      width: responsiveWidth(30),
+      height: responsiveHeight(30),
+      borderRadius: responsiveWidth(8),
+      marginRight: responsiveWidth(5),
+    },
+    writerBox: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      height: responsiveHeight(45),
+    },
+    media: {
+      width: responsiveWidth(35),
+      height: responsiveHeight(35),
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: Colors.buttonThirdBackground,
+      borderRadius: responsiveWidth(10),
+      marginRight: responsiveWidth(5),
+    },
+
+    loginInput: {
+      height: responsiveHeight(48),
+      width: responsiveWidth(370),
+      borderRadius: responsiveWidth(12),
+      backgroundColor: Colors.screenBackground,
+      paddingHorizontal: responsiveWidth(10),
+    },
+  });
+
+  const MoreFriends = ({count}) => {
+    return (
+      <View
+        style={{
+          width: responsiveWidth(25),
+          height: responsiveHeight(25),
+          borderRadius: responsiveWidth(8),
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: Colors.buttonThirdBackground,
+          marginRight: responsiveWidth(5),
+        }}>
+        <Text
+          style={{
+            fontFamily: 'SpoqaHanSansNeo-Bold',
+            fontSize: responsiveWidth(12),
+            lineHeight: responsiveHeight(18),
+            letterSpacing: responsiveWidth(-0.6),
+            color: Colors.buttonThirdContent,
+          }}>
+          {'+' + count}
+        </Text>
+      </View>
+    );
   };
 
   return (
@@ -358,7 +413,7 @@ const Detail = ({navigation, route}) => {
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: '#ffffff',
+          backgroundColor: Colors.contentBackground,
           alignItems: 'center',
         }}>
         <ScrollView
@@ -366,9 +421,9 @@ const Detail = ({navigation, route}) => {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#4880EE"
-              colors={['#4880EE']}
-              style={{backgroundColor: '#FFFFFF'}}
+              tintColor={Colors.primary}
+              colors={[Colors.primary]}
+              style={{backgroundColor: Colors.contentBackground}}
             />
           }
           onScroll={({nativeEvent}) => {
@@ -397,11 +452,18 @@ const Detail = ({navigation, route}) => {
                   <Text
                     style={[
                       Fonts.contentMediumBold,
-                      {marginRight: responsiveWidth(5)},
+                      {
+                        marginRight: responsiveWidth(5),
+                        color: Colors.textNormal,
+                      },
                     ]}>
                     {nickname}
                   </Text>
-                  <Text style={Fonts.contentRegualrMedium}>
+                  <Text
+                    style={[
+                      Fonts.contentRegualrMedium,
+                      {color: Colors.textNormal},
+                    ]}>
                     {timeAgo(createdDate)}
                   </Text>
                 </View>
@@ -410,7 +472,10 @@ const Detail = ({navigation, route}) => {
                     onPress={() => {
                       navigation.push('DetailMention', {friends: mention});
                     }}
-                    style={{flexDirection: 'row', backgroundColor: 'black'}}>
+                    style={{
+                      flexDirection: 'row',
+                      backgroundColor: Colors.screenBackground,
+                    }}>
                     {mention.map((f, index) => {
                       if (index < 2) {
                         return (
@@ -445,9 +510,12 @@ const Detail = ({navigation, route}) => {
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                    <More
-                      width={responsiveWidth(20)}
-                      height={responsiveHeight(20)}
+                    <Image
+                      source={Images.more}
+                      style={{
+                        width: responsiveWidth(20),
+                        height: responsiveHeight(20),
+                      }}
                     />
                   </Pressable>
                 )}
@@ -456,7 +524,7 @@ const Detail = ({navigation, route}) => {
               <Text
                 style={[
                   Fonts.contentMediumMedium,
-                  {width: responsiveWidth(370)},
+                  {width: responsiveWidth(370), color: Colors.textNormal},
                 ]}>
                 {content}
               </Text>
@@ -487,23 +555,33 @@ const Detail = ({navigation, route}) => {
                   }}>
                   {isLiked ? (
                     <Pressable onPress={() => onLike()}>
-                      <SmaileIcon
-                        width={responsiveWidth(20)}
-                        height={responsiveHeight(20)}
-                        style={{marginRight: responsiveWidth(5)}}
+                      <Image
+                        source={Images.smileSelect}
+                        style={{
+                          width: responsiveWidth(20),
+                          height: responsiveHeight(20),
+                          marginRight: responsiveWidth(5),
+                        }}
                       />
                     </Pressable>
                   ) : (
                     <Pressable onPress={() => onLike()}>
-                      <SmaileIconNot
-                        width={responsiveWidth(20)}
-                        height={responsiveHeight(20)}
-                        style={{marginRight: responsiveWidth(5)}}
+                      <Image
+                        source={Images.smileNotSelect}
+                        style={{
+                          width: responsiveWidth(20),
+                          height: responsiveHeight(20),
+                          marginRight: responsiveWidth(5),
+                        }}
                       />
                     </Pressable>
                   )}
 
-                  <Text style={Fonts.contentMediumMedium}>
+                  <Text
+                    style={[
+                      Fonts.contentMediumMedium,
+                      {color: Colors.textNormal},
+                    ]}>
                     {formatNumber(likedCount)}
                   </Text>
                 </View>
@@ -513,23 +591,37 @@ const Detail = ({navigation, route}) => {
                     flexDirection: 'row',
                     marginRight: responsiveWidth(10),
                   }}>
-                  <CommentIconNot
-                    width={responsiveWidth(20)}
-                    height={responsiveHeight(20)}
-                    style={{marginRight: responsiveWidth(5)}}
+                  <Image
+                    source={Images.commentNotSelect}
+                    style={{
+                      width: responsiveWidth(20),
+                      height: responsiveHeight(20),
+                      marginRight: responsiveWidth(5),
+                    }}
                   />
-                  <Text style={Fonts.contentMediumMedium}>
+                  <Text
+                    style={[
+                      Fonts.contentMediumMedium,
+                      {color: Colors.textNormal},
+                    ]}>
                     {formatNumber(commentCount)}
                   </Text>
                 </View>
                 {locationName && (
                   <View style={{flexDirection: 'row'}}>
-                    <LocationIconNot
-                      width={responsiveWidth(20)}
-                      height={responsiveHeight(20)}
-                      style={{marginRight: responsiveWidth(5)}}
+                    <Image
+                      source={Images.pinNotSelect}
+                      style={{
+                        width: responsiveWidth(20),
+                        height: responsiveHeight(20),
+                        marginRight: responsiveWidth(5),
+                      }}
                     />
-                    <Text style={Fonts.contentMediumMedium}>
+                    <Text
+                      style={[
+                        Fonts.contentMediumMedium,
+                        {color: Colors.textNormal},
+                      ]}>
                       {locationName}
                     </Text>
                   </View>
@@ -615,7 +707,7 @@ const Detail = ({navigation, route}) => {
             position: 'absolute',
             bottom: responsiveHeight(15),
             height: responsiveHeight(70),
-            backgroundColor: '#ffffff',
+            backgroundColor: Colors.contentBackground,
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 400,
@@ -624,7 +716,7 @@ const Detail = ({navigation, route}) => {
           <TextInput
             style={[Fonts.contentRegualrMedium, styles.loginInput]}
             placeholder={'댓글 입력'}
-            placeholderTextColor={'#6D7582'}
+            placeholderTextColor={Colors.inputPlaceHolder}
             onChangeText={e => setInpt(e)}
             value={inpt}
             // keyboardType={keyboardType}
@@ -673,32 +765,6 @@ const Detail = ({navigation, route}) => {
   );
 };
 
-const MoreFriends = ({count}) => {
-  return (
-    <View
-      style={{
-        width: responsiveWidth(25),
-        height: responsiveHeight(25),
-        borderRadius: responsiveWidth(8),
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#F2F3F4',
-        marginRight: responsiveWidth(5),
-      }}>
-      <Text
-        style={{
-          fontFamily: 'SpoqaHanSansNeo-Bold',
-          fontSize: responsiveWidth(12),
-          lineHeight: responsiveHeight(18),
-          letterSpacing: responsiveWidth(-0.6),
-          color: '#505866',
-        }}>
-        {'+' + count}
-      </Text>
-    </View>
-  );
-};
-
 const formatNumber = num => {
   if (num >= 1e9) {
     // 1,000,000,000 이상 (십억 이상)
@@ -713,44 +779,5 @@ const formatNumber = num => {
     return num.toString();
   }
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    marginBottom: responsiveHeight(10),
-  },
-  postContainer: {width: responsiveWidth(370)},
-  writerImage: {
-    width: responsiveWidth(30),
-    height: responsiveHeight(30),
-    borderRadius: responsiveWidth(8),
-    marginRight: responsiveWidth(5),
-  },
-  writerBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: responsiveHeight(45),
-  },
-  media: {
-    width: responsiveWidth(35),
-    height: responsiveHeight(35),
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F2F3F4',
-    borderRadius: responsiveWidth(10),
-    marginRight: responsiveWidth(5),
-  },
-
-  loginInput: {
-    height: responsiveHeight(48),
-    width: responsiveWidth(370),
-    borderRadius: responsiveWidth(12),
-    backgroundColor: '#F2F4F6',
-    paddingHorizontal: responsiveWidth(10),
-  },
-});
 
 export default Detail;

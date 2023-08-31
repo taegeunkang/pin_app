@@ -2,21 +2,19 @@ import {
   StyleSheet,
   View,
   TextInput,
-  TouchableWithoutFeedback,
-  Keyboard,
   ScrollView,
   Text,
+  Image,
   SafeAreaView,
 } from 'react-native';
 import {Colors} from '../../theme/Variables';
-import SearchIconNot from '../../theme/assets/images/light/search-not-select.svg';
 import {useTranslation} from 'react-i18next';
 import {useState, useRef, useEffect} from 'react';
-import {WithLocalSvg} from 'react-native-svg';
 import UserCell from '../../components/Content/UserCell';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {API_URL} from '../../utils/constants';
 import {reIssue} from '../../utils/login';
+import {useTheme} from '../../hooks';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
@@ -28,6 +26,7 @@ const FollowingList = ({navigation, route}) => {
   const [page, setPage] = useState(0);
   const [userList, setUserList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const {Images, Fonts, Colors} = useTheme();
   const search = async () => {
     if (inpt && inpt.trim().length > 0) {
       const response = await fetch(
@@ -158,19 +157,47 @@ const FollowingList = ({navigation, route}) => {
     }
   }, [page]);
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.screenBackground,
+      alignItems: 'center',
+      paddingVertical: responsiveHeight(20),
+    },
+    loginInput: {
+      height: responsiveHeight(48),
+      width: responsiveWidth(370),
+      borderRadius: responsiveWidth(12),
+      backgroundColor: Colors.inputBackground,
+      paddingHorizontal: responsiveWidth(10),
+      color: Colors.inputContent,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginInput}>
-        <SearchIconNot
-          width={responsiveWidth(25)}
-          height={responsiveHeight(25)}
+        <Image
+          source={Images.searchNotSelect}
+          style={{
+            width: responsiveWidth(25),
+            height: responsiveHeight(25),
+          }}
         />
 
         <TextInput
           ref={inputRef}
-          style={{flex: 1, textAlign: 'left', marginLeft: responsiveWidth(10)}}
+          style={{
+            flex: 1,
+            textAlign: 'left',
+            marginLeft: responsiveWidth(10),
+            color: Colors.inputContent,
+          }}
           placeholder={t('search.user')}
-          placeholderTextColor={'#6D7582'}
+          placeholderTextColor={Colors.inputPlaceHolder}
           onChangeText={e => {
             setInpt(e);
             setPage(0);
@@ -213,18 +240,17 @@ const FollowingList = ({navigation, route}) => {
           style={{
             width: '100%',
             height: '100%',
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.contentBackground,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
           <Text
-            style={{
-              fontFamily: 'SpoqaHanSansNeo-Medium',
-              fontSize: responsiveWidth(14),
-              lineHeight: responsiveHeight(20),
-              letterSpacing: responsiveWidth(-0.6),
-              color: '#505866',
-            }}>
+            style={[
+              Fonts.contentMediumMedium,
+              {
+                color: Colors.inputContent,
+              },
+            ]}>
             {t('search.notFound')}
           </Text>
         </View>
@@ -233,23 +259,4 @@ const FollowingList = ({navigation, route}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    alignItems: 'center',
-    paddingVertical: responsiveHeight(20),
-  },
-  loginInput: {
-    height: responsiveHeight(48),
-    width: responsiveWidth(370),
-    borderRadius: responsiveWidth(12),
-    backgroundColor: '#F2F4F6',
-    paddingHorizontal: responsiveWidth(10),
-    color: '#505866',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-});
 export default FollowingList;

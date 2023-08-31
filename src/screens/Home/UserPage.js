@@ -2,10 +2,8 @@ import {
   View,
   StyleSheet,
   Text,
-  Image,
   ScrollView,
   RefreshControl,
-  ActivityIndicator,
   SafeAreaView,
   Pressable,
   Modal,
@@ -29,7 +27,7 @@ import FastImage from 'react-native-fast-image';
 const UserPage = ({navigation, route}) => {
   const {userId} = route.params;
   const {t} = useTranslation('myPage');
-  const {Fonts} = useTheme();
+  const {Fonts, Colors} = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -248,6 +246,35 @@ const UserPage = ({navigation, route}) => {
     initData();
   }, []);
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.contentBackground,
+      alignItems: 'center',
+    },
+    backgroundImage: {
+      height: responsiveHeight(200),
+      width: '100%',
+    },
+    profileContainer: {
+      height: responsiveHeight(110),
+      width: responsiveWidth(370),
+      backgroundColor: Colors.contentBackground,
+    },
+    profileImage: {
+      width: responsiveWidth(75),
+      height: responsiveHeight(75),
+      borderRadius: responsiveWidth(12),
+      marginTop: responsiveHeight(-40),
+      borderWidth: responsiveWidth(3),
+      borderColor: Colors.contentBackground,
+      marginRight: responsiveWidth(10),
+    },
+    nickname: {
+      marginBottom: responsiveHeight(10),
+      color: Colors.textBold,
+    },
+  });
   return (
     <SafeAreaView style={[styles.container]}>
       <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
@@ -276,9 +303,9 @@ const UserPage = ({navigation, route}) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#4880EE"
-            colors={['#4880EE']}
-            style={{backgroundColor: '#FFFFFF'}}
+            tintColor={Colors.primary}
+            colors={[Colors.primary]}
+            style={{backgroundColor: Colors.contentBackground}}
           />
         }
         onScroll={({nativeEvent}) => {
@@ -296,7 +323,7 @@ const UserPage = ({navigation, route}) => {
         style={{
           flex: 1,
           width: '100%',
-          backgroundColor: '#F2F4F6',
+          backgroundColor: Colors.screenBackground,
         }}>
         <FastImage
           source={{
@@ -310,7 +337,7 @@ const UserPage = ({navigation, route}) => {
           style={{
             width: '100%',
             alignItems: 'center',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: Colors.contentBackground,
           }}>
           <View style={styles.profileContainer}>
             <View
@@ -347,10 +374,15 @@ const UserPage = ({navigation, route}) => {
                   justifyContent: 'flex-start',
                   marginRight: responsiveWidth(30),
                 }}>
-                <Text style={[{marginRight: 5}, Fonts.contentMediumRegular]}>
+                <Text
+                  style={[
+                    {marginRight: 5, color: Colors.textBold},
+                    Fonts.contentMediumRegular,
+                  ]}>
                   {t('profile.posts')}
                 </Text>
-                <Text style={Fonts.contentRegularBold}>
+                <Text
+                  style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
                   {formatNumber(userInfo.post)}
                 </Text>
               </View>
@@ -365,10 +397,15 @@ const UserPage = ({navigation, route}) => {
                   justifyContent: 'flex-start',
                   marginRight: responsiveWidth(30),
                 }}>
-                <Text style={[{marginRight: 5}, Fonts.contentMediumRegular]}>
+                <Text
+                  style={[
+                    {marginRight: 5, color: Colors.textBold},
+                    Fonts.contentMediumRegular,
+                  ]}>
                   {t('profile.follower')}
                 </Text>
-                <Text style={Fonts.contentRegularBold}>
+                <Text
+                  style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
                   {formatNumber(userInfo.follower)}
                 </Text>
               </Pressable>
@@ -383,12 +420,13 @@ const UserPage = ({navigation, route}) => {
                 }>
                 <Text
                   style={[
-                    {marginRight: responsiveWidth(5)},
+                    {marginRight: responsiveWidth(5), color: Colors.textBold},
                     Fonts.contentMediumRegular,
                   ]}>
                   {t('profile.following')}
                 </Text>
-                <Text style={Fonts.contentRegularBold}>
+                <Text
+                  style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
                   {formatNumber(userInfo.following)}
                 </Text>
               </Pressable>
@@ -431,7 +469,8 @@ const UserPage = ({navigation, route}) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={Fonts.contentMediumMedium}>
+            <Text
+              style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
               게시글이 존재하지 않습니다.
             </Text>
           </View>
@@ -455,34 +494,5 @@ const formatNumber = num => {
     return num;
   }
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-  },
-  backgroundImage: {
-    height: responsiveHeight(200),
-    width: '100%',
-  },
-  profileContainer: {
-    height: responsiveHeight(110),
-    width: responsiveWidth(370),
-    backgroundColor: '#FFFFFF',
-  },
-  profileImage: {
-    width: responsiveWidth(75),
-    height: responsiveHeight(75),
-    borderRadius: responsiveWidth(12),
-    marginTop: responsiveHeight(-40),
-    borderWidth: responsiveWidth(3),
-    borderColor: '#ffffff',
-    marginRight: responsiveWidth(10),
-  },
-  nickname: {
-    marginBottom: responsiveHeight(10),
-  },
-});
 
 export default UserPage;

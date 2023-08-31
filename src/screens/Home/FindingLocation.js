@@ -1,10 +1,15 @@
 import {useEffect, useState, useRef} from 'react';
 import {useTranslation} from 'react-i18next';
-import {View, Text, StyleSheet, Pressable, SafeAreaView} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  SafeAreaView,
+  Image,
+} from 'react-native';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
-import {WithLocalSvg} from 'react-native-svg';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import SearchIconNot from '../../theme/assets/images/light/search-not-select.svg';
 import {useTheme} from '../../hooks';
 const FindingLocation = ({navigation, route}) => {
   const {lat, lon} = route.params;
@@ -13,7 +18,7 @@ const FindingLocation = ({navigation, route}) => {
   const [typing, setTyping] = useState(false);
   const {t} = useTranslation('newPost');
   const inputRef = useRef(null);
-  const {Colors} = useTheme();
+  const {Colors, Images} = useTheme();
 
   const getNearByLocations = async () => {
     const response = await fetch(
@@ -46,9 +51,9 @@ const FindingLocation = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginInput}>
-        <SearchIconNot
-          width={responsiveWidth(25)}
-          height={responsiveHeight(25)}
+        <Image
+          source={Images}
+          style={{width: responsiveWidth(25), height: responsiveHeight(25)}}
         />
 
         <TextInput
