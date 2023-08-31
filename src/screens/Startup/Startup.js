@@ -12,7 +12,6 @@ import {useTheme} from '../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {responsiveHeight} from '../../components/Scale';
-
 const Startup = ({navigation}) => {
   const {Layout, Gutters, Fonts, Images} = useTheme();
 

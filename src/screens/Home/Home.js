@@ -6,9 +6,7 @@ import {
   View,
   Animated as Ani,
   Image,
-  Dimensions,
   Modal,
-  SafeAreaView,
 } from 'react-native';
 import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
@@ -21,12 +19,8 @@ import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import Permission from './Permission';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {reIssue} from '../../utils/login';
-import MapNavigator from '../../navigators/MapNavigator';
 import FastImage from 'react-native-fast-image';
-import SlidingUpPanel from 'rn-sliding-up-panel';
-import Detail from './Detail';
 import MapDetail from './MapDetail';
-import {coreModule} from '@reduxjs/toolkit/dist/query';
 const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -62,6 +56,12 @@ const Home = ({navigation}) => {
         position => {
           setLatitude(position['coords']['latitude']);
           setLongitude(position['coords']['longitude']);
+          console.log(
+            '[Locatin] lat: ',
+            position['coords']['latitude'],
+            ' lon : ',
+            position['coords']['longitude'],
+          );
         },
         error => {
           console.log(error['code']);
@@ -168,12 +168,10 @@ const Home = ({navigation}) => {
   }, [detailPressed]);
 
   useEffect(() => {
-    const t = async () => {
-      await getCurrentLocation();
-    };
     checkPermissions();
     getMyPosts();
-    const intervalId = setInterval(t, 2000);
+    const intervalId = setInterval(getCurrentLocation, 2000);
+
     return () => {
       clearInterval(intervalId);
     };

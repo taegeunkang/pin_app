@@ -9,18 +9,29 @@ import {
 } from 'react-native';
 import {useTheme} from '../../hooks';
 import {Colors, FontSize} from '../../theme/Variables';
-import {useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import {check_email} from '../../utils/email';
 import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SubmitButton from '../../components/SubmitButton';
 import InputBox from '../../components/InputBox';
 import {responsiveWidth, responsiveHeight} from '../../components/Scale';
+import {fcmService} from '../../firebase/push.fcm';
+import {localNotificationService} from '../../firebase/push.noti';
+import messaging from '@react-native-firebase/messaging';
+
 // import {
 //   GoogleSignin,
 //   statusCodes,
 // } from '@react-native-google-signin/google-signin';
 // import { login, loginWithKakaoAccount } from '@react-native-seoul/kakao-login';
+// messaging().setBackgroundMessageHandler(async remoteMessage => {
+//   console.log('Background remote message: ', remoteMessage);
+// });
+// messaging().onMessage(async remoteMessage => {
+//   console.log('[Remote Message] ', JSON.stringify(remoteMessage));
+// });
+
 const Login = ({navigation}) => {
   const {t} = useTranslation('login');
   const [id, setId] = useState('');
@@ -30,6 +41,51 @@ const Login = ({navigation}) => {
   const [wrongPassword, setWrongPassword] = useState(false);
   const {Layout, Images, Fonts, Colors} = useTheme();
   const inputRef = useRef(null);
+
+  const [token, setToken] = useState('');
+
+  // useEffect(() => {
+
+  //   fcmService.registerAppWithFCM();
+  //   fcmService.register(onRegister, onNotification, onOpenNotification);
+  //   localNotificationService.configure(onOpenNotification);
+  // }, []);
+
+  useEffect(() => {
+    fcmService.registerAppWithFCM();
+    fcmService.register(onRegister, onNotification, onOpenNotification);
+    localNotificationService.configure(onOpenNotification);
+  }, []);
+
+  const onRegister = tk => {
+    console.log('[App] onRegister : token :', tk);
+    if (tk) setToken(tk);
+  };
+
+  const onNotification = notify => {
+    console.log('[App] onNotification : notify :', notify);
+    const options = {
+      soundName: 'default',
+      playSound: true,
+    };
+
+    localNotificationService.showNotification(
+      0,
+      notify.title,
+      notify.body,
+      notify,
+      options,
+    );
+  };
+
+  const onOpenNotification = notify => {
+    console.log('[App] onOpenNotification : notify :', notify);
+    Alert.alert('Open Notification : notify.body :' + notify.body);
+  };
+
+  const onCopy = () => {
+    Clipboard.setString(token);
+  };
 
   const loginSubmit = async () => {
     if (!id && !password) {
