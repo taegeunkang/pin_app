@@ -37,7 +37,7 @@ const PostBox = ({
       maxHeight: responsiveHeight(300),
       backgroundColor: Colors.contentBackground,
       alignItems: 'center',
-      marginBottom: responsiveHeight(10),
+      marginBottom: responsiveHeight(5),
     },
     postContainer: {width: responsiveWidth(370)},
     writerImage: {

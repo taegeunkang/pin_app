@@ -441,7 +441,11 @@ const Detail = ({navigation, route}) => {
           <View style={styles.container}>
             <View style={styles.postContainer}>
               <View style={styles.writerBox}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Pressable
+                  onPress={() => {
+                    navigation.push('UserPage', {userId: userId});
+                  }}
+                  style={{flexDirection: 'row', alignItems: 'center'}}>
                   <FastImage
                     source={{
                       uri: API_URL + `/post/image?watch=${profileImage}`,
@@ -466,7 +470,7 @@ const Detail = ({navigation, route}) => {
                     ]}>
                     {timeAgo(createdDate)}
                   </Text>
-                </View>
+                </Pressable>
                 {mention && (
                   <Pressable
                     onPress={() => {

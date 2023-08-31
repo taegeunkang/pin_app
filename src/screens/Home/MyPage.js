@@ -390,7 +390,7 @@ const MyPage = ({navigation}) => {
             </View>
           </View>
         </View>
-        <View style={{marginBottom: responsiveHeight(10)}} />
+        <View style={{marginBottom: responsiveHeight(5)}} />
         {postList.map((post, index) => (
           <PostBox
             key={index}
