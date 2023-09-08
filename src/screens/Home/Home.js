@@ -20,14 +20,13 @@ import Permission from './Permission';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
-import MapDetail from './MapDetail';
+
 const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [contents, setContents] = useState([]);
   const [permission, setPermission] = useState(true);
   const [detailPressed, setDetailPressed] = useState(false);
-  const [focusedPin, setFocusedPin] = useState(null);
   const mapRef = useRef(null);
   const {Gutters, Images, Colors} = useTheme();
   const scaleValue = useState(new Ani.Value(1))[0];
@@ -321,9 +320,13 @@ const Home = ({navigation}) => {
                     }}
                     // 클릭 후 상세 페이지로 이동
                     onPress={() => {
-                      setFocusedPin(content.detail);
                       setDetailPressed(true);
-                      console.log(content.detail);
+                      const p = content.detail;
+                      navigation.push('MapDetail', {
+                        ...p,
+                        before: 'Home',
+                        reload: close,
+                      });
                     }}>
                     <View
                       {...content}
@@ -373,17 +376,6 @@ const Home = ({navigation}) => {
           close={() => {
             setPermission(true);
           }}
-        />
-      </Modal>
-
-      <Modal visible={detailPressed} animationType={'slide'} transparent={true}>
-        <MapDetail
-          {...focusedPin}
-          close={() => {
-            close();
-          }}
-          navigation={navigation}
-          thumbsUp={thumbsUp}
         />
       </Modal>
     </View>

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   TouchableWithoutFeedback,
+  SafeAreaView,
 } from 'react-native';
 import {useEffect, useRef, useState} from 'react';
 import {BorderRadius, FontSize} from '../../theme/Variables';
@@ -145,7 +146,7 @@ const WriteContent = ({navigation, route}) => {
       body: formData,
     });
     if (response.status == 200) {
-      navigation.reset({routes: [{name: 'Home'}]});
+      navigation.navigate( 'Home');
     } else if (response.status == 400) {
       const k = await response.json();
       switch (k['code']) {
@@ -203,7 +204,8 @@ const WriteContent = ({navigation, route}) => {
 
   return (
     <TouchableWithoutFeedback onPress={() => inptRef.current.blur()}>
-      <View style={{flex: 1, backgroundColor: Colors.contentBackground}}>
+      <SafeAreaView
+        style={{flex: 1, backgroundColor: Colors.contentBackground}}>
         <View style={styles.inptContainer}>
           {media && media.length > 0 && (
             <>
@@ -388,7 +390,7 @@ const WriteContent = ({navigation, route}) => {
             />
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 };

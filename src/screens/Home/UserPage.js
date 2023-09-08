@@ -388,9 +388,9 @@ const UserPage = ({navigation, route}) => {
               </View>
 
               <Pressable
-                onPress={() =>
-                  navigation.push('FollowerList', {userId: userId})
-                }
+                onPress={() => {
+                  navigation.push('FollowerList', {userId: userId});
+                }}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -449,10 +449,11 @@ const UserPage = ({navigation, route}) => {
             createdDate={post.createdDate}
             mention={post.mention}
             onPress={() => {
-              navigation.navigate('Detail', {
+              navigation.push('Detail', {
                 ...post,
                 thumbsUp: thumbsUp,
                 userId: id,
+                before: 'UserPage',
                 reload: () => {
                   setIsPopped(true);
                 },

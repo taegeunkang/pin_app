@@ -1,7 +1,7 @@
 import {useTheme} from '../hooks';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {responsiveHeight, responsiveWidth} from './Scale';
-const HeaderLeftButton = ({onPress}) => {
+const HeaderLeftButton = ({onPress, close}) => {
   const {Images} = useTheme();
   return (
     <TouchableOpacity
@@ -15,7 +15,7 @@ const HeaderLeftButton = ({onPress}) => {
       }}
       onPress={onPress}>
       <Image
-        source={Images.leftChevron}
+        source={close ? Images.close : Images.leftChevron}
         style={{width: responsiveWidth(15), height: responsiveHeight(15)}}
       />
     </TouchableOpacity>

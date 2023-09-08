@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  Button,
-  Pressable,
-  Text,
-  View,
-} from 'react-native';
+import {StatusBar, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
   NavigationContainer,
@@ -23,9 +16,7 @@ import Login from '../screens/Login/Login';
 import Register from '../screens/Login/Register';
 import Congraturation from '../screens/Login/Congraturation';
 import {useTranslation} from 'react-i18next';
-import {responsiveHeight, responsiveWidth} from '../components/Scale';
 import ProfileInitialSetting from '../screens/Login/ProfileInitialSetting';
-import {Colors} from '../theme/Variables';
 import MapNavigator from './MapNavigator';
 import UserPage from '../screens/Home/UserPage';
 import ProfileImage from '../screens/Home/ProfileImage';
@@ -34,10 +25,15 @@ import Nickname from '../screens/Home/Nickname';
 import DetailMention from '../screens/Home/DetailMention';
 import Detail from '../screens/Home/Detail';
 import Search from '../screens/Home/Search';
+import Medias from '../screens/Home/Medias';
+import Preview from '../screens/Home/Preview';
+import WriteContent from '../screens/Home/WriteContent';
+import FindingFriends from '../screens/Home/FindingFriends';
+import FindingLocation from '../screens/Home/FindingLocation';
 const Stack = createStackNavigator();
 // @refresh reset
 const ApplicationNavigator = () => {
-  const {t} = useTranslation(['login', 'myPage']);
+  const {t} = useTranslation(['login', 'myPage', 'newPost']);
   const {Layout, darkMode, NavigationTheme, Fonts, Colors} = useTheme();
   const navigationRef = useNavigationContainerRef();
   useFlipper(navigationRef);
@@ -118,6 +114,92 @@ const ApplicationNavigator = () => {
             name="MapNavigator"
             component={MapNavigator}
             options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="UploadPost"
+            component={Medias}
+            options={{
+              headerShown: true,
+              headerTitle: '업로드',
+              presentation: 'transparentModal',
+              cardStyleInterpolator: ({current, layouts}) => {
+                return {
+                  cardStyle: {
+                    transform: [
+                      {
+                        translateY: current.progress.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [layouts.screen.height, 0],
+                        }),
+                      },
+                    ],
+                  },
+                };
+              },
+            }}
+          />
+          <Stack.Screen
+            name="Preview"
+            component={Preview}
+            options={{
+              headerBackTitleVisible: false,
+              title: t('newPost:media.preview'),
+            }}
+          />
+          <Stack.Screen
+            name="WriteContent"
+            component={WriteContent}
+            options={{
+              headerBackTitleVisible: false,
+              title: t('newPost:media.write'),
+              presentation: 'transparentModal',
+              cardStyleInterpolator: ({current, closing, layouts}) => {
+                const isClosing = closing.__getValue() === 1;
+                if (isClosing) {
+                  return {
+                    cardStyle: {
+                      transform: [
+                        {
+                          translateY: current.progress.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [layouts.screen.height, 0],
+                          }),
+                        },
+                      ],
+                    },
+                  };
+                } else {
+                  return {
+                    cardStyle: {
+                      transform: [
+                        {
+                          translateX: current.progress.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [layouts.screen.width, 0],
+                          }),
+                        },
+                      ],
+                    },
+                  };
+                }
+              },
+            }}
+          />
+          <Stack.Screen
+            name="FindingLocation"
+            component={FindingLocation}
+            options={{
+              headerBackTitleVisible: false,
+              title: t('newPost:media.location'),
+            }}
+          />
+          <Stack.Screen
+            name="FindingFriends"
+            component={FindingFriends}
+            options={{
+              headerBackTitleVisible: false,
+              title: t('newPost:media.friends'),
+            }}
           />
 
           <Stack.Screen

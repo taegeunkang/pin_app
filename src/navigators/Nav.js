@@ -8,6 +8,7 @@ import MyPage from '../screens/Home/MyPage';
 import Search from '../screens/Home/Search';
 import {Image, View} from 'react-native';
 import {useTheme} from '../hooks';
+import MapNavigator from './MapNavigator';
 const Tab = createBottomTabNavigator();
 const Nav = () => {
   const {t} = useTranslation('content');
@@ -17,7 +18,7 @@ const Nav = () => {
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         tabBarIcon: ({focused}) => {
-          if (route.name == 'Home') {
+          if (route.name == 'MapNavigator') {
             return focused ? (
               <Image
                 source={Images.pinSelect}
@@ -124,8 +125,8 @@ const Nav = () => {
         },
       })}>
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="MapNavigator"
+        component={MapNavigator}
         options={{
           headerShown: false,
         }}
@@ -141,6 +142,12 @@ const Nav = () => {
       <Tab.Screen
         name="Medias"
         component={UploadPost}
+        listeners={({navigation}) => ({
+          tabPress: e => {
+            e.preventDefault();
+            navigation.push('UploadPost');
+          },
+        })}
         options={{
           tabBarLabelStyle: {
             color: Colors.transparent,

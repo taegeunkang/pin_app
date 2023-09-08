@@ -68,26 +68,7 @@ const UploadPost = ({navigation}) => {
           headerShown: true,
         }}
       />
-      <Stack.Screen
-        name="Preview"
-        component={Preview}
-        options={{headerBackTitleVisible: false, title: t('media.preview')}}
-      />
-      <Stack.Screen
-        name="WriteContent"
-        component={WriteContent}
-        options={{headerBackTitleVisible: false, title: t('media.write')}}
-      />
-      <Stack.Screen
-        name="FindingLocation"
-        component={FindingLocation}
-        options={{headerBackTitleVisible: false, title: t('media.location')}}
-      />
-      <Stack.Screen
-        name="FindingFriends"
-        component={FindingFriends}
-        options={{headerBackTitleVisible: false, title: t('media.friends')}}
-      />
+   
       {/* <Stack.Screen name="Nav" component={Nav} options={{headerShown: false}} /> */}
     </Stack.Navigator>
   );

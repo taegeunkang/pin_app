@@ -100,6 +100,7 @@ const PostBox = ({
                   uri: API_URL + `/post/image?watch=${image}`,
                   priority: FastImage.priority.high,
                 }}
+                resizeMode="cover"
                 style={styles.media}
               />
             );
@@ -216,6 +217,7 @@ const PostBox = ({
                     width: responsiveWidth(20),
                     height: responsiveHeight(20),
                     marginRight: responsiveWidth(5),
+                    resizeMode: 'contain',
                   }}
                 />
               </Pressable>
@@ -234,6 +236,7 @@ const PostBox = ({
                 width: responsiveWidth(20),
                 height: responsiveHeight(20),
                 marginRight: responsiveWidth(5),
+                resizeMode: 'contain',
               }}
             />
             <Text
@@ -250,6 +253,7 @@ const PostBox = ({
                   width: responsiveWidth(20),
                   height: responsiveHeight(20),
                   marginRight: responsiveWidth(5),
+                  resizeMode: 'contain',
                 }}
               />
               <Text

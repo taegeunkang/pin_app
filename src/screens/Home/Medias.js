@@ -9,21 +9,33 @@ import {
   SafeAreaView,
   Image,
 } from 'react-native';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useLayoutEffect} from 'react';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {useTheme} from '../../hooks';
 import SubmitButton from '../../components/SubmitButton';
 import {useNavigation} from '@react-navigation/native';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import HeaderLeftButton from '../../components/HeaderLeftButton';
 // ios 일 떄 파일 형식 변경을 해야지 정상적으로 불러오기 및 저장 가능
 
-const Medias = () => {
+const Medias = ({navigation}) => {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <HeaderLeftButton
+          onPress={() => {
+            navigation.pop();
+          }}
+          close={true}
+        />
+      ),
+    });
+  });
   const [photos, setPhotos] = useState([]);
   const [galleryCursor, setGalleryCursor] = useState(null);
   const [last, setLast] = useState(false);
   const [array, setArray] = useState([]);
   const {Images, Fonts, Colors} = useTheme();
-  const navigation = useNavigation();
 
   useEffect(() => {
     const t = async () => {

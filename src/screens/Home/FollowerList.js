@@ -177,6 +177,7 @@ const FollowerList = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={{marginTop: responsiveHeight(20)}} />
       <View style={styles.loginInput}>
         <Image
           source={Images.searchNotSelect}

@@ -2,13 +2,13 @@ import {API_URL} from './constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const reIssue = async () => {
-  const token = await AsyncStorage.getItem('token');
+  const emailAddress = await AsyncStorage.getItem('emailAddress');
   const refreshToken = await AsyncStorage.getItem('refreshToken');
-  
+
   let response = await fetch(API_URL + '/user/refresh', {
     method: 'POST',
     body: JSON.stringify({
-      token: 'Bearer ' + token,
+      emailAddress: emailAddress,
       refreshToken: 'Bearer ' + refreshToken,
     }),
     headers: {

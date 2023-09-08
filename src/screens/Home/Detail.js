@@ -14,7 +14,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {useTheme} from '../../hooks';
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, useLayoutEffect} from 'react';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {Slider} from '../../components/Content/Slider';
 import Comment from '../../components/mypage/Comment';
@@ -25,6 +25,7 @@ import EditComment from '../../components/Content/EditComment';
 import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
 import {timeAgo} from '../../utils/util';
+import HeaderLeftButton from '../../components/HeaderLeftButton';
 const Detail = ({navigation, route}) => {
   const {
     postId,
@@ -41,7 +42,23 @@ const Detail = ({navigation, route}) => {
     thumbsUp,
     userId,
     reload,
+    before,
   } = route.params;
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <HeaderLeftButton
+          onPress={() => {
+            if (reload != null) reload();
+            navigation.pop();
+          }}
+          close={before == 'Home' ? true : false}
+        />
+      ),
+    });
+  });
+
   const [isLiked, setIsLiked] = useState(liked);
   const [likedCount, setLikedCount] = useState(likesCount);
   const [commentCount, setCommentCount] = useState(commentsCount);
@@ -267,7 +284,7 @@ const Detail = ({navigation, route}) => {
       },
     });
     if (response.status == 200) {
-      reload(postId);
+      if (reload != null) reload(postId);
       navigation.pop();
     } else if (response.status == 400) {
       const k = await response.json();
@@ -576,6 +593,7 @@ const Detail = ({navigation, route}) => {
                           width: responsiveWidth(20),
                           height: responsiveHeight(20),
                           marginRight: responsiveWidth(5),
+                          resizeMode: 'contain',
                         }}
                       />
                     </Pressable>
@@ -601,6 +619,7 @@ const Detail = ({navigation, route}) => {
                       width: responsiveWidth(20),
                       height: responsiveHeight(20),
                       marginRight: responsiveWidth(5),
+                      resizeMode: 'contain',
                     }}
                   />
                   <Text
@@ -619,6 +638,7 @@ const Detail = ({navigation, route}) => {
                         width: responsiveWidth(20),
                         height: responsiveHeight(20),
                         marginRight: responsiveWidth(5),
+                        resizeMode: 'contain',
                       }}
                     />
                     <Text
@@ -708,8 +728,8 @@ const Detail = ({navigation, route}) => {
         <View
           style={{
             width: '100%',
-            position: 'absolute',
-            bottom: responsiveHeight(15),
+            // position: 'absolute',
+            // bottom: responsiveHeight(15),
             height: responsiveHeight(70),
             backgroundColor: Colors.contentBackground,
             alignItems: 'center',

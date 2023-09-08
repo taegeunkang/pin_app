@@ -6,7 +6,6 @@ import FollowingList from '../screens/Home/FollowingList';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useTranslation} from 'react-i18next';
 import Detail from '../screens/Home/Detail';
-import {Colors} from '../theme/Variables';
 import HeaderLeftButton from '../components/HeaderLeftButton';
 import {responsiveWidth, responsiveHeight} from '../components/Scale';
 import ProfileImage from '../screens/Home/ProfileImage';
@@ -14,11 +13,14 @@ import BackgroundImage from '../screens/Home/BackgroundImage';
 import Nickname from '../screens/Home/Nickname';
 import UserPage from '../screens/Home/UserPage';
 import DetailMention from '../screens/Home/DetailMention';
+import Home from '../screens/Home/Home';
+import {useTheme} from '../hooks';
 const Stack = createStackNavigator();
 
 // @refresh reset
 const MapNavigator = props => {
   const {t} = useTranslation('myPage');
+  const {Fonts, Colors} = useTheme();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -48,65 +50,31 @@ const MapNavigator = props => {
         },
       }}>
       <Stack.Screen
-        name="MapUserPage"
-        component={UserPage}
-        initialParams={{userId: props.userId}}
-        options={{headerShown: true, headerTitle: '프로필'}}
+        name="Map"
+        component={Home}
+        options={{headerShown: false}}
       />
       <Stack.Screen
-        name="FollowerList"
-        component={FollowerList}
-        options={{
-          headerShown: true,
-          headerTitle: t('profile.follower'),
-        }}
-      />
-      <Stack.Screen
-        name="FollowingList"
-        component={FollowingList}
-        options={{
-          headerShown: true,
-          headerTitle: t('profile.following'),
-        }}
-      />
-      <Stack.Screen
-        name="Detail"
+        name="MapDetail"
         component={Detail}
         options={{
-          headerBackTitleVisible: false,
-          headerTitle: t('profile.detail'),
-        }}
-      />
-      <Stack.Screen
-        name="DetailMention"
-        component={DetailMention}
-        options={{
-          headerBackTitleVisible: false,
-          headerTitle: t('post.friends'),
-        }}
-      />
-      <Stack.Screen
-        name="ProfileImage"
-        component={ProfileImage}
-        options={{
-          headerBackTitleVisible: false,
-          headerTitle: t('profile.profileImage'),
-        }}
-      />
-      <Stack.Screen
-        name="BackgroundImage"
-        component={BackgroundImage}
-        options={{
-          headerBackTitleVisible: false,
-          headerTitle: t('profile.backgroundImage'),
-        }}
-      />
-      <Stack.Screen
-        name="Nickname"
-        component={Nickname}
-        options={{
-          headerBackTitleVisible: false,
-          headerTitle: t('profile.nickname'),
+          headerShown: true,
+          headerTitle: '게시글',
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateY: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.height, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
     </Stack.Navigator>

@@ -160,7 +160,7 @@ const FollowingList = ({navigation, route}) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: Colors.screenBackground,
+      backgroundColor: Colors.contentBackground,
       alignItems: 'center',
       paddingVertical: responsiveHeight(20),
     },
@@ -179,6 +179,7 @@ const FollowingList = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={{marginTop: responsiveHeight(20)}} />
       <View style={styles.loginInput}>
         <Image
           source={Images.searchNotSelect}

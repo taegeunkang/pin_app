@@ -406,11 +406,12 @@ const MyPage = ({navigation}) => {
             createdDate={post.createdDate}
             mention={post.mention}
             onPress={() => {
-              navigation.navigate('Detail', {
+              navigation.push('Detail', {
                 ...post,
                 userId: id,
                 reload: reload,
                 thumbsUp: thumbsUp,
+                before: 'MyPage',
               });
             }}
             thumbsUp={thumbsUp}
