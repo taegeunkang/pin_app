@@ -6,8 +6,7 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import Startup from '../screens/Startup/Startup';
-import FollowerList from '../screens/Home/FollowerList';
-import FollowingList from '../screens/Home/FollowingList';
+
 import {useTheme} from '../hooks';
 // import ContentNavigator from './Content';
 import NavNavigator from './Nav';
@@ -18,22 +17,20 @@ import Congraturation from '../screens/Login/Congraturation';
 import {useTranslation} from 'react-i18next';
 import ProfileInitialSetting from '../screens/Login/ProfileInitialSetting';
 import MapNavigator from './MapNavigator';
-import UserPage from '../screens/Home/UserPage';
-import ProfileImage from '../screens/Home/ProfileImage';
-import BackgroundImage from '../screens/Home/BackgroundImage';
-import Nickname from '../screens/Home/Nickname';
-import DetailMention from '../screens/Home/DetailMention';
-import Detail from '../screens/Home/Detail';
+
 import Search from '../screens/Home/Search';
-import Medias from '../screens/Home/Medias';
+import SelectPic from '../screens/Home/SelectPic';
 import Preview from '../screens/Home/Preview';
 import WriteContent from '../screens/Home/WriteContent';
 import FindingFriends from '../screens/Home/FindingFriends';
 import FindingLocation from '../screens/Home/FindingLocation';
+import Alram from '../screens/Home/Alram';
+import Setting from '../screens/Home/Setting';
+
 const Stack = createStackNavigator();
 // @refresh reset
 const ApplicationNavigator = () => {
-  const {t} = useTranslation(['login', 'myPage', 'newPost']);
+  const {t} = useTranslation(['login', 'myPage', 'newPost', 'content']);
   const {Layout, darkMode, NavigationTheme, Fonts, Colors} = useTheme();
   const navigationRef = useNavigationContainerRef();
   useFlipper(navigationRef);
@@ -117,7 +114,7 @@ const ApplicationNavigator = () => {
           />
           <Stack.Screen
             name="UploadPost"
-            component={Medias}
+            component={SelectPic}
             options={{
               headerShown: true,
               headerTitle: '업로드',
@@ -201,7 +198,7 @@ const ApplicationNavigator = () => {
               title: t('newPost:media.friends'),
             }}
           />
-
+          {/* 
           <Stack.Screen
             name="UserPage"
             component={UserPage}
@@ -263,7 +260,7 @@ const ApplicationNavigator = () => {
               headerBackTitleVisible: false,
               headerTitle: t('myPage:profile.nickname'),
             }}
-          />
+          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </View>

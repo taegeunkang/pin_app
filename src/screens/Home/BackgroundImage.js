@@ -15,7 +15,7 @@ import {API_URL} from '../../utils/constants';
 import ChoosePic from '../../components/Content/ChoosePic';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {reIssue} from '../../utils/login';
-import FastImage from 'react-native-fast-image';
+import HeaderLeftButton from '../../components/HeaderLeftButton';
 const BackgroundImage = ({navigation, route}) => {
   const {backgroundImg} = route.params;
   const [pressed, setPressed] = useState(false);
@@ -24,6 +24,14 @@ const BackgroundImage = ({navigation, route}) => {
   const {Fonts, Colors} = useTheme();
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerLeft: () => (
+        <HeaderLeftButton
+          onPress={() => {
+            navigation.pop();
+          }}
+          close={true}
+        />
+      ),
       headerRight: () => (
         <TouchableOpacity
           onPress={submit}
@@ -99,7 +107,12 @@ const BackgroundImage = ({navigation, route}) => {
     }
   };
   return (
-    <View style={{flex: 1, alignItems: 'center', backgroundColor: '#FFFFFF'}}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: Colors.contentBackground,
+      }}>
       <Modal visible={pressed} animationType={'slide'} transparent={true}>
         <ChoosePic onPress={closeModal} cancel={() => setPressed(false)} />
       </Modal>

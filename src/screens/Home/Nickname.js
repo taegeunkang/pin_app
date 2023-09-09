@@ -15,6 +15,7 @@ import {API_URL} from '../../utils/constants';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {reIssue} from '../../utils/login';
+import HeaderLeftButton from '../../components/HeaderLeftButton';
 const Nickname = ({navigation}) => {
   const [inpt, setInpt] = useState('');
   const {Fonts, Colors} = useTheme();
@@ -25,6 +26,14 @@ const Nickname = ({navigation}) => {
   const inputRef = useRef(null);
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerLeft: () => (
+        <HeaderLeftButton
+          onPress={() => {
+            navigation.pop();
+          }}
+          close={true}
+        />
+      ),
       headerRight: () => (
         <TouchableOpacity
           onPress={submit}

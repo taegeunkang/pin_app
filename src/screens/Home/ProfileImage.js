@@ -16,7 +16,7 @@ import {API_URL} from '../../utils/constants';
 import ChoosePic from '../../components/Content/ChoosePic';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {reIssue} from '../../utils/login';
-import FastImage from 'react-native-fast-image';
+import HeaderLeftButton from '../../components/HeaderLeftButton';
 const ProfileImage = ({navigation, route}) => {
   const {profileImg} = route.params;
   const [pressed, setPressed] = useState(false);
@@ -25,6 +25,14 @@ const ProfileImage = ({navigation, route}) => {
   const {Fonts, Colors} = useTheme();
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerLeft: () => (
+        <HeaderLeftButton
+          onPress={() => {
+            navigation.pop();
+          }}
+          close={true}
+        />
+      ),
       headerRight: () => (
         <TouchableOpacity
           onPress={submit}

@@ -9,7 +9,7 @@ import {useTheme} from '../hooks';
 const Stack = createStackNavigator();
 
 // @refresh reset
-const Content = ({navigation}) => {
+const AlertNavigator = ({navigation}) => {
   const {t} = useTranslation('content');
   const {Fonts, Colors} = useTheme();
   return (
@@ -59,4 +59,4 @@ const Content = ({navigation}) => {
     </Stack.Navigator>
   );
 };
-export default Content;
+export default AlertNavigator;

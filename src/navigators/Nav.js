@@ -1,14 +1,13 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home/Home';
 import {useTranslation} from 'react-i18next';
-import UploadPost from './UploadPost';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
 import AlertNavigator from './AlertNavigator';
-import MyPage from '../screens/Home/MyPage';
 import Search from '../screens/Home/Search';
 import {Image, View} from 'react-native';
 import {useTheme} from '../hooks';
 import MapNavigator from './MapNavigator';
+import MyPageNavigator from './MyPageNavigator';
 const Tab = createBottomTabNavigator();
 const Nav = () => {
   const {t} = useTranslation('content');
@@ -77,7 +76,7 @@ const Nav = () => {
                 }}
               />
             );
-          } else if (route.name == t('nav.mypage')) {
+          } else if (route.name == 'MyPageNavigator') {
             return focused ? (
               <Image
                 source={Images.userSelect}
@@ -141,7 +140,7 @@ const Nav = () => {
 
       <Tab.Screen
         name="Medias"
-        component={UploadPost}
+        component={TempComponent}
         listeners={({navigation}) => ({
           tabPress: e => {
             e.preventDefault();
@@ -158,8 +157,8 @@ const Nav = () => {
       />
 
       <Tab.Screen
-        name={t('nav.mypage')}
-        component={MyPage}
+        name={'MyPageNavigator'}
+        component={MyPageNavigator}
         options={{headerShown: false}}
       />
       <Tab.Screen
@@ -171,4 +170,8 @@ const Nav = () => {
   );
 };
 
+// 임시 컴포넌트
+function TempComponent() {
+  return <View style={{display: 'none'}} />;
+}
 export default Nav;

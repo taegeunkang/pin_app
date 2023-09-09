@@ -1,24 +1,22 @@
 import React from 'react';
-import {Image, Text, TouchableOpacity} from 'react-native';
-import MyPage from '../screens/Home/MyPage';
-import FollowerList from '../screens/Home/FollowerList';
-import FollowingList from '../screens/Home/FollowingList';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useTranslation} from 'react-i18next';
 import HeaderLeftButton from '../components/HeaderLeftButton';
 import {responsiveWidth, responsiveHeight} from '../components/Scale';
+import {useTheme} from '../hooks';
+import MyPage from '../screens/Home/MyPage';
+import Detail from '../screens/Home/Detail';
 import ProfileImage from '../screens/Home/ProfileImage';
+import DetailMention from '../screens/Home/DetailMention';
+import FollowingList from '../screens/Home/FollowingList';
+import FollowerList from '../screens/Home/FollowerList';
 import BackgroundImage from '../screens/Home/BackgroundImage';
 import Nickname from '../screens/Home/Nickname';
-import DetailMention from '../screens/Home/DetailMention';
-import Home from '../screens/Home/Home';
-import Detail from '../screens/Home/Detail';
-import {useTheme} from '../hooks';
 const Stack = createStackNavigator();
 
 // @refresh reset
-const MapNavigator = props => {
-  const {t} = useTranslation('myPage');
+const MyPageNavigator = ({navigation}) => {
+  const {t} = useTranslation('content');
   const {Fonts, Colors} = useTheme();
   return (
     <Stack.Navigator
@@ -31,7 +29,7 @@ const MapNavigator = props => {
         },
         headerStyle: {backgroundColor: Colors.contentBackground},
         headerBackImage: () => (
-          <HeaderLeftButton onPress={() => props.navigation.pop()} />
+          <HeaderLeftButton onPress={() => navigation.pop()} />
         ),
         cardStyleInterpolator: ({current, next, layouts}) => {
           return {
@@ -49,34 +47,12 @@ const MapNavigator = props => {
         },
       }}>
       <Stack.Screen
-        name="Map"
-        component={Home}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="MapDetail"
-        component={Detail}
+        name="MyPage"
+        component={MyPage}
         options={{
-          headerShown: true,
-          headerTitle: '게시글',
-          presentation: 'transparentModal',
-          cardStyleInterpolator: ({current, layouts}) => {
-            return {
-              cardStyle: {
-                transform: [
-                  {
-                    translateY: current.progress.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [layouts.screen.height, 0],
-                    }),
-                  },
-                ],
-              },
-            };
-          },
+          headerShown: false,
         }}
       />
-
       <Stack.Screen
         name="UserPage"
         component={MyPage}
@@ -124,6 +100,21 @@ const MapNavigator = props => {
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('myPage:profile.profileImage'),
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateY: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.height, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
       <Stack.Screen
@@ -132,6 +123,21 @@ const MapNavigator = props => {
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('myPage:profile.backgroundImage'),
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateY: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.height, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
       <Stack.Screen
@@ -140,9 +146,24 @@ const MapNavigator = props => {
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('myPage:profile.nickname'),
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateY: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.height, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
     </Stack.Navigator>
   );
 };
-export default MapNavigator;
+export default MyPageNavigator;
