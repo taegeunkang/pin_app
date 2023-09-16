@@ -76,8 +76,10 @@ const Search = ({navigation}) => {
         },
         body: JSON.stringify({word: inpt, page: 0, size: 20}),
       });
+      console.log(response.status);
       if (response.status == 200) {
         const r = await response.json();
+        console.log(r);
         setUserList(r);
       } else if (response.status == 400) {
         const k = await response.json();
@@ -151,10 +153,15 @@ const Search = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={{marginTop: responsiveHeight(20)}} />
       <View style={styles.loginInput}>
         <Image
           source={Images.searchNotSelect}
-          style={{width: responsiveWidth(25), height: responsiveHeight(25)}}
+          style={{
+            width: responsiveWidth(25),
+            height: responsiveHeight(25),
+            resizeMode: 'contain',
+          }}
         />
 
         <TextInput
@@ -191,9 +198,10 @@ const Search = ({navigation}) => {
               name={history.nickname}
               profileImage={history.profileImg}
               closeAvailable={true}
-              onPress={() =>
-                navigation.push('UserPage', {userId: history.userId})
-              }
+              onPress={() => {
+                console.log('???');
+                navigation.navigate('UserPage', {userId: history.userId});
+              }}
               onClose={() => removeHistory(history)}
             />
           ))}
@@ -224,7 +232,8 @@ const Search = ({navigation}) => {
               name={user.nickname}
               onPress={() => {
                 saveToSearchHistory(user);
-                navigation.push('UserPage', {userId: user.userId});
+                console.log('??');
+                navigation.navigate('UserPage', {userId: user.userId});
               }}
             />
           ))}

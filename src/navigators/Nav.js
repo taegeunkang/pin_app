@@ -3,11 +3,11 @@ import Home from '../screens/Home/Home';
 import {useTranslation} from 'react-i18next';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
 import AlertNavigator from './AlertNavigator';
-import Search from '../screens/Home/Search';
 import {Image, View} from 'react-native';
 import {useTheme} from '../hooks';
 import MapNavigator from './MapNavigator';
 import MyPageNavigator from './MyPageNavigator';
+import SearchNavigator from './SearchNavigator';
 const Tab = createBottomTabNavigator();
 const Nav = () => {
   const {t} = useTranslation('content');
@@ -132,7 +132,7 @@ const Nav = () => {
       />
       <Tab.Screen
         name={t('nav.search')}
-        component={Search}
+        component={SearchNavigator}
         options={{
           headerShown: false,
         }}

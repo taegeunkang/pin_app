@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {responsiveHeight} from '../../components/Scale';
 const Startup = ({navigation}) => {
-  const {Layout, Gutters, Fonts, Images} = useTheme();
+  const {Layout, Gutters, Fonts, Images, Colors} = useTheme();
 
   const init = async () => {
     // 의미 없는 delay but -> 나중에 AD 게시 가능
@@ -99,19 +99,22 @@ const Startup = ({navigation}) => {
     init();
   }, []);
   return (
-    <ImageBackground
-      source={Images.splash}
-      resizeMode="contain"
-      style={styles.bg}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.contentBackground,
+      }}>
+      <Image source={Images.logoTitle} />
       <View
         style={{
-          marginBottom: responsiveHeight(150),
-          flex: 1,
-          justifyContent: 'flex-end',
+          position: 'absolute',
+          bottom: responsiveHeight(140),
         }}>
         <ActivityIndicator size={'large'} style={[Gutters.largeVMargin]} />
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 

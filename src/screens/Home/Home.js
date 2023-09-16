@@ -20,9 +20,13 @@ import Permission from './Permission';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
+import {fcmService} from '../../firebase/push.fcm';
+import {localNotificationService} from '../../firebase/push.noti';
+import messaging from '@react-native-firebase/messaging';
 
 const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
+  const [myUserId, setMyUserId] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [contents, setContents] = useState([]);
   const [permission, setPermission] = useState(true);
@@ -134,6 +138,8 @@ const Home = ({navigation}) => {
   };
 
   const getMyPosts = async () => {
+    setMyUserId(await AsyncStorage.getItem('id'));
+
     const response = await fetch(
       API_URL + '/post/all?id=' + (await AsyncStorage.getItem('id')),
       {
@@ -166,10 +172,52 @@ const Home = ({navigation}) => {
     getMyPosts();
   }, [detailPressed]);
 
+  useEffect(() => {}, []);
+
+  const onRegister = tk => {
+    console.log('[App] onRegister : token :', tk);
+    if (tk) {
+      updateFirebaseToken(tk);
+    }
+  };
+
+  const updateFirebaseToken = async tk => {
+    fetch(API_URL + `/user/notification/init?fcmToken=${tk}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+  };
+
+  const onNotification = notify => {
+    console.log('[App] onNotification : notify :', notify);
+    const options = {
+      soundName: 'default',
+      playSound: true,
+    };
+
+    localNotificationService.showNotification(
+      0,
+      notify.title,
+      notify.body,
+      notify,
+      options,
+    );
+  };
+
+  const onOpenNotification = notify => {
+    console.log('[App] onOpenNotification : notify :', notify);
+  };
+
   useEffect(() => {
     checkPermissions();
     getMyPosts();
     const intervalId = setInterval(getCurrentLocation, 2000);
+
+    fcmService.registerAppWithFCM();
+    fcmService.register(onRegister, onNotification, onOpenNotification);
+    localNotificationService.configure(onOpenNotification);
 
     return () => {
       clearInterval(intervalId);
@@ -212,7 +260,7 @@ const Home = ({navigation}) => {
           <Ani.View
             style={{
               width: responsiveWidth(45),
-              height: responsiveHeight(45),
+              height: responsiveWidth(45),
               position: 'absolute',
               bottom: responsiveHeight(30),
               left: responsiveWidth(20),
@@ -237,7 +285,8 @@ const Home = ({navigation}) => {
                 source={Images.currentLocation}
                 style={{
                   width: responsiveWidth(35),
-                  height: responsiveHeight(35),
+                  height: responsiveWidth(35),
+                  resizeMode: 'contain',
                 }}
               />
             </Pressable>
@@ -273,15 +322,15 @@ const Home = ({navigation}) => {
                     style={{
                       position: 'relative',
                       width: responsiveWidth(100),
-                      height: responsiveHeight(100),
+                      height: responsiveWidth(100),
                       flex: 1,
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
                     <View
                       style={{
-                        width: '91%',
-                        height: '91%',
+                        width: '85%',
+                        height: '85%',
                         borderRadius: 300,
                         backgroundColor: Colors.buttonSecondBackground,
                         alignItems: 'center',
@@ -303,6 +352,7 @@ const Home = ({navigation}) => {
                         height: '100%',
                         borderRadius: 100,
                         position: 'absolute',
+                        resizeMode: 'contain',
                       }}
                     />
                   </View>
@@ -322,8 +372,21 @@ const Home = ({navigation}) => {
                     onPress={() => {
                       setDetailPressed(true);
                       const p = content.detail;
+                      console.log(content.userId, content.detail.userId);
                       navigation.push('MapDetail', {
-                        ...p,
+                        postId: p.postId,
+                        nickname: p.nickname,
+                        profileImage: p.profileImage,
+                        content: p.content,
+                        mediaFiles: p.mediaFiles,
+                        locationName: p.locationName,
+                        liked: p.liked,
+                        likesCount: p.likesCount,
+                        commentsCount: p.commentsCount,
+                        createdDate: p.createdDate,
+                        mention: p.mention,
+                        thumbsUp: thumbsUp,
+                        userId: content.userId,
                         before: 'Home',
                         reload: close,
                       });
@@ -333,7 +396,7 @@ const Home = ({navigation}) => {
                       style={{
                         position: 'relative',
                         width: responsiveWidth(100),
-                        height: responsiveHeight(100),
+                        height: responsiveWidth(100),
                         flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -345,21 +408,27 @@ const Home = ({navigation}) => {
                           priority: FastImage.priority.high,
                         }}
                         style={{
-                          width: '91%',
-                          height: '91%',
+                          width: '85%',
+                          height: '85%',
                           borderRadius: 300,
                           backgroundColor: Colors.contentBackground,
                           marginBottom: responsiveHeight(10),
                         }}
                         resizeMode="contain"
                       />
+
                       <Image
-                        source={Images.pin}
+                        source={
+                          content.userId == myUserId
+                            ? Images.pin
+                            : Images.pinFriend
+                        }
                         style={{
                           width: '100%',
                           height: '100%',
                           borderRadius: 100,
                           position: 'absolute',
+                          resizeMode: 'contain',
                         }}
                       />
                     </View>

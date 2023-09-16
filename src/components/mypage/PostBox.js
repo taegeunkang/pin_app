@@ -42,7 +42,7 @@ const PostBox = ({
     postContainer: {width: responsiveWidth(370)},
     writerImage: {
       width: responsiveWidth(30),
-      height: responsiveHeight(30),
+      height: responsiveWidth(30),
       borderRadius: responsiveWidth(8),
       marginRight: responsiveWidth(5),
     },
@@ -54,7 +54,7 @@ const PostBox = ({
     },
     media: {
       width: responsiveWidth(35),
-      height: responsiveHeight(35),
+      height: responsiveWidth(35),
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: Colors.buttonThirdBackground,
@@ -68,7 +68,7 @@ const PostBox = ({
       <View
         style={{
           width: responsiveWidth(25),
-          height: responsiveHeight(25),
+          height: responsiveWidth(25),
           borderRadius: responsiveWidth(8),
           alignItems: 'center',
           justifyContent: 'center',
@@ -204,8 +204,9 @@ const PostBox = ({
                   source={Images.smileSelect}
                   style={{
                     width: responsiveWidth(20),
-                    height: responsiveHeight(20),
+                    height: responsiveWidth(20),
                     marginRight: responsiveWidth(5),
+                    resizeMode: 'contain',
                   }}
                 />
               </Pressable>
@@ -215,7 +216,7 @@ const PostBox = ({
                   source={Images.smileNotSelect}
                   style={{
                     width: responsiveWidth(20),
-                    height: responsiveHeight(20),
+                    height: responsiveWidth(20),
                     marginRight: responsiveWidth(5),
                     resizeMode: 'contain',
                   }}
@@ -234,7 +235,7 @@ const PostBox = ({
               source={Images.commentNotSelect}
               style={{
                 width: responsiveWidth(20),
-                height: responsiveHeight(20),
+                height: responsiveWidth(20),
                 marginRight: responsiveWidth(5),
                 resizeMode: 'contain',
               }}
@@ -251,7 +252,7 @@ const PostBox = ({
                 source={Images.pinNotSelect}
                 style={{
                   width: responsiveWidth(20),
-                  height: responsiveHeight(20),
+                  height: responsiveWidth(20),
                   marginRight: responsiveWidth(5),
                   resizeMode: 'contain',
                 }}

@@ -174,7 +174,7 @@ const Medias = ({navigation}) => {
                 onPress={() => addArray(item)}
                 style={{
                   width: responsiveWidth(20),
-                  height: responsiveHeight(20),
+                  height: responsiveWidth(20),
                   borderRadius: responsiveWidth(100),
                   backgroundColor: Colors.transparent,
                   borderWidth: responsiveWidth(2),
@@ -189,7 +189,7 @@ const Medias = ({navigation}) => {
                 onPress={() => removeTargetFromArray(item)}
                 style={{
                   width: responsiveWidth(20),
-                  height: responsiveHeight(20),
+                  height: responsiveWidth(20),
                   borderRadius: responsiveWidth(100),
                   backgroundColor: Colors.buttonSecondContent,
                   justifyContent: 'center',

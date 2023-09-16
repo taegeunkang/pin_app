@@ -16,9 +16,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SubmitButton from '../../components/SubmitButton';
 import InputBox from '../../components/InputBox';
 import {responsiveWidth, responsiveHeight} from '../../components/Scale';
-import {fcmService} from '../../firebase/push.fcm';
-import {localNotificationService} from '../../firebase/push.noti';
-import messaging from '@react-native-firebase/messaging';
 
 // import {
 //   GoogleSignin,
@@ -41,51 +38,6 @@ const Login = ({navigation}) => {
   const [wrongPassword, setWrongPassword] = useState(false);
   const {Layout, Images, Fonts, Colors} = useTheme();
   const inputRef = useRef(null);
-
-  const [token, setToken] = useState('');
-
-  // useEffect(() => {
-
-  //   fcmService.registerAppWithFCM();
-  //   fcmService.register(onRegister, onNotification, onOpenNotification);
-  //   localNotificationService.configure(onOpenNotification);
-  // }, []);
-
-  useEffect(() => {
-    fcmService.registerAppWithFCM();
-    fcmService.register(onRegister, onNotification, onOpenNotification);
-    localNotificationService.configure(onOpenNotification);
-  }, []);
-
-  const onRegister = tk => {
-    console.log('[App] onRegister : token :', tk);
-    if (tk) setToken(tk);
-  };
-
-  const onNotification = notify => {
-    console.log('[App] onNotification : notify :', notify);
-    const options = {
-      soundName: 'default',
-      playSound: true,
-    };
-
-    localNotificationService.showNotification(
-      0,
-      notify.title,
-      notify.body,
-      notify,
-      options,
-    );
-  };
-
-  const onOpenNotification = notify => {
-    console.log('[App] onOpenNotification : notify :', notify);
-    Alert.alert('Open Notification : notify.body :' + notify.body);
-  };
-
-  const onCopy = () => {
-    Clipboard.setString(token);
-  };
 
   const loginSubmit = async () => {
     if (!id && !password) {
@@ -244,6 +196,7 @@ const Login = ({navigation}) => {
               {t('wrongInfo')}
             </Text>
           )}
+          <View style={{marginTop: responsiveHeight(10)}} />
 
           <InputBox
             title={'비밀번호'}

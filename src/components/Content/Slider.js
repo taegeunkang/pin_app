@@ -13,8 +13,9 @@ import WebView from 'react-native-webview';
 import FastImage from 'react-native-fast-image';
 import {useTheme} from '../../hooks';
 
-export const Slider = ({media}) => {
+export const Slider = ({media, onLoadEnd}) => {
   const {Colors} = useTheme();
+
   // 게시글 업로드시 포스터 생성 후 포스터도 같이 표시를 해주어ㅑ 한다.
   const [fastImageResizeMode, setFastImageResizeMode] = useState(
     FastImage.resizeMode.cover,

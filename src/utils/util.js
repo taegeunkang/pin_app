@@ -1,8 +1,10 @@
 import {ColorSpace} from 'react-native-reanimated';
 
 export const timeAgo = dateInput => {
-  let t = dateInput.substring(0, dateInput.length - 10);
+  console.log('시간 ', dateInput);
+
   const now = new Date();
+  now.setHours(now.getHours() + 9);
   const utcNow = Date.UTC(
     now.getUTCFullYear(),
     now.getUTCMonth(),
@@ -12,8 +14,8 @@ export const timeAgo = dateInput => {
     now.getUTCSeconds(),
   );
 
-  const date = new Date(t);
-  date.setHours(date.getHours() + 9);
+  const date = new Date(dateInput);
+  console.log(now, date);
   const utcDate = Date.UTC(
     date.getUTCFullYear(),
     date.getUTCMonth(),

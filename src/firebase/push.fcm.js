@@ -1,5 +1,5 @@
 import messaging from '@react-native-firebase/messaging';
-import {Alert, Platform} from 'react-native';
+import {Platform} from 'react-native';
 
 class FCMService {
   register = (onRegister, onNotification, onOpenNotification) => {
@@ -76,8 +76,6 @@ class FCMService {
         const notification = remoteMessage.notification;
         onOpenNotification(notification);
       }
-
-      Alert.alert(remoteMessage.body);
     });
 
     messaging()

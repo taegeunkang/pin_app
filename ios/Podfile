@@ -12,6 +12,8 @@ prepare_react_native_project!
 # module.exports = {
 #   dependencies: {
 #     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
+#
+#  PRODUCTION=1 pod install <------ should run before release archive
 # ```
 flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
 

@@ -29,6 +29,7 @@ const FriendsCell = ({profileImage, nickname, onAdd, onSub}) => {
     },
     nickname: {
       marginLeft: responsiveWidth(5),
+      color: Colors.textNormal,
     },
   });
 
@@ -42,7 +43,7 @@ const FriendsCell = ({profileImage, nickname, onAdd, onSub}) => {
           }}
           style={{
             width: responsiveWidth(35),
-            height: responsiveHeight(35),
+            height: responsiveWidth(35),
             borderRadius: responsiveWidth(12),
             backgroundColor: Colors.screenBackground,
           }}

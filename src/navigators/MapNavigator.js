@@ -14,6 +14,7 @@ import DetailMention from '../screens/Home/DetailMention';
 import Home from '../screens/Home/Home';
 import Detail from '../screens/Home/Detail';
 import {useTheme} from '../hooks';
+import UserPage from '../screens/Home/UserPage';
 const Stack = createStackNavigator();
 
 // @refresh reset
@@ -79,7 +80,7 @@ const MapNavigator = props => {
 
       <Stack.Screen
         name="UserPage"
-        component={MyPage}
+        component={UserPage}
         options={{
           headerShown: true,
           headerTitle: '프로필',

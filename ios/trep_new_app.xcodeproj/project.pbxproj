@@ -551,20 +551,18 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = trep_new_app/trep_new_app.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = MHS6XT4HRQ;
+				DEVELOPMENT_TEAM = MHS6XT4HRQ;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = trep_new_app/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = pin;
+				INFOPLIST_KEY_CFBundleDisplayName = "trep-new-app";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.22;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -573,7 +571,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = trep_new_app;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = pinDevProvising;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -588,19 +585,17 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = trep_new_app/trep_new_app.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = MHS6XT4HRQ;
+				DEVELOPMENT_TEAM = MHS6XT4HRQ;
 				INFOPLIST_FILE = trep_new_app/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = pin;
+				INFOPLIST_KEY_CFBundleDisplayName = "trep-new-app";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.22;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -609,7 +604,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = trep_new_app;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = pinDevProvising;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -81,7 +81,11 @@ const FindingLocation = ({navigation, route}) => {
       <View style={styles.loginInput}>
         <Image
           source={Images.searchNotSelect}
-          style={{width: responsiveWidth(25), height: responsiveHeight(25)}}
+          style={{
+            width: responsiveWidth(25),
+            height: responsiveWidth(25),
+            resizeMode: 'contain',
+          }}
         />
 
         <TextInput

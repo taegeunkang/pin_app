@@ -35,18 +35,22 @@ const MyPage = ({navigation}) => {
   const [id, setId] = useState(null);
   const [postList, setPostList] = useState([]);
   const [isPopped, setIsPopped] = useState(false);
+  const [reloadLoading, setReloadLoading] = useState(false);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      if (isPopped) {
-        // pop 후에만 실행할 동작
-        setIsPopped(false);
-      }
-    }, [isPopped]), // isPopped 의존성을 추가
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     if (isPopped) {
+  //       // pop 후에만 실행할 동작
+  //       setIsPopped(false);
+  //     }
+  //   }, [isPopped]), // isPopped 의존성을 추가
+  // );
 
   const reload = async postid => {
-    setIsPopped(true);
+    if (reloadLoading) return;
+
+    setReloadLoading(true);
+    // setIsPopped(true);
     let a = postList;
     let b = [];
     for (let i = 0; i < a.length; i++) {
@@ -60,6 +64,7 @@ const MyPage = ({navigation}) => {
     let c = userInfo;
     c.post = c.post - 1;
     setUserInfo(c);
+    setReloadLoading(false);
   };
 
   const onRefresh = async () => {
@@ -210,13 +215,13 @@ const MyPage = ({navigation}) => {
       width: '100%',
     },
     profileContainer: {
-      height: responsiveHeight(110),
+      height: responsiveHeight(120),
       width: responsiveWidth(370),
       backgroundColor: Colors.contentBackground,
     },
     profileImage: {
       width: responsiveWidth(75),
-      height: responsiveHeight(75),
+      height: responsiveWidth(75),
       borderRadius: responsiveWidth(12),
       marginTop: responsiveHeight(-40),
       borderWidth: responsiveWidth(3),
@@ -425,7 +430,8 @@ const MyPage = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={Fonts.contentMediumMedium}>
+            <Text
+              style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
               게시글이 존재하지 않습니다.
             </Text>
           </View>

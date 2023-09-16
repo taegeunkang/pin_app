@@ -183,7 +183,8 @@ const FollowerList = ({navigation, route}) => {
           source={Images.searchNotSelect}
           style={{
             width: responsiveWidth(25),
-            height: responsiveHeight(25),
+            height: responsiveWidth(25),
+            resizeMode: 'contain',
           }}
         />
 

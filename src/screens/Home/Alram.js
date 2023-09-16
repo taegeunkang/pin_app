@@ -1,10 +1,20 @@
-import {Image, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Pressable,
+} from 'react-native';
 import {useTheme} from '../../hooks';
 import {ScrollView} from 'react-native-gesture-handler';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import {useEffect, useLayoutEffect} from 'react';
+import {useEffect, useLayoutEffect, useState} from 'react';
+import {API_URL} from '../../utils/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {reIssue} from '../../utils/login';
+import {timeAgo} from '../../utils/util';
 const Alram = ({navigation}) => {
-  const {Images, Colors} = useTheme();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -24,50 +34,120 @@ const Alram = ({navigation}) => {
       ),
     });
   });
+  const {Images, Colors} = useTheme();
+  const [notification, setNotification] = useState([]);
+  const [myId, setMyId] = useState(null);
+  const load = async () => {
+    setMyId(await AsyncStorage.getItem('id'));
+
+    const response = await fetch(API_URL + '/post/alram', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+    switch (response.status) {
+      case 200:
+        let r1 = await response.json();
+        console.log(r1);
+        setNotification(r1);
+        break;
+      case 400:
+        let r = await response.json();
+        switch (r.code) {
+          case 'U08':
+            await reIssue();
+            await load();
+            break;
+        }
+    }
+  };
+
+  const moveToDetail = async (postId, content) => {
+    fetch(API_URL + `/post/alram/read?postId=${postId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+    navigation.push('AlramDetail', {
+      ...content,
+      before: 'Alram',
+    });
+  };
+  useEffect(() => {
+    load();
+  }, []);
 
   return (
-    <ScrollView style={{backgroundColor: Colors.screenBackground}}>
-      {/* <Notify
-        image={Sample5}
-        title={'mars2727 님이 새로운 게시글을 업로드 하였습니다.'}
-        read={true}
-      />
-      <Notify
-        image={Sample5}
-        title={'mars2727 님이 새로운 게시글을 업로드 하였습니다.'}
-      />
-      <Notify
-        image={Sample5}
-        title={'mars2727 님이 새로운 게시글을 업로드 하였습니다.'}
-        read={true}
-      />
-      <Notify
-        image={Sample5}
-        title={'mars2727 님이 새로운 게시글을 업로드 하였습니다.'}
-      />
-      <Notify
-        image={Sample5}
-        title={'mars2727 님이 새로운 게시글을 업로드 하였습니다.'}
-      /> */}
+    <ScrollView style={{backgroundColor: Colors.contentBackground}}>
+      {notification.map((noti, index) => (
+        <Notify
+          message={noti.message}
+          createdDate={noti.createdDate}
+          onPress={() => moveToDetail(noti.detail.postId, noti.detail)}
+        />
+      ))}
     </ScrollView>
   );
 };
 
-const Notify = ({image, title, read}) => {
-  const {Fonts} = useTheme();
+const Notify = ({id, message, createdDate, onPress}) => {
+  const {Fonts, Colors} = useTheme();
+  const [p, setP] = useState(false);
+
+  const pressed = async () => {
+    let a = JSON.parse(await AsyncStorage.getItem('pressedNotification'));
+    if (a == null) a = [];
+    a.push(id);
+    await AsyncStorage.setItem('pressedNotification', JSON.stringify(a));
+    setP(true);
+    onPress();
+  };
+
+  const isPressed = async () => {
+    let b = JSON.parse(await AsyncStorage.getItem('pressedNotification'));
+    if (b == null) return;
+    for (let i = 0; i < b.length; i++) {
+      if (b[i] == id) {
+        setP(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    isPressed();
+  }, [p]);
+
   return (
-    <View style={[styles.notiContainer, read ? styles.isRead : '']}>
+    <Pressable
+      onPress={pressed}
+      style={[
+        styles.notiContainer,
+        p ? styles.isRead : '',
+        {
+          backgroundColor: !p
+            ? Colors.contentBackground
+            : Colors.screenBackground,
+          borderBottomWidth: responsiveHeight(1),
+          borderBottomColor: Colors.screenBackground,
+        },
+      ]}>
       <View style={styles.content}>
-        <Image source={image} style={styles.profileImg} />
-        <Text style={Fonts.contentMediumMedium}>{title}</Text>
+        <Text style={[Fonts.contentMediumMedium, {color: Colors.textBold}]}>
+          {message}
+        </Text>
+        <Text style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+          {timeAgo(createdDate)}
+        </Text>
       </View>
-    </View>
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   notiContainer: {
-    height: responsiveHeight(55),
+    height: responsiveHeight(65),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -82,9 +162,9 @@ const styles = StyleSheet.create({
     width: responsiveWidth(370),
     height: responsiveHeight(45),
     paddingHorizontal: responsiveWidth(5),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
 });
 

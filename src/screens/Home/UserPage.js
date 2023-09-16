@@ -42,7 +42,7 @@ const UserPage = ({navigation, route}) => {
     React.useCallback(() => {
       if (isPopped) {
         // pop 후에만 실행할 동작
-        initData();
+        // initData();
         setIsPopped(false);
       }
     }, [isPopped]), // isPopped 의존성을 추가
@@ -263,7 +263,7 @@ const UserPage = ({navigation, route}) => {
     },
     profileImage: {
       width: responsiveWidth(75),
-      height: responsiveHeight(75),
+      height: responsiveWidth(75),
       borderRadius: responsiveWidth(12),
       marginTop: responsiveHeight(-40),
       borderWidth: responsiveWidth(3),
@@ -434,34 +434,36 @@ const UserPage = ({navigation, route}) => {
           </View>
         </View>
         <View style={{marginBottom: responsiveHeight(5)}} />
-        {postList.map((post, index) => (
-          <PostBox
-            key={index}
-            postId={post.postId}
-            writerName={post.nickname}
-            writerProfileImage={post.profileImage}
-            content={post.content}
-            mediaFiles={post.mediaFiles}
-            locationName={post.locationName}
-            isLiked={post.liked}
-            likeCount={post.likesCount}
-            commentCount={post.commentsCount}
-            createdDate={post.createdDate}
-            mention={post.mention}
-            onPress={() => {
-              navigation.push('Detail', {
-                ...post,
-                thumbsUp: thumbsUp,
-                userId: id,
-                before: 'UserPage',
-                reload: () => {
-                  setIsPopped(true);
-                },
-              });
-            }}
-            thumbsUp={thumbsUp}
-          />
-        ))}
+        {postList.map((post, index) => {
+          return (
+            <PostBox
+              key={index}
+              postId={post.postId}
+              writerName={post.nickname}
+              writerProfileImage={post.profileImage}
+              content={post.content}
+              mediaFiles={post.mediaFiles}
+              locationName={post.locationName}
+              isLiked={post.liked}
+              likeCount={post.likesCount}
+              commentCount={post.commentsCount}
+              createdDate={post.createdDate}
+              mention={post.mention}
+              onPress={() => {
+                navigation.push('Detail', {
+                  ...post,
+                  thumbsUp: thumbsUp,
+                  userId: userId,
+                  before: 'UserPage',
+                  reload: () => {
+                    setIsPopped(true);
+                  },
+                });
+              }}
+              thumbsUp={thumbsUp}
+            />
+          );
+        })}
         {postList.length == 0 && (
           <View
             style={{

@@ -99,7 +99,7 @@ const ProfileInitialSetting = ({navigation}) => {
           title={t('input.nickname')}
           placeholder={t('input.nicknamePlaceholder')}
           value={inpt}
-          onChangeText={e => setInpt(e)}
+          onChangeText={e => setInpt(e.toLowerCase())}
           ref={inputRef}
           isWrong={empty || duplicate}
         />

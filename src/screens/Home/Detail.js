@@ -12,6 +12,7 @@ import {
   Modal,
   Pressable,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import {useTheme} from '../../hooks';
 import {useState, useEffect, useRef, useLayoutEffect} from 'react';
@@ -53,12 +54,12 @@ const Detail = ({navigation, route}) => {
             if (reload != null) reload();
             navigation.pop();
           }}
-          close={before == 'Home' ? true : false}
+          close={before == 'Home' || before == 'Alram' ? true : false}
         />
       ),
     });
   });
-
+  const [myId, setMyId] = useState(null);
   const [isLiked, setIsLiked] = useState(liked);
   const [likedCount, setLikedCount] = useState(likesCount);
   const [commentCount, setCommentCount] = useState(commentsCount);
@@ -273,6 +274,7 @@ const Detail = ({navigation, route}) => {
 
   const isMyPost = async () => {
     const myId = await AsyncStorage.getItem('id');
+    console.log(myId == userId);
     return myId == userId;
   };
   const deletePost = async () => {
@@ -346,8 +348,15 @@ const Detail = ({navigation, route}) => {
 
     setReplyLoading(false);
   };
+  const init = async () => {
+    setMyId(await AsyncStorage.getItem('id'));
+  };
   useEffect(() => {
+    const t = async () => {
+      await init();
+    };
     fetchComment();
+    t();
   }, []);
 
   const styles = StyleSheet.create({
@@ -360,7 +369,7 @@ const Detail = ({navigation, route}) => {
     postContainer: {width: responsiveWidth(370)},
     writerImage: {
       width: responsiveWidth(30),
-      height: responsiveHeight(30),
+      height: responsiveWidth(30),
       borderRadius: responsiveWidth(8),
       marginRight: responsiveWidth(5),
     },
@@ -386,6 +395,7 @@ const Detail = ({navigation, route}) => {
       borderRadius: responsiveWidth(12),
       backgroundColor: Colors.screenBackground,
       paddingHorizontal: responsiveWidth(10),
+      color: Colors.textNormal,
     },
   });
 
@@ -426,7 +436,7 @@ const Detail = ({navigation, route}) => {
       }}
       behavior="padding"
       enabled
-      keyboardVerticalOffset={100}>
+      keyboardVerticalOffset={90}>
       <SafeAreaView
         style={{
           flex: 1,
@@ -488,58 +498,61 @@ const Detail = ({navigation, route}) => {
                     {timeAgo(createdDate)}
                   </Text>
                 </Pressable>
-                {mention && (
-                  <Pressable
-                    onPress={() => {
-                      navigation.push('DetailMention', {friends: mention});
-                    }}
-                    style={{
-                      flexDirection: 'row',
-                      backgroundColor: Colors.screenBackground,
-                    }}>
-                    {mention.map((f, index) => {
-                      if (index < 2) {
-                        return (
-                          <FastImage
-                            key={index}
-                            source={{
-                              uri:
-                                API_URL +
-                                `/user/profile/image?watch=${f.profileImage}`,
-                              priority: FastImage.priority.high,
-                            }}
-                            style={styles.writerImage}
-                          />
-                        );
-                      } else {
-                        return;
-                      }
-                    })}
-
-                    {mention.length - 2 > 0 && (
-                      <MoreFriends count={mention.length - 2} />
-                    )}
-                  </Pressable>
-                )}
-
-                {isMyPost() && (
-                  <Pressable
-                    onPress={() => setPostModalVisible(true)}
-                    style={{
-                      width: responsiveWidth(25),
-                      height: responsiveHeight(25),
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Image
-                      source={Images.more}
-                      style={{
-                        width: responsiveWidth(20),
-                        height: responsiveHeight(20),
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  {mention && (
+                    <Pressable
+                      onPress={() => {
+                        navigation.push('DetailMention', {friends: mention});
                       }}
-                    />
-                  </Pressable>
-                )}
+                      style={{
+                        flexDirection: 'row',
+                        backgroundColor: Colors.screenBackground,
+                      }}>
+                      {mention.map((f, index) => {
+                        if (index < 2) {
+                          return (
+                            <FastImage
+                              key={index}
+                              source={{
+                                uri:
+                                  API_URL +
+                                  `/user/profile/image?watch=${f.profileImage}`,
+                                priority: FastImage.priority.high,
+                              }}
+                              style={styles.writerImage}
+                            />
+                          );
+                        } else {
+                          return;
+                        }
+                      })}
+
+                      {mention.length - 2 > 0 && (
+                        <MoreFriends count={mention.length - 2} />
+                      )}
+                    </Pressable>
+                  )}
+
+                  {myId == userId && (
+                    <Pressable
+                      onPress={() => setPostModalVisible(true)}
+                      style={{
+                        width: responsiveWidth(25),
+                        height: responsiveWidth(25),
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Image
+                        source={Images.more}
+                        style={{
+                          width: responsiveWidth(15),
+                          height: responsiveWidth(15),
+                          resizeMode: 'contain',
+                        }}
+                      />
+                    </Pressable>
+                  )}
+                </View>
               </View>
               {/* 본문 글 최대 500자 */}
               <Text
@@ -580,8 +593,9 @@ const Detail = ({navigation, route}) => {
                         source={Images.smileSelect}
                         style={{
                           width: responsiveWidth(20),
-                          height: responsiveHeight(20),
+                          height: responsiveWidth(20),
                           marginRight: responsiveWidth(5),
+                          resizeMode: 'contain',
                         }}
                       />
                     </Pressable>
@@ -591,7 +605,7 @@ const Detail = ({navigation, route}) => {
                         source={Images.smileNotSelect}
                         style={{
                           width: responsiveWidth(20),
-                          height: responsiveHeight(20),
+                          height: responsiveWidth(20),
                           marginRight: responsiveWidth(5),
                           resizeMode: 'contain',
                         }}
@@ -617,7 +631,7 @@ const Detail = ({navigation, route}) => {
                     source={Images.commentNotSelect}
                     style={{
                       width: responsiveWidth(20),
-                      height: responsiveHeight(20),
+                      height: responsiveWidth(20),
                       marginRight: responsiveWidth(5),
                       resizeMode: 'contain',
                     }}
@@ -636,7 +650,7 @@ const Detail = ({navigation, route}) => {
                       source={Images.pinNotSelect}
                       style={{
                         width: responsiveWidth(20),
-                        height: responsiveHeight(20),
+                        height: responsiveWidth(20),
                         marginRight: responsiveWidth(5),
                         resizeMode: 'contain',
                       }}
@@ -702,7 +716,10 @@ const Detail = ({navigation, route}) => {
                       replyList[comment.commentId].length && (
                       <Pressable
                         onPress={() => getReply(comment.commentId)}
-                        style={{width: '100%', height: responsiveHeight(20)}}>
+                        style={{
+                          width: '100%',
+                          height: responsiveHeight(20),
+                        }}>
                         <Text
                           style={[
                             Fonts.contentRegualrMedium,
@@ -724,7 +741,6 @@ const Detail = ({navigation, route}) => {
           )} */}
           </View>
         </ScrollView>
-
         <View
           style={{
             width: '100%',

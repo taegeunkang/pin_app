@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import {useEffect, useRef, useState} from 'react';
 import {BorderRadius, FontSize} from '../../theme/Variables';
@@ -93,6 +94,7 @@ const WriteContent = ({navigation, route}) => {
   // 동영상 기능 추가해야함
   const submitPost = async () => {
     if (text.trim().length == 0) {
+      Alert.alert('내용을 입력해 주세요.');
       return;
     }
     setLoading(true);
@@ -146,7 +148,7 @@ const WriteContent = ({navigation, route}) => {
       body: formData,
     });
     if (response.status == 200) {
-      navigation.navigate( 'Home');
+      navigation.navigate('Home');
     } else if (response.status == 400) {
       const k = await response.json();
       switch (k['code']) {
@@ -196,7 +198,7 @@ const WriteContent = ({navigation, route}) => {
     },
     friendsImage: {
       width: responsiveWidth(35),
-      height: responsiveHeight(35),
+      height: responsiveWidth(35),
       borderRadius: responsiveWidth(8),
       marginRight: responsiveWidth(5),
     },
@@ -221,8 +223,8 @@ const WriteContent = ({navigation, route}) => {
                   <View key={index} style={styles.imageContainer}>
                     <Image
                       style={{
-                        width: responsiveWidth(100),
-                        height: responsiveHeight(100),
+                        width: responsiveWidth(95),
+                        height: responsiveWidth(95),
                         borderRadius: responsiveWidth(12),
                       }}
                       source={{uri: m.uri}}
@@ -291,7 +293,7 @@ const WriteContent = ({navigation, route}) => {
                   source={Images.plus}
                   style={{
                     width: responsiveWidth(20),
-                    height: responsiveHeight(20),
+                    height: responsiveWidth(20),
                     marginTop: responsiveHeight(2),
                     marginLeft: responsiveWidth(5),
                   }}
@@ -322,7 +324,7 @@ const WriteContent = ({navigation, route}) => {
                   source={Images.plus}
                   style={{
                     width: responsiveWidth(20),
-                    height: responsiveHeight(20),
+                    height: responsiveWidth(20),
                     marginTop: responsiveHeight(2),
                     marginLeft: responsiveWidth(5),
                   }}

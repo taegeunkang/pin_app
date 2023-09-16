@@ -12,11 +12,12 @@ import FollowingList from '../screens/Home/FollowingList';
 import FollowerList from '../screens/Home/FollowerList';
 import BackgroundImage from '../screens/Home/BackgroundImage';
 import Nickname from '../screens/Home/Nickname';
+import Search from '../screens/Home/Search';
 import UserPage from '../screens/Home/UserPage';
 const Stack = createStackNavigator();
 
 // @refresh reset
-const MyPageNavigator = ({navigation}) => {
+const SearchNavigator = ({navigation}) => {
   const {t} = useTranslation('content');
   const {Fonts, Colors} = useTheme();
   return (
@@ -48,8 +49,8 @@ const MyPageNavigator = ({navigation}) => {
         },
       }}>
       <Stack.Screen
-        name="MyPage"
-        component={MyPage}
+        name="Search"
+        component={Search}
         options={{
           headerShown: false,
         }}
@@ -167,4 +168,4 @@ const MyPageNavigator = ({navigation}) => {
     </Stack.Navigator>
   );
 };
-export default MyPageNavigator;
+export default SearchNavigator;

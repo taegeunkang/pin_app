@@ -281,7 +281,7 @@ const Register = ({navigation}) => {
         <InputBox
           title={'이메일'}
           placeholder={t('input.email')}
-          onChangeText={e => setEmail(e)}
+          onChangeText={e => setEmail(e.toLowerCase())}
           value={email}
           isWrong={wrongReg && !sent}
           editable={verified}

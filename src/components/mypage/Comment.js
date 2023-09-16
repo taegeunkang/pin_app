@@ -76,12 +76,20 @@ const Comment = ({
               {timeAgo(createdDate)}
             </Text>
             {myComment() && (
-              <Pressable onPress={onPress}>
+              <Pressable
+                onPress={onPress}
+                style={{
+                  width: responsiveWidth(20),
+                  height: responsiveHeight(20),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
                 <Image
                   source={Images.more}
                   style={{
-                    width: responsiveWidth(20),
-                    height: responsiveHeight(20),
+                    width: responsiveWidth(15),
+                    height: responsiveHeight(15),
+                    resizeMode: 'contain',
                   }}
                 />
               </Pressable>

@@ -24,8 +24,7 @@ import Preview from '../screens/Home/Preview';
 import WriteContent from '../screens/Home/WriteContent';
 import FindingFriends from '../screens/Home/FindingFriends';
 import FindingLocation from '../screens/Home/FindingLocation';
-import Alram from '../screens/Home/Alram';
-import Setting from '../screens/Home/Setting';
+import SearchNavigator from './SearchNavigator';
 
 const Stack = createStackNavigator();
 // @refresh reset
@@ -198,69 +197,12 @@ const ApplicationNavigator = () => {
               title: t('newPost:media.friends'),
             }}
           />
-          {/* 
-          <Stack.Screen
-            name="UserPage"
-            component={UserPage}
-            options={{headerShown: true, headerTitle: '프로필'}}
-          />
 
           <Stack.Screen
-            name="FollowerList"
-            component={FollowerList}
-            options={{
-              headerShown: true,
-              headerTitle: t('myPage:profile.follower'),
-            }}
+            name="SearchNavigator"
+            component={SearchNavigator}
+            options={{headerShown: true, headerTitle: '프로필'}}
           />
-          <Stack.Screen
-            name="FollowingList"
-            component={FollowingList}
-            options={{
-              headerShown: true,
-              headerTitle: t('myPage:profile.following'),
-            }}
-          />
-          <Stack.Screen
-            name="Detail"
-            component={Detail}
-            options={{
-              headerBackTitleVisible: false,
-              headerTitle: t('myPage:profile.detail'),
-            }}
-          />
-          <Stack.Screen
-            name="DetailMention"
-            component={DetailMention}
-            options={{
-              headerBackTitleVisible: false,
-              headerTitle: t('myPage:post.friends'),
-            }}
-          />
-          <Stack.Screen
-            name="ProfileImage"
-            component={ProfileImage}
-            options={{
-              headerBackTitleVisible: false,
-              headerTitle: t('myPage:profile.profileImage'),
-            }}
-          />
-          <Stack.Screen
-            name="BackgroundImage"
-            component={BackgroundImage}
-            options={{
-              headerBackTitleVisible: false,
-              headerTitle: t('myPage:profile.backgroundImage'),
-            }}
-          />
-          <Stack.Screen
-            name="Nickname"
-            component={Nickname}
-            options={{
-              headerBackTitleVisible: false,
-              headerTitle: t('myPage:profile.nickname'),
-            }}
-          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </View>

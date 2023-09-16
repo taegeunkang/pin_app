@@ -5,9 +5,10 @@ export default function ({}) {
     naverLogo: require('./assets/images/naver-logo.png'),
     splash: require('./assets/images/splash.png'),
     appLogo: require('./assets/images/app-logo.png'),
+    logoTitle: require('./assets/images/logo-title.png'),
     pLogo: require('./assets/images/p-logo.png'),
     pin: require('./assets/images/pin-my.png'),
-
+    pinFriend: require('./assets/images/pin-friend.png'),
     bellNotSelect: require('./assets/images/light/bell-not-select.png'),
     bellSelect: require('./assets/images/light/bell-select.png'),
     checkNotSelect: require('./assets/images/light/check-not-select.png'),
