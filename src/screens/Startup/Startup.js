@@ -11,9 +11,9 @@ import {setDefaultTheme} from '../../store/theme';
 import {useTheme} from '../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
-
+import {responsiveHeight} from '../../components/Scale';
 const Startup = ({navigation}) => {
-  const {Layout, Gutters, Fonts, Images} = useTheme();
+  const {Layout, Gutters, Fonts, Images, Colors} = useTheme();
 
   const init = async () => {
     // 의미 없는 delay but -> 나중에 AD 게시 가능
@@ -30,7 +30,6 @@ const Startup = ({navigation}) => {
     if (token && token.length > 0 && refreshToken && refreshToken.length > 0) {
       // 토큰으로 로그인 체크
       const result1 = await checkLogin(token);
-      console.log(result1);
       // 로그인 성공
       if (result1) {
         navigation.reset({routes: [{name: 'Home'}]});
@@ -62,9 +61,7 @@ const Startup = ({navigation}) => {
     switch (response.status) {
       case 200:
         const res = await response.json();
-        console.log('check successful id : ' + res['id']);
         await AsyncStorage.setItem('id', JSON.stringify(res['id']));
-
         return true;
       case 400:
         return false;
@@ -102,12 +99,22 @@ const Startup = ({navigation}) => {
     init();
   }, []);
   return (
-    <ImageBackground
-      source={Images.splash}
-      resizeMode="contain"
-      style={styles.bg}>
-      <ActivityIndicator size={'large'} style={[Gutters.largeVMargin]} />
-    </ImageBackground>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.contentBackground,
+      }}>
+      <Image source={Images.logoTitle} />
+      <View
+        style={{
+          position: 'absolute',
+          bottom: responsiveHeight(140),
+        }}>
+        <ActivityIndicator size={'large'} style={[Gutters.largeVMargin]} />
+      </View>
+    </View>
   );
 };
 

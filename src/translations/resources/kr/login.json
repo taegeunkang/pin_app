@@ -1,7 +1,12 @@
 {
   "title": "TREP 슬로건",
   "slogan": "TREP",
-  "input": { "id": "이메일 또는 아이디", "password": "비밀번호" },
+  "input": {
+    "id": "이메일 또는 아이디",
+    "password": "비밀번호",
+    "nickname": "닉네임",
+    "nicknamePlaceholder": "닉네임 입력"
+  },
   "forget": "비밀번호를 잊어버리셨나요?",
   "loginBtn": "계속하기",
   "snsLogin": "SNS 로그인",
@@ -9,6 +14,12 @@
   "wrongId": "이메일 형식이 아닙니다.",
   "wrongPassword": "비밀번호가 일치하지 않습니다.",
   "wrongInfo": "사용자가 존재하지 않습니다.",
-  "header": { "register": "회원가입" },
-  "oauth": { "error": "알 수 없는 에러가 발생했습니다." }
+  "header": {"register": "회원가입"},
+  "oauth": {"error": "알 수 없는 에러가 발생했습니다."},
+  "profileSetting": "프로필 설정",
+  "nickname": {
+    "duplicate": "이미 존재하는 닉네임입니다.",
+    "empty": "닉네임을 입력해 주세요.",
+    "tooLong": "10자 이내의 닉네임을 입력해 주세요."
+  }
 }

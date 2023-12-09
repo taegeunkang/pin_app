@@ -1,33 +1,56 @@
-import {View, StyleSheet, Image, Text} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import {useTheme} from '../../hooks';
 import {responsiveHeight, responsiveWidth} from '../Scale';
-const UserCell = ({profileImage, name, closeAvailable, onPress}) => {
-  const {Images} = useTheme();
+import {API_URL} from '../../utils/constants';
+import FastImage from 'react-native-fast-image';
+const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
+  const {Images, Fonts, Colors} = useTheme();
 
   return (
-    <View style={styles.container}>
+    <Pressable onPress={onPress} style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <View
+        <FastImage
+          source={{
+            uri: API_URL + `/user/profile/image?watch=${profileImage}`,
+            priority: FastImage.priority.high,
+          }}
           style={{
             width: responsiveWidth(35),
-            height: responsiveHeight(35),
+            height: responsiveWidth(35),
             borderRadius: responsiveWidth(12),
-            backgroundColor: 'black',
-          }}></View>
-        <Text style={styles.nickname}>mars2727</Text>
+          }}
+        />
+        <Text
+          style={[
+            Fonts.contentMediumMedium,
+            {color: Colors.textNormal, marginLeft: responsiveWidth(5)},
+          ]}>
+          {name}
+        </Text>
       </View>
       {closeAvailable ? (
-        <Image
-          source={Images.close}
-          style={{width: responsiveWidth(15), height: responsiveHeight(15)}}
-        />
+        <TouchableOpacity onPress={onClose}>
+          <Image
+            source={Images.close}
+            style={{width: responsiveWidth(15), height: responsiveHeight(15)}}
+          />
+        </TouchableOpacity>
       ) : (
-        <Image
-          source={Images.rightChevron}
-          style={{width: responsiveWidth(8.75), height: responsiveHeight(15)}}
-        />
+        <TouchableOpacity>
+          <Image
+            source={Images.rightChevron}
+            style={{width: responsiveWidth(8.75), height: responsiveHeight(15)}}
+          />
+        </TouchableOpacity>
       )}
-    </View>
+    </Pressable>
   );
 };
 
@@ -38,13 +61,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  nickname: {
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(20),
-    letterSpacing: responsiveWidth(-0.6),
-    marginLeft: responsiveWidth(5),
   },
 });
 export default UserCell;

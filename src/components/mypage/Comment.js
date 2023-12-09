@@ -1,35 +1,35 @@
 import {View, StyleSheet, Text, Image, Pressable} from 'react-native';
 import {responsiveHeight, responsiveWidth} from '../Scale';
-import Sample5 from '../../theme/assets/images/sample/sample5.png';
 import {useTheme} from '../../hooks';
-const Comment = ({}) => {
-  const {Fonts, Images} = useTheme();
-
-  const timeAgo = dateInput => {
-    const now = new Date();
-    const date = new Date(dateInput);
-    const seconds = Math.floor((now - date) / 1000); // 1초 = 1000밀리초
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (seconds < 60) {
-      return `${seconds}초전`;
-    } else if (minutes < 60) {
-      return `${minutes}분전`;
-    } else if (hours < 24) {
-      return `${hours}시간전`;
-    } else if (days <= 7) {
-      return `${days}일전`;
-    } else {
-      // mm.dd.YYYY 형식으로 반환
-      const year = date.getFullYear();
-      // 월은 0부터 시작하기 때문에 1을 더해줍니다.
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${month}.${day}.${year}`;
-    }
+import {API_URL} from '../../utils/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useState} from 'react';
+import FastImage from 'react-native-fast-image';
+import {timeAgo} from '../../utils/util';
+const Comment = ({
+  commentId,
+  writerId,
+  nickname,
+  profileImage,
+  createdDate,
+  content,
+  replyCount,
+  showReply,
+  onPress,
+  onReplyPress,
+}) => {
+  const {Fonts, Images, Colors} = useTheme();
+  const [closed, setClosed] = useState(true);
+  const myComment = async () => {
+    const id = await AsyncStorage.getItem('id');
+    return id == writerId;
   };
+
+  const showReplyProxy = async commentId => {
+    await showReply(commentId);
+    setClosed(false);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -45,8 +45,11 @@ const Comment = ({}) => {
               alignItems: 'center',
               justifyContent: 'flex-start',
             }}>
-            <Image
-              source={Sample5}
+            <FastImage
+              source={{
+                uri: API_URL + `/post/image?watch=${profileImage}`,
+                priority: FastImage.priority.high,
+              }}
               style={{
                 width: responsiveWidth(25),
                 height: responsiveWidth(25),
@@ -54,7 +57,9 @@ const Comment = ({}) => {
                 marginRight: responsiveWidth(5),
               }}
             />
-            <Text style={Fonts.contentMediumBold}>noisy_loud_dean</Text>
+            <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
+              {nickname}
+            </Text>
           </View>
 
           <View
@@ -66,14 +71,29 @@ const Comment = ({}) => {
             <Text
               style={[
                 Fonts.contentRegualrMedium,
-                {marginRight: responsiveWidth(10)},
+                {marginRight: responsiveWidth(10), color: Colors.textNormal},
               ]}>
-              {timeAgo('2023-08-06T12:00:00.000')}
+              {timeAgo(createdDate)}
             </Text>
-            <Image
-              source={Images.more}
-              style={{width: responsiveWidth(20), height: responsiveHeight(20)}}
-            />
+            {myComment() && (
+              <Pressable
+                onPress={onPress}
+                style={{
+                  width: responsiveWidth(20),
+                  height: responsiveHeight(20),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={Images.more}
+                  style={{
+                    width: responsiveWidth(15),
+                    height: responsiveHeight(15),
+                    resizeMode: 'contain',
+                  }}
+                />
+              </Pressable>
+            )}
           </View>
         </View>
         <View
@@ -81,45 +101,41 @@ const Comment = ({}) => {
             width: responsiveWidth(320),
             marginLeft: responsiveWidth(10),
           }}>
-          <Text style={Fonts.contentMediumMedium}>
-            Good Pic!!! Good Pic!!!Good Pic!!!Good Pic!!!Good Pic!!! Good Pic!!!
-            Good Pic!!!Good Pic!!!Good Pic!!!Good Pic!!! Good Pic!!! Good
-            Pic!!!Good Pic!!!Good Pic!!!Good Pic!!!
+          <Text style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+            {content}
           </Text>
 
           {/* 답글 작성 &  대댓글 있으면 개수 표시 및 더보기 */}
+
           <View style={{flexDirection: 'row', marginTop: responsiveHeight(5)}}>
+            <Pressable onPress={onReplyPress}>
+              <Text
+                style={[
+                  Fonts.contentRegularRegualr,
+                  {color: Colors.textNormal},
+                ]}>
+                답글 달기
+              </Text>
+            </Pressable>
+          </View>
+          {closed && replyCount > 0 && (
             <Pressable
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
                 marginRight: responsiveWidth(10),
-              }}>
-              <Text style={[styles.sub]}>답글 6개</Text>
-              {/** 펼쳤을 때 */}
-              <Image
-                source={Images.upChevron}
-                style={{
-                  width: responsiveWidth(10),
-                  height: responsiveHeight(10),
-                }}
-              />
-              {/** 닫혔을 때 */}
-              {/* 
-              <Image
-                source={Images.downChevron}
-                style={{
-                  width: responsiveWidth(10),
-                  height: responsiveHeight(10),
-                }}
-              /> */}
+              }}
+              onPress={() => showReplyProxy(commentId)}>
+              <Text
+                style={[
+                  Fonts.contentRegularRegualr,
+                  {color: Colors.textNormal},
+                ]}>
+                --------- 답글 {replyCount}개 더 보기
+              </Text>
             </Pressable>
-
-            <Pressable>
-              <Text style={styles.sub}>답글 달기</Text>
-            </Pressable>
-          </View>
+          )}
         </View>
       </View>
     </View>
@@ -135,14 +151,6 @@ const styles = StyleSheet.create({
   content: {
     width: responsiveWidth(370),
     alignItems: 'center',
-  },
-  sub: {
-    marginRight: responsiveWidth(5),
-    color: '#6D7582',
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(24),
-    letterSpacing: responsiveWidth(-0.6),
   },
 });
 

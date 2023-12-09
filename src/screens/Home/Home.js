@@ -1,48 +1,42 @@
 import {
   ActivityIndicator,
-  Modal,
   Pressable,
   StyleSheet,
   Text,
   View,
-  Animated,
-  SafeAreaView,
+  Animated as Ani,
   Image,
+  Modal,
 } from 'react-native';
 import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
 import Geolocation from '@react-native-community/geolocation';
 import {useEffect, useState, useRef} from 'react';
-import GpsAlert from '../../components/Content/GpsAlert';
-import ListModal from '../../components/Content/ListModal';
-import {Colors} from '../../theme/Variables';
-import {launchCamera} from 'react-native-image-picker';
-import {WithLocalSvg} from 'react-native-svg';
-import CurrentLocationBtn from '../../theme/assets/images/nav/location.svg';
 import {useTheme} from '../../hooks';
-import MyPage from './MyPage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import Sample5 from '../../theme/assets/images/sample/sample5.png';
+import Permission from './Permission';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {reIssue} from '../../utils/login';
+import FastImage from 'react-native-fast-image';
+import {fcmService} from '../../firebase/push.fcm';
+import {localNotificationService} from '../../firebase/push.noti';
+import messaging from '@react-native-firebase/messaging';
+
 const Home = ({navigation}) => {
-  const [gpsPermission, setGpsPermission] = useState(false);
-  const [image, setImage] = useState([]);
   const [latitude, setLatitude] = useState(null);
+  const [myUserId, setMyUserId] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  const [contents, setContents] = useState([
-    {lat: 37.785834, lon: -122.40641},
-    {lat: 37.785834, lon: -122.40641},
-  ]);
+  const [contents, setContents] = useState([]);
+  const [permission, setPermission] = useState(true);
+  const [detailPressed, setDetailPressed] = useState(false);
   const mapRef = useRef(null);
-
-  const {Gutters, Images} = useTheme();
-
-  const scaleValue = useState(new Animated.Value(1))[0];
+  const {Gutters, Images, Colors} = useTheme();
+  const scaleValue = useState(new Ani.Value(1))[0];
 
   const onButtonPressIn = () => {
-    Animated.timing(scaleValue, {
+    Ani.timing(scaleValue, {
       toValue: 0.95,
       duration: 100,
       useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
@@ -50,63 +44,68 @@ const Home = ({navigation}) => {
   };
 
   const onButtonPressOut = () => {
-    Animated.timing(scaleValue, {
+    Ani.timing(scaleValue, {
       toValue: 1,
       duration: 150,
       useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
     }).start();
   };
-  const openCamera = async () => {
-    let result = await launchCamera({
-      mediaType: 'mixed',
-      quality: 1,
-      includeBase64: true,
-    });
-    console.log(result);
-    let tmp = image;
-    tmp.push('data:image/png;base64,' + result.assets[0].base64);
-    setImage(tmp);
-    // setImage('data:image/png;base64,' + result.assets[0].base64);
-    // 캔슬할 때 에러 처리
-  };
 
   const getCurrentLocation = async () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        console.log(
-          'latitude : ' +
-            position['coords']['latitude'] +
-            '  ' +
-            'longtitude : ' +
+    const location = await check(PERMISSIONS.IOS.LOCATION_ALWAYS); // 혹은 LOCATION_ALWAYS
+    const locationUsage = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+    if (location == RESULTS.GRANTED || locationUsage == RESULTS.GRANTED) {
+      Geolocation.getCurrentPosition(
+        position => {
+          setLatitude(position['coords']['latitude']);
+          setLongitude(position['coords']['longitude']);
+          console.log(
+            '[Locatin] lat: ',
+            position['coords']['latitude'],
+            ' lon : ',
             position['coords']['longitude'],
-        );
-        setLatitude(position['coords']['latitude']);
-        setLongitude(position['coords']['longitude']);
-      },
-      error => {
-        switch (error['code']) {
-          case 1:
-            setGpsPermission(true);
-            break;
-        }
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
+          );
+        },
+        error => {
+          console.log(error['code']);
+        },
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+      );
+    }
   };
 
-  // const updatePosition = region => {
-  //   setRegion(region);
-  //   console.log(region);
-  // };
+  const checkPermissions = async () => {
+    if (Platform.OS == 'ios') {
+      // const camera = await check(PERMISSIONS.IOS.CAMERA);
+      // const microphone = await check(PERMISSIONS.IOS.MICROPHONE);
+      const photo = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+      const location = await check(PERMISSIONS.IOS.LOCATION_ALWAYS); // 혹은 LOCATION_ALWAYS
+      const locationUsage = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+      // console.log('사진 : ' + photo);
+      // console.log('위치 정보 항상 : ' + location);
+      // console.log('사용할 때만 위치 : ' + locationUsage);
+
+      setPermission(
+        // camera === RESULTS.GRANTED &&
+        // microphone === RESULTS.GRANTED &&
+        photo === RESULTS.GRANTED &&
+          (location === RESULTS.GRANTED || locationUsage === RESULTS.GRANTED),
+      );
+    } else {
+      // const camera = await check(PERMISSIONS.ANDROID.CAMERA);
+      // const microphone = await check(PERMISSIONS.ANDROID.MICROPHONE);
+      const photo = await check(PERMISSIONS.ANDROID.PHOTO_LIBRARY);
+      const location = await check(PERMISSIONS.ANDROID.LOCATION_ALWAYS); // 혹은 LOCATION_ALWAYS
+
+      setPermission(
+        // camera === RESULTS.GRANTED &&
+        // microphone === RESULTS.GRANTED &&
+        photo === RESULTS.GRANTED && location === RESULTS.GRANTED,
+      );
+    }
+  };
 
   const returnCurrentLocation = () => {
-    // setRegion({
-    //   latitude: latitude,
-    //   longitude: longitude,
-    //   latitudeDelta: 0.0175,
-    //   longitudeDelta: 0.0175,
-    // });
-
     mapRef.current.animateToRegion({
       latitude: latitude,
       longitude: longitude,
@@ -115,36 +114,128 @@ const Home = ({navigation}) => {
     });
   };
 
-  const moveToDetail = () => {
-    setListBtn(false);
-    navigation.navigate('Detail');
+  const thumbsUp = async postId => {
+    console.log('호출11');
+    const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+
+    if (response.status == 200) {
+      const r = await response.json();
+      return r;
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await thumbsUp(postId);
+          break;
+      }
+    }
   };
 
   const getMyPosts = async () => {
+    setMyUserId(await AsyncStorage.getItem('id'));
+
     const response = await fetch(
       API_URL + '/post/all?id=' + (await AsyncStorage.getItem('id')),
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
           Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
         },
       },
     );
-    const res = await response.json();
-    setContents(res['contents']);
-    console.log(res['contents']);
+    if (response.status == 200) {
+      const res = await response.json();
+      setContents(res['contents']);
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await getMyPosts();
+          break;
+      }
+    } else {
+      setContents([]);
+    }
+  };
+  const close = async () => {
+    setDetailPressed(false);
   };
 
   useEffect(() => {
-    const t = async () => {
-      await getCurrentLocation();
-      // getMyPosts();
+    getMyPosts();
+  }, [detailPressed]);
+
+  useEffect(() => {}, []);
+
+  const onRegister = tk => {
+    console.log('[App] onRegister : token :', tk);
+    if (tk) {
+      updateFirebaseToken(tk);
+    }
+  };
+
+  const updateFirebaseToken = async tk => {
+    fetch(API_URL + `/user/notification/init?fcmToken=${tk}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+  };
+
+  const onNotification = notify => {
+    console.log('[App] onNotification : notify :', notify);
+    const options = {
+      soundName: 'default',
+      playSound: true,
     };
-    const intervalId = setInterval(t, 5000);
+
+    localNotificationService.showNotification(
+      0,
+      notify.title,
+      notify.body,
+      notify,
+      options,
+    );
+  };
+
+  const onOpenNotification = notify => {
+    console.log('[App] onOpenNotification : notify :', notify);
+  };
+
+  useEffect(() => {
+    checkPermissions();
+    getMyPosts();
+    const intervalId = setInterval(getCurrentLocation, 2000);
+
+    fcmService.registerAppWithFCM();
+    fcmService.register(onRegister, onNotification, onOpenNotification);
+    localNotificationService.configure(onOpenNotification);
+
     return () => {
       clearInterval(intervalId);
     };
   }, []);
+
+  const styles = StyleSheet.create({
+    container: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: Colors.contentBackground,
+      // alignItems: 'center',
+      // justifyContent: 'center',
+    },
+    map: {
+      flex: 1,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -155,27 +246,27 @@ const Home = ({navigation}) => {
             height: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: Colors.contentBackground,
           }}>
           <ActivityIndicator
             size={'large'}
-            color={'#4880EE'}
+            color={Colors.primary}
             style={[Gutters.largeVMargin]}
           />
         </View>
       )}
       {latitude && longitude && (
         <>
-          <Animated.View
+          <Ani.View
             style={{
               width: responsiveWidth(45),
-              height: responsiveHeight(45),
+              height: responsiveWidth(45),
               position: 'absolute',
               bottom: responsiveHeight(30),
               left: responsiveWidth(20),
-              backgroundColor: '#EAF3FE',
+              backgroundColor: Colors.buttonSecondBackground,
               borderRadius: responsiveWidth(100),
-              zIndex: 100,
+              zIndex: detailPressed ? 0 : 100,
               shadowOffset: {width: 0, height: responsiveHeight(3)},
               shadowOpacity: 0.25,
               shadowRadius: responsiveWidth(3),
@@ -190,18 +281,21 @@ const Home = ({navigation}) => {
               onPressOut={onButtonPressOut}
               style={{}}
               onPress={returnCurrentLocation}>
-              <WithLocalSvg
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
-                asset={CurrentLocationBtn}
+              <Image
+                source={Images.currentLocation}
+                style={{
+                  width: responsiveWidth(35),
+                  height: responsiveWidth(35),
+                  resizeMode: 'contain',
+                }}
               />
             </Pressable>
-          </Animated.View>
+          </Ani.View>
 
           <MapView
             style={styles.map}
             showsUserLocation={true}
-            userLocationUpdateInterval={5000}
+            userLocationUpdateInterval={1000}
             showsMyLocationButton={false}
             ref={mapRef}
             initialRegion={{
@@ -223,38 +317,34 @@ const Home = ({navigation}) => {
                     longitude: geometry.coordinates[0],
                     latitude: geometry.coordinates[1],
                   }}
-                  onPress={onPress}
-                />
-              );
-            }}>
-            {contents &&
-              contents.map((content, index) => (
-                <Marker
-                  key={index}
-                  coordinate={{
-                    latitude: content.lat,
-                    longitude: content.lon,
-                  }}
-                  // 클릭 후 상세 페이지로 이동
-                  onPress={() => console.log('called')}>
+                  onPress={onPress}>
                   <View
-                    {...content}
                     style={{
                       position: 'relative',
                       width: responsiveWidth(100),
-                      height: responsiveHeight(100),
+                      height: responsiveWidth(100),
                       flex: 1,
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                    <Image
-                      source={Sample5}
+                    <View
                       style={{
-                        width: '91%',
+                        width: '85%',
                         height: '85%',
                         borderRadius: 300,
-                      }}
-                    />
+                        backgroundColor: Colors.buttonSecondBackground,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: responsiveWidth(34),
+                          fontFamily: 'SpoqaHanSansNeo-Bold',
+                          lineHeight: responsiveHeight(70),
+                          letterSpacing: responsiveWidth(-0.6),
+                          color: Colors.textBold,
+                        }}>{`+${points}`}</Text>
+                    </View>
                     <Image
                       source={Images.pin}
                       style={{
@@ -262,42 +352,103 @@ const Home = ({navigation}) => {
                         height: '100%',
                         borderRadius: 100,
                         position: 'absolute',
-                        top: responsiveHeight(10),
-                        // left: '50%',
-                        // top: '50%',
-                        // transform: [
-                        //   {translateX: -50}, // Adjust these values accordingly
-                        //   {translateY: -12}, // For instance, -50% of your element width and height
-                        // ],
+                        resizeMode: 'contain',
                       }}
                     />
                   </View>
                 </Marker>
-              ))}
+              );
+            }}>
+            {contents &&
+              contents.map((content, index) => {
+                return (
+                  <Marker
+                    key={content.contentId}
+                    coordinate={{
+                      latitude: content.lat,
+                      longitude: content.lon,
+                    }}
+                    // 클릭 후 상세 페이지로 이동
+                    onPress={() => {
+                      setDetailPressed(true);
+                      const p = content.detail;
+                      console.log(content.userId, content.detail.userId);
+                      navigation.push('MapDetail', {
+                        postId: p.postId,
+                        nickname: p.nickname,
+                        profileImage: p.profileImage,
+                        content: p.content,
+                        mediaFiles: p.mediaFiles,
+                        locationName: p.locationName,
+                        liked: p.liked,
+                        likesCount: p.likesCount,
+                        commentsCount: p.commentsCount,
+                        createdDate: p.createdDate,
+                        mention: p.mention,
+                        thumbsUp: thumbsUp,
+                        userId: content.userId,
+                        before: 'Home',
+                        reload: close,
+                      });
+                    }}>
+                    <View
+                      {...content}
+                      style={{
+                        position: 'relative',
+                        width: responsiveWidth(100),
+                        height: responsiveWidth(100),
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <FastImage
+                        source={{
+                          uri:
+                            API_URL + '/post/image?watch=' + content.thumbnail,
+                          priority: FastImage.priority.high,
+                        }}
+                        style={{
+                          width: '85%',
+                          height: '85%',
+                          borderRadius: 300,
+                          backgroundColor: Colors.contentBackground,
+                          marginBottom: responsiveHeight(10),
+                        }}
+                        resizeMode="contain"
+                      />
+
+                      <Image
+                        source={
+                          content.userId == myUserId
+                            ? Images.pin
+                            : Images.pinFriend
+                        }
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 100,
+                          position: 'absolute',
+                          resizeMode: 'contain',
+                        }}
+                      />
+                    </View>
+                  </Marker>
+                );
+              })}
           </MapView>
         </>
       )}
-
       {/*  GPS허용 모달*/}
 
-      <Modal visible={gpsPermission} animationType={'fade'} transparent={true}>
-        <GpsAlert />
+      <Modal visible={!permission} animationType={'slide'} transparent={true}>
+        <Permission
+          close={() => {
+            setPermission(true);
+          }}
+        />
       </Modal>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#FFFFFF',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
-  map: {
-    flex: 1,
-  },
-});
 
 export default Home;

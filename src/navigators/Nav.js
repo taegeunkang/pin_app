@@ -1,125 +1,138 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home/Home';
-import Alram from '../screens/Home/Alram';
 import {useTranslation} from 'react-i18next';
-import Search from '../screens/Home/Search';
-import {Colors} from '../theme/Variables';
-import {WithLocalSvg} from 'react-native-svg';
-import HomeIcon from '../theme/assets/images/nav/home.svg';
-import HomeIconNot from '../theme/assets/images/nav/home-not.svg';
-import MyPageIcon from '../theme/assets/images/nav/mypage.svg';
-import MyPageIconNot from '../theme/assets/images/nav/mypage-not.svg';
-import BellIcon from '../theme/assets/images/nav/bell.svg';
-import BellIconNot from '../theme/assets/images/nav/bell-not.svg';
-import SearchIcon from '../theme/assets/images/nav/search.svg';
-import SearchIconNot from '../theme/assets/images/nav/search-not.svg';
-import {useTheme} from '../hooks';
-import {Image} from 'react-native';
-import Content from './Content';
-import UploadPost from './UploadPost';
 import {responsiveHeight, responsiveWidth} from '../components/Scale';
 import AlertNavigator from './AlertNavigator';
+import {Image, View} from 'react-native';
+import {useTheme} from '../hooks';
+import MapNavigator from './MapNavigator';
+import MyPageNavigator from './MyPageNavigator';
+import SearchNavigator from './SearchNavigator';
 const Tab = createBottomTabNavigator();
 const Nav = () => {
   const {t} = useTranslation('content');
-  const {Images} = useTheme();
+  const {Images, Fonts, Colors} = useTheme();
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         tabBarIcon: ({focused}) => {
-          if (route.name == 'Home') {
+          if (route.name == 'MapNavigator') {
             return focused ? (
-              <WithLocalSvg
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
-                asset={HomeIcon}
+              <Image
+                source={Images.pinSelect}
+                style={{
+                  width: responsiveWidth(28),
+                  height: responsiveHeight(28),
+                  resizeMode: 'contain',
+                }}
               />
             ) : (
-              <WithLocalSvg
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
-                asset={HomeIconNot}
+              <Image
+                source={Images.pinNotSelect}
+                style={{
+                  width: responsiveWidth(28),
+                  height: responsiveHeight(28),
+                  resizeMode: 'contain',
+                }}
               />
             );
           } else if (route.name == t('nav.search')) {
             return focused ? (
-              <WithLocalSvg
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
-                asset={SearchIcon}
+              <Image
+                source={Images.searchSelect}
+                style={{
+                  width: responsiveWidth(28),
+                  height: responsiveHeight(28),
+                  resizeMode: 'contain',
+                }}
               />
             ) : (
-              <WithLocalSvg
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
-                asset={SearchIconNot}
+              <Image
+                source={Images.searchNotSelect}
+                style={{
+                  width: responsiveWidth(28),
+                  height: responsiveHeight(28),
+                  resizeMode: 'contain',
+                }}
               />
             );
           } else if (route.name == 'Medias') {
             return focused ? (
               <Image
-                source={Images.createBtnNot}
+                source={Images.uploadSelect}
                 style={{
-                  width: responsiveWidth(35),
-                  height: responsiveHeight(35),
+                  width: responsiveWidth(30),
+                  height: responsiveHeight(30),
                 }}
               />
             ) : (
               <Image
-                source={Images.createBtnNot}
+                source={Images.uploadNotSelect}
                 style={{
-                  width: responsiveWidth(35),
-                  height: responsiveHeight(35),
+                  width: responsiveWidth(30),
+                  height: responsiveHeight(30),
+                  resizeMode: 'contain',
                 }}
               />
             );
-          } else if (route.name == t('nav.mypage')) {
+          } else if (route.name == 'MyPageNavigator') {
             return focused ? (
-              <WithLocalSvg
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
-                asset={MyPageIcon}
+              <Image
+                source={Images.userSelect}
+                style={{
+                  width: responsiveWidth(28),
+                  height: responsiveHeight(28),
+                  resizeMode: 'contain',
+                }}
               />
             ) : (
-              <WithLocalSvg
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
-                asset={MyPageIconNot}
+              <Image
+                source={Images.userNotSelect}
+                style={{
+                  width: responsiveWidth(28),
+                  height: responsiveHeight(28),
+                  resizeMode: 'contain',
+                }}
               />
             );
           } else if (route.name == t('nav.alram')) {
             return focused ? (
-              <WithLocalSvg
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
-                asset={BellIcon}
+              <Image
+                source={Images.bellSelect}
+                style={{
+                  width: responsiveWidth(28),
+                  height: responsiveHeight(28),
+                  resizeMode: 'contain',
+                }}
               />
             ) : (
-              <WithLocalSvg
-                width={responsiveWidth(25)}
-                height={responsiveHeight(25)}
-                asset={BellIconNot}
+              <Image
+                source={Images.bellNotSelect}
+                style={{
+                  width: responsiveWidth(28),
+                  height: responsiveHeight(28),
+                  resizeMode: 'contain',
+                }}
               />
             );
           }
         },
         tabBarStyle: {
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.contentBackground,
+          position: 'relative',
         },
-        tabBarActiveTintColor: '#1A1E27',
-        tabBarInactiveTintColor: '#6D7582',
       })}>
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="MapNavigator"
+        component={MapNavigator}
         options={{
           headerShown: false,
         }}
       />
       <Tab.Screen
         name={t('nav.search')}
-        component={Search}
+        component={SearchNavigator}
         options={{
           headerShown: false,
         }}
@@ -127,7 +140,13 @@ const Nav = () => {
 
       <Tab.Screen
         name="Medias"
-        component={UploadPost}
+        component={TempComponent}
+        listeners={({navigation}) => ({
+          tabPress: e => {
+            e.preventDefault();
+            navigation.push('UploadPost');
+          },
+        })}
         options={{
           tabBarLabelStyle: {
             color: Colors.transparent,
@@ -138,8 +157,8 @@ const Nav = () => {
       />
 
       <Tab.Screen
-        name={t('nav.mypage')}
-        component={Content}
+        name={'MyPageNavigator'}
+        component={MyPageNavigator}
         options={{headerShown: false}}
       />
       <Tab.Screen
@@ -151,4 +170,8 @@ const Nav = () => {
   );
 };
 
+// 임시 컴포넌트
+function TempComponent() {
+  return <View style={{display: 'none'}} />;
+}
 export default Nav;

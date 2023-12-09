@@ -41,14 +41,14 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>카메라 사용 권한은 이미지 촬영 및 첨부를 위해 필요합니다.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>YOUR TEXT</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>YOUR TEXT</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>카메라 사용 권한은 이미지 촬영 및 첨부를 위해 필요합니다.</string>
+	<string>이 앱에서 위치 서비스를 사용하려면 허용해 주세요.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>카메라 사용 권한은 이미지 촬영 및 첨부를 위해 필요합니다.</string>
+	<string>YOUR TEXT</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Fonts/SpoqaHanSansNeo-Bold.ttf</string>
@@ -56,6 +56,11 @@
 		<string>Fonts/SpoqaHanSansNeo-Medium.ttf</string>
 		<string>Fonts/SpoqaHanSansNeo-Regular.ttf</string>
 		<string>Fonts/SpoqaHanSansNeo-Thin.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -66,8 +71,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

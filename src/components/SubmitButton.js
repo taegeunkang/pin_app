@@ -10,7 +10,7 @@ import {
 import {useTheme} from '../hooks';
 import {responsiveHeight, responsiveWidth} from './Scale';
 const SubmitButton = ({onPress, title, width, height, loading}) => {
-  const {Fonts, Gutters} = useTheme();
+  const {Fonts, Gutters, Colors} = useTheme();
   const scaleValue = useState(new Animated.Value(1))[0];
 
   const onButtonPressIn = () => {
@@ -29,6 +29,15 @@ const SubmitButton = ({onPress, title, width, height, loading}) => {
     }).start();
   };
 
+  const styles = StyleSheet.create({
+    loginButtonText: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: Colors.buttonFirstBackground,
+      borderRadius: responsiveWidth(12),
+    },
+  });
+
   return (
     <View>
       <Animated.View style={{transform: [{scale: scaleValue}]}}>
@@ -46,7 +55,13 @@ const SubmitButton = ({onPress, title, width, height, loading}) => {
               : {height: responsiveHeight(height)},
             styles.loginButtonText,
           ]}>
-          <Text style={styles.submitBtnTitle}>{title}</Text>
+          <Text
+            style={[
+              Fonts.contentMediumBold,
+              {color: Colors.buttonFirstContent},
+            ]}>
+            {title}
+          </Text>
           {loading && (
             <ActivityIndicator
               size={'small'}
@@ -60,7 +75,7 @@ const SubmitButton = ({onPress, title, width, height, loading}) => {
                   right: responsiveWidth(10),
                 },
               ]}
-              color={'#FFFFFF'}
+              color={Colors.buttonFirstContent}
             />
           )}
         </TouchableOpacity>
@@ -68,21 +83,5 @@ const SubmitButton = ({onPress, title, width, height, loading}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  loginButtonText: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#4880EE',
-    borderRadius: responsiveWidth(12),
-  },
-  submitBtnTitle: {
-    fontFamily: 'SpoqaHanSansNeo-Bold',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(24),
-    letterSpacing: responsiveWidth(-0.6),
-    color: '#FFFFFF',
-  },
-});
 
 export default SubmitButton;

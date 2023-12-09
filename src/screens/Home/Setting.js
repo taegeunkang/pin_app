@@ -1,18 +1,11 @@
-import {
-  View,
-  StyleSheet,
-  Text,
-  FlatList,
-  SafeAreaView,
-  Pressable,
-} from 'react-native';
+import {View, Text, SafeAreaView, Pressable} from 'react-native';
 import {useTheme} from '../../hooks';
 import {ScrollView} from 'react-native-gesture-handler';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Setting = ({navigation}) => {
-  const {Fonts, Images} = useTheme();
+  const {Fonts, Images, Colors} = useTheme();
 
   const logout = () => {
     AsyncStorage.removeItem('token');
@@ -22,13 +15,14 @@ const Setting = ({navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScrollView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+      <ScrollView style={{flex: 1, backgroundColor: Colors.contentBackground}}>
         <Pressable
           style={{
             width: '100%',
             height: responsiveHeight(55),
             alignItems: 'center',
             justifyContent: 'center',
+            backgroundColor: Colors.contentBackground,
           }}>
           <View
             style={{
@@ -38,9 +32,11 @@ const Setting = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'flex-start',
               borderBottomWidth: responsiveHeight(3),
-              borderBottomColor: '#F2F4F6',
+              borderBottomColor: Colors.screenBackground,
             }}>
-            <Text style={Fonts.contentMediumMedium}>알림</Text>
+            <Text style={[Fonts.contentMediumMedium, {color: Colors.textBold}]}>
+              알림
+            </Text>
           </View>
         </Pressable>
 
@@ -50,6 +46,7 @@ const Setting = ({navigation}) => {
             height: responsiveHeight(55),
             alignItems: 'center',
             justifyContent: 'center',
+            backgroundColor: Colors.contentBackground,
           }}>
           <Pressable
             onPress={logout}
@@ -60,9 +57,11 @@ const Setting = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'flex-start',
               borderBottomWidth: responsiveHeight(3),
-              borderBottomColor: '#F2F4F6',
+              borderBottomColor: Colors.screenBackground,
             }}>
-            <Text style={Fonts.contentMediumMedium}>로그아웃</Text>
+            <Text style={[Fonts.contentMediumMedium, {color: Colors.textBold}]}>
+              로그아웃
+            </Text>
           </Pressable>
         </Pressable>
 
@@ -72,6 +71,7 @@ const Setting = ({navigation}) => {
             height: responsiveHeight(55),
             alignItems: 'center',
             justifyContent: 'center',
+            backgroundColor: Colors.contentBackground,
           }}>
           <View
             style={{
@@ -81,9 +81,11 @@ const Setting = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'flex-start',
               borderBottomWidth: responsiveHeight(3),
-              borderBottomColor: '#F2F4F6',
+              borderBottomColor: Colors.screenBackground,
             }}>
-            <Text style={Fonts.contentMediumMedium}>회원탈퇴</Text>
+            <Text style={[Fonts.contentMediumMedium, {color: Colors.textBold}]}>
+              회원탈퇴
+            </Text>
           </View>
         </Pressable>
 
@@ -93,6 +95,7 @@ const Setting = ({navigation}) => {
             height: responsiveHeight(55),
             alignItems: 'center',
             justifyContent: 'center',
+            backgroundColor: Colors.contentBackground,
           }}>
           <View
             style={{
@@ -102,9 +105,11 @@ const Setting = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'flex-start',
               borderBottomWidth: responsiveHeight(3),
-              borderBottomColor: '#F2F4F6',
+              borderBottomColor: Colors.screenBackground,
             }}>
-            <Text style={Fonts.contentMediumMedium}>개인정보 처리 방침</Text>
+            <Text style={[Fonts.contentMediumMedium, {color: Colors.textBold}]}>
+              개인정보 처리 방침
+            </Text>
           </View>
         </Pressable>
       </ScrollView>

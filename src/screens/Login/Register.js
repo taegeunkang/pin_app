@@ -10,8 +10,9 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
-import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
+import {Colors} from '../../theme/Variables';
 import {check_email as checkEmail} from '../../utils/email';
 import {useEffect, useState, useLayoutEffect, useRef} from 'react';
 import {password_test} from '../../utils/password';
@@ -21,13 +22,11 @@ import InputBox from '../../components/InputBox';
 import SubmitButton2 from '../../components/SubmitButton2';
 import SubmitButton from '../../components/SubmitButton';
 import {useTheme} from '../../hooks';
-import {WithLocalSvg} from 'react-native-svg';
-import checkBtn from '../../theme/assets/images/check-btn.svg';
-import checkBtnChecked from '../../theme/assets/images/check-btn-checked.svg';
-import verifiedBtn from '../../theme/assets/images/confirmed.svg';
+
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import HeaderLeftButton from '../../components/HeaderLeftButton';
 const Register = ({navigation}) => {
-  const {Fonts, Images} = useTheme();
+  const {Fonts, Images, Colors} = useTheme();
   const {t} = useTranslation('register');
   const [email, setEmail] = useState('');
   const [wrongReg, setWrongReg] = useState(false);
@@ -50,29 +49,16 @@ const Register = ({navigation}) => {
   const [sendingEmail, setSendingEmail] = useState(false);
 
   const {height} = Dimensions.get('window');
-  const topHeight = height * 0.9;
-  const bottomHeight = height * 0.1;
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity
+        <HeaderLeftButton
           onPress={() => {
             setBackButton(true);
             setModalVisible(true);
           }}
-          style={{
-            backgroundColor: Colors.transparent,
-            width: responsiveWidth(60),
-            height: responsiveHeight(30),
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Image
-            source={Images.backBtn}
-            style={{width: responsiveWidth(10), height: responsiveHeight(18)}}
-          />
-        </TouchableOpacity>
+        />
       ),
     });
   });
@@ -102,7 +88,6 @@ const Register = ({navigation}) => {
       setVerified(true);
     } else {
       response = await response.json();
-      console.log(response);
       switch (response['code']) {
         case 'E07':
           setExpired(false);
@@ -153,7 +138,6 @@ const Register = ({navigation}) => {
       return;
     }
     setResendAvailable(true);
-
     if (checkEmail(email)) {
       // 이메일 형식이 맞다면
       setWrongReg(false);
@@ -163,6 +147,7 @@ const Register = ({navigation}) => {
       });
       let status = response['status'];
       response = await response.json();
+
       setSendingEmail(false);
       if (status == 200) {
         let timestamp = Date.parse(response['expiredDate']);
@@ -180,6 +165,8 @@ const Register = ({navigation}) => {
           case 'E06':
             alert(t('error.sent'));
             break;
+          case 'E05':
+            alert('이미 가입된 이메일입니다.');
         }
       }
     } else {
@@ -257,8 +244,33 @@ const Register = ({navigation}) => {
     }
   });
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.contentBackground,
+      flexDirection: 'column',
+    },
+    contentsBox: {
+      alignItems: 'center',
+      width: '100%',
+      marginTop: responsiveHeight(10),
+    },
+    checkBox: {
+      width: responsiveWidth(370),
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      marginTop: responsiveHeight(20),
+    },
+
+    wrongInput: {
+      borderWidth: 1,
+      borderColor: Colors.warn,
+    },
+  });
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {backButton && (
         <Modal visible={modlaVisible} animationType={'fade'} transparent={true}>
           <BackAlert cancle={cancle} go_back={goBack} />
@@ -269,7 +281,7 @@ const Register = ({navigation}) => {
         <InputBox
           title={'이메일'}
           placeholder={t('input.email')}
-          onChangeText={e => setEmail(e)}
+          onChangeText={e => setEmail(e.toLowerCase())}
           value={email}
           isWrong={wrongReg && !sent}
           editable={verified}
@@ -284,13 +296,12 @@ const Register = ({navigation}) => {
               marginTop: responsiveHeight(5),
             }}>
             <Text
-              style={{
-                fontFamily: 'SpoqaHanSansNeo-Medium',
-                color: '#E44949',
-                fontSize: responsiveWidth(12),
-                lineHeight: responsiveHeight(18),
-                letterSpacing: responsiveWidth(-0.6),
-              }}>
+              style={[
+                Fonts.contentRegualrMedium,
+                {
+                  color: Colors.warn,
+                },
+              ]}>
               {t('input.wrongEmail')}
             </Text>
           </View>
@@ -310,18 +321,17 @@ const Register = ({navigation}) => {
               height: responsiveHeight(48),
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: '#F2F3F4',
+              backgroundColor: Colors.buttonSecondBackground,
               borderRadius: responsiveWidth(12),
               flexDirection: 'row',
             }}>
             <Text
-              style={{
-                fontFamily: 'SpoqaHanSansNeo-Bold',
-                fontSize: responsiveWidth(14),
-                lineHeight: responsiveHeight(24),
-                letterSpacing: responsiveWidth(-0.6),
-                color: '#4880EE',
-              }}>
+              style={[
+                Fonts.contentMediumBold,
+                {
+                  color: Colors.buttonSecondContent,
+                },
+              ]}>
               {t('verify.complete')}
             </Text>
           </View>
@@ -334,13 +344,12 @@ const Register = ({navigation}) => {
               marginTop: responsiveHeight(5),
             }}>
             <Text
-              style={{
-                fontFamily: 'SpoqaHanSansNeo-Medium',
-                color: '#E44949',
-                fontSize: responsiveWidth(12),
-                lineHeight: responsiveHeight(18),
-                letterSpacing: responsiveWidth(-0.6),
-              }}>
+              style={[
+                Fonts.contentRegualrMedium,
+                {
+                  color: Colors.warn,
+                },
+              ]}>
               {t('error.sentResent')}
             </Text>
           </View>
@@ -361,9 +370,15 @@ const Register = ({navigation}) => {
               <View>
                 <View
                   style={[
-                    {width: responsiveWidth(310), height: responsiveHeight(26)},
+                    {
+                      width: responsiveWidth(310),
+                      height: responsiveHeight(26),
+                      backgroundColor: Colors.contentBackground,
+                    },
                   ]}>
-                  <Text style={Fonts.inputHeader}>{'인증코드 입력'}</Text>
+                  <Text style={[Fonts.inputHeader, {color: Colors.textBold}]}>
+                    {'인증코드 입력'}
+                  </Text>
                 </View>
 
                 <View
@@ -372,8 +387,8 @@ const Register = ({navigation}) => {
                       width: responsiveWidth(310),
                       height: responsiveHeight(48),
                       borderRadius: responsiveWidth(12),
-                      backgroundColor: '#F2F4F6',
-                      color: '#505866',
+                      backgroundColor: Colors.inputBackground,
+                      color: Colors.inputContent,
                       flexDirection: 'row',
                       alignItems: 'center',
                       paddingHorizontal: responsiveWidth(10),
@@ -387,8 +402,8 @@ const Register = ({navigation}) => {
                   ]}>
                   <TextInput
                     placeholder={t('verify.placeholder')}
-                    placeholderTextColor={'#6D7582'}
-                    style={{flex: 1}}
+                    placeholderTextColor={Colors.inputPlaceHolder}
+                    style={{flex: 1, backgroundColor: Colors.inputBackground}}
                     onChangeText={e => setCode(e)}
                     keyboardType="numeric"
                     value={code}
@@ -425,10 +440,12 @@ const Register = ({navigation}) => {
                     borderRadius: responsiveWidth(12),
                     flexDirection: 'row',
                   }}>
-                  <WithLocalSvg
-                    width={responsiveWidth(40)}
-                    height={responsiveHeight(40)}
-                    asset={verifiedBtn}
+                  <Image
+                    source={Images.confirmed}
+                    style={{
+                      width: responsiveWidth(35),
+                      height: responsiveHeight(35),
+                    }}
                   />
                 </View>
               )}
@@ -548,28 +565,70 @@ const Register = ({navigation}) => {
 
         <View style={{marginBottom: responsiveHeight(10)}} />
         <View style={styles.checkBox}>
-          <WithLocalSvg
-            width={26}
-            height={26}
-            asset={!policyCheck ? checkBtn : checkBtnChecked}
-            onPress={() => setPolicyCheck(!policyCheck)}
-          />
+          {policyCheck ? (
+            <Pressable onPress={() => setPolicyCheck(!policyCheck)}>
+              <Image
+                source={Images.checkSelect}
+                style={{
+                  width: responsiveWidth(25),
+                  height: responsiveHeight(25),
+                }}
+              />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => setPolicyCheck(!policyCheck)}>
+              <Image
+                source={Images.checkNotSelect}
+                style={{
+                  width: responsiveWidth(25),
+                  height: responsiveHeight(25),
+                }}
+              />
+            </Pressable>
+          )}
+
           <View style={{marginRight: responsiveWidth(10)}} />
           <Pressable>
-            <Text style={[styles.policyCheckTitle]}>{t('check.policy')}</Text>
+            <Text
+              style={[
+                Fonts.contentMediumMedium,
+                {color: Colors.inputPlaceHolder},
+              ]}>
+              {t('check.policy')}
+            </Text>
           </Pressable>
         </View>
 
         <View style={styles.checkBox}>
-          <WithLocalSvg
-            width={26}
-            height={26}
-            asset={!marketingCheck ? checkBtn : checkBtnChecked}
-            onPress={() => setMarketingCheck(!marketingCheck)}
-          />
+          {marketingCheck ? (
+            <Pressable onPress={() => setMarketingCheck(!marketingCheck)}>
+              <Image
+                source={Images.checkSelect}
+                style={{
+                  width: responsiveWidth(25),
+                  height: responsiveHeight(25),
+                }}
+              />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => setMarketingCheck(!marketingCheck)}>
+              <Image
+                source={Images.checkNotSelect}
+                style={{
+                  width: responsiveWidth(25),
+                  height: responsiveHeight(25),
+                }}
+              />
+            </Pressable>
+          )}
+
           <View style={{marginRight: responsiveWidth(10)}} />
           <Pressable>
-            <Text style={[styles.policyCheckTitle]}>
+            <Text
+              style={[
+                Fonts.contentMediumMedium,
+                {color: Colors.inputPlaceHolder},
+              ]}>
               {t('check.marketing')}
             </Text>
           </Pressable>
@@ -580,40 +639,12 @@ const Register = ({navigation}) => {
           flex: 1,
           alignItems: 'center',
           justifyContent: 'flex-end',
-          marginBottom: responsiveHeight(50),
         }}>
         <SubmitButton onPress={submit} title={t('button.register')} />
       </View>
-    </View>
+      <View style={{marginTop: responsiveHeight(20)}} />
+    </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: Colors.white, flexDirection: 'column'},
-  contentsBox: {
-    alignItems: 'center',
-    width: '100%',
-    marginTop: responsiveHeight(10),
-  },
-  checkBox: {
-    width: responsiveWidth(370),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginTop: responsiveHeight(20),
-  },
-
-  wrongInput: {
-    borderWidth: 1,
-    borderColor: Colors.red,
-  },
-  policyCheckTitle: {
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(14),
-    lineHeight: responsiveHeight(24),
-    letterSpacing: responsiveWidth(-0.6),
-    color: '#5D6471',
-  },
-});
 
 export default Register;

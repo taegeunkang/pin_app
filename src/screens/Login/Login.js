@@ -6,27 +6,29 @@ import {
   TouchableOpacity,
   Image,
   TouchableWithoutFeedback,
-  Keyboard,
 } from 'react-native';
-import Button from '../../theme/components/login/Button';
-import {TextInput} from 'react-native-gesture-handler';
 import {useTheme} from '../../hooks';
 import {Colors, FontSize} from '../../theme/Variables';
-// import Sns from '../../theme/components/Sns';
-import {useState, useRef} from 'react';
-// import TextBox from 'react-native-password-eye';
+import {useState, useRef, useEffect} from 'react';
 import {check_email} from '../../utils/email';
 import {API_URL} from '../../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Logo from '../../theme/assets/images/p-logo-transparent.svg';
 import SubmitButton from '../../components/SubmitButton';
 import InputBox from '../../components/InputBox';
 import {responsiveWidth, responsiveHeight} from '../../components/Scale';
+
 // import {
 //   GoogleSignin,
 //   statusCodes,
 // } from '@react-native-google-signin/google-signin';
 // import { login, loginWithKakaoAccount } from '@react-native-seoul/kakao-login';
+// messaging().setBackgroundMessageHandler(async remoteMessage => {
+//   console.log('Background remote message: ', remoteMessage);
+// });
+// messaging().onMessage(async remoteMessage => {
+//   console.log('[Remote Message] ', JSON.stringify(remoteMessage));
+// });
+
 const Login = ({navigation}) => {
   const {t} = useTranslation('login');
   const [id, setId] = useState('');
@@ -34,8 +36,7 @@ const Login = ({navigation}) => {
   const [wrongId, setWrongId] = useState(false);
   const [wrongRes, setWrongRes] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
-  const {Common, Fonts, Gutters, Layout, Images} = useTheme();
-
+  const {Layout, Images, Fonts, Colors} = useTheme();
   const inputRef = useRef(null);
 
   const loginSubmit = async () => {
@@ -61,9 +62,15 @@ const Login = ({navigation}) => {
       let status = response['status'];
       response = await response.json();
       if (status == 200) {
-        await AsyncStorage.setItem('token', response['token']);
-        await AsyncStorage.setItem('refreshToken', response['refreshToken']);
-        await AsyncStorage.setItem('emailAddress', response['emailAddress']);
+        await AsyncStorage.setItem('token', response.token);
+        await AsyncStorage.setItem('refreshToken', response.refreshToken);
+        await AsyncStorage.setItem('emailAddress', response.emailAddress);
+        await AsyncStorage.setItem('id', response.id.toString());
+        if (response.isFirstLogin) {
+          navigation.navigate('ProfileInitialSetting');
+          return;
+        }
+
         navigation.reset({routes: [{name: 'Home'}]});
       } else {
         switch (response['code']) {
@@ -128,20 +135,45 @@ const Login = ({navigation}) => {
   //   }
   // };
 
+  const styles = StyleSheet.create({
+    loginInput: {
+      width: responsiveWidth(370),
+      height: responsiveHeight(48),
+      borderRadius: responsiveWidth(12),
+      backgroundColor: Colors.inputBackground,
+      paddingHorizontal: responsiveWidth(10),
+      color: Colors.inputContent,
+    },
+    forgetSentence: {
+      width: responsiveWidth(370),
+      color: Colors.inputPlaceHolder,
+      marginBottom: responsiveHeight(40),
+      marginTop: responsiveHeight(20),
+    },
+    snsLoginSenetence: {
+      fontSize: FontSize.small,
+      color: Colors.DarkGray,
+      marginTop: responsiveHeight(30),
+    },
+    wrongInput: {
+      color: Colors.warn,
+      width: responsiveWidth(370),
+    },
+  });
+
   return (
     <TouchableWithoutFeedback onPress={() => inputRef.current.blur()}>
-      <View style={{backgroundColor: Colors.white, flex: 1}}>
+      <View style={{backgroundColor: Colors.contentBackground, flex: 1}}>
         <View
           style={{
             width: '100%',
             height: responsiveHeight(200),
-            backgroundColor: 'transparent',
-            justifyContent: 'center',
             alignItems: 'center',
+            justifyContent: 'center',
           }}>
           <Image
-            source={Images.appLogo}
-            style={{width: responsiveWidth(200), height: responsiveHeight(200)}}
+            source={Images.pLogo}
+            style={{width: responsiveWidth(150), height: responsiveHeight(150)}}
           />
         </View>
 
@@ -149,13 +181,22 @@ const Login = ({navigation}) => {
           <InputBox
             title={'이메일'}
             placeholder={t('input.id')}
-            onChangeText={e => setId(e)}
+            onChangeText={e => setId(e.toLowerCase())}
             value={id}
             isWrong={wrongId || wrongRes}
             ref={inputRef}
           />
-          {wrongId && <Text style={styles.wrongInput}>{t('wrongId')}</Text>}
-          {wrongRes && <Text style={styles.wrongInput}>{t('wrongInfo')}</Text>}
+          {wrongId && (
+            <Text style={[styles.wrongInput, Fonts.contentRegualrMedium]}>
+              {t('wrongId')}
+            </Text>
+          )}
+          {wrongRes && (
+            <Text style={[styles.wrongInput, Fonts.contentRegualrMedium]}>
+              {t('wrongInfo')}
+            </Text>
+          )}
+          <View style={{marginTop: responsiveHeight(10)}} />
 
           <InputBox
             title={'비밀번호'}
@@ -170,12 +211,12 @@ const Login = ({navigation}) => {
           {wrongPassword && (
             <Text style={styles.wrongInput}>{t('wrongPassword')}</Text>
           )}
-          <Text style={styles.forgetSentence}>{t('forget')}</Text>
-          {/* <SubmitButton onPress={loginSubmit} title={t('loginBtn')} /> */}
-          <SubmitButton
-            onPress={() => navigation.reset({routes: [{name: 'Home'}]})}
-            title={t('loginBtn')}
-          />
+          <Text style={[Fonts.contentRegualrMedium, styles.forgetSentence]}>
+            {t('forget')}
+          </Text>
+          <SubmitButton onPress={loginSubmit} title={t('loginBtn')} />
+
+          {/* SNS 로그인*/}
 
           {/* <Text style={styles.snsLoginSenetence}>{t('snsLogin')}</Text>
         <Sns googleSigin={googleSigin} kakaoSignin={kakaoSignin} /> */}
@@ -190,53 +231,18 @@ const Login = ({navigation}) => {
             }}
             onPress={() => navigation.navigate('Register')}
             activeOpacity={1}>
-            <Text style={styles.registerTitle}>{t('registerTitle')}</Text>
+            <Text
+              style={[
+                Fonts.contentRegualrMedium,
+                {color: Colors.inputPlaceHolder},
+              ]}>
+              {t('registerTitle')}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
     </TouchableWithoutFeedback>
   );
 };
-
-const styles = StyleSheet.create({
-  loginInput: {
-    width: responsiveWidth(370),
-    height: responsiveHeight(48),
-    borderRadius: responsiveWidth(12),
-    backgroundColor: '#F2F4F6',
-    paddingHorizontal: responsiveWidth(10),
-    color: '#505866',
-  },
-  forgetSentence: {
-    width: responsiveWidth(370),
-    fontSize: responsiveWidth(12),
-    lineHeight: responsiveHeight(18),
-    letterSpacing: responsiveWidth(-0.6),
-    color: '#6D7582',
-    marginBottom: responsiveHeight(40),
-    marginTop: responsiveHeight(20),
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-  },
-  snsLoginSenetence: {
-    fontSize: FontSize.small,
-    color: Colors.DarkGray,
-    marginTop: responsiveHeight(30),
-  },
-  registerTitle: {
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    fontSize: responsiveWidth(12),
-    lineHeight: responsiveHeight(18),
-    letterSpacing: responsiveHeight(-0.6),
-    color: '#6D7582',
-  },
-  wrongInput: {
-    fontFamily: 'SpoqaHanSansNeo-Medium',
-    color: '#E44949',
-    fontSize: responsiveWidth(12),
-    lineHeight: responsiveHeight(18),
-    letterSpacing: responsiveWidth(-0.6),
-    width: responsiveWidth(370),
-  },
-});
 
 export default Login;
