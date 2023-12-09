@@ -1,8 +1,7 @@
-import {ColorSpace} from 'react-native-reanimated';
-
+// 컨텐츠의 생성 시간을 표시
+// ~초전 or ~분전으로 표시하고 일주일이 넘어가면 날짜로 표시
 export const timeAgo = dateInput => {
-  console.log('시간 ', dateInput);
-
+  // 현재 시간
   const now = new Date();
   now.setHours(now.getHours() + 9);
   const utcNow = Date.UTC(
@@ -13,9 +12,8 @@ export const timeAgo = dateInput => {
     now.getUTCMinutes(),
     now.getUTCSeconds(),
   );
-
+  // 컨텐츠 생성 시간
   const date = new Date(dateInput);
-  console.log(now, date);
   const utcDate = Date.UTC(
     date.getUTCFullYear(),
     date.getUTCMonth(),

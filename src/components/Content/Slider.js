@@ -23,6 +23,7 @@ export const Slider = ({media, onLoadEnd}) => {
   return (
     <Swiper
       style={{backgroundColor: Colors.contentBackground}}
+      removeClippedSubviews={false}
       showsButtons={false}>
       {media.map((file, index) => {
         const ext = file.substring(file.length - 4, file.length);

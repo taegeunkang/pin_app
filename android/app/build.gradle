@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: "com.google.gms.google-services" // 여기 내용을 추가해줍니다.
 apply plugin: "com.facebook.react"
 
 import com.android.build.OutputFile
@@ -153,7 +154,8 @@ dependencies {
     implementation("com.facebook.react:react-android")
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
-
+    implementation platform('com.google.firebase:firebase-bom:31.1.0') // 여기 내용을 추가해줍니다.
+    implementation 'com.google.firebase:firebase-messaging' // 여기 내용을 추가해줍니다.
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'

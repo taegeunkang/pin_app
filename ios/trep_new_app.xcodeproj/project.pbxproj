@@ -556,7 +556,7 @@
 				DEVELOPMENT_TEAM = MHS6XT4HRQ;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = trep_new_app/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "trep-new-app";
+				INFOPLIST_KEY_CFBundleDisplayName = pin;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -589,7 +589,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = MHS6XT4HRQ;
 				INFOPLIST_FILE = trep_new_app/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "trep-new-app";
+				INFOPLIST_KEY_CFBundleDisplayName = pin;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

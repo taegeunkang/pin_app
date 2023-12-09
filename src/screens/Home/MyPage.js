@@ -19,7 +19,6 @@ import {useState, useEffect} from 'react';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
-import {useFocusEffect} from '@react-navigation/native';
 import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
 // 게시글 없을 때 check
@@ -36,15 +35,6 @@ const MyPage = ({navigation}) => {
   const [postList, setPostList] = useState([]);
   const [isPopped, setIsPopped] = useState(false);
   const [reloadLoading, setReloadLoading] = useState(false);
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     if (isPopped) {
-  //       // pop 후에만 실행할 동작
-  //       setIsPopped(false);
-  //     }
-  //   }, [isPopped]), // isPopped 의존성을 추가
-  // );
 
   const reload = async postid => {
     if (reloadLoading) return;
@@ -69,13 +59,6 @@ const MyPage = ({navigation}) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-
-    // 햅틱 피드백 발생
-    // const options = {
-    //   enableVibrateFallback: true,
-    //   ignoreAndroidSystemSettings: false,
-    // };
-    // RNHapticFeedback.trigger('impactMedium', options);
 
     // 여기서 데이터를 새로 고치는 로직을 추가합니다.
     setPage(0);
