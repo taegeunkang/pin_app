@@ -414,7 +414,7 @@ const Home = ({navigation}) => {
                           backgroundColor: Colors.contentBackground,
                           marginBottom: responsiveHeight(10),
                         }}
-                        resizeMode="contain"
+                        resizeMode="cover"
                       />
 
                       <Image

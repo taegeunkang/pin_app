@@ -11,7 +11,7 @@ import {setDefaultTheme} from '../../store/theme';
 import {useTheme} from '../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
-import {responsiveHeight} from '../../components/Scale';
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 const Startup = ({navigation}) => {
   const {Layout, Gutters, Fonts, Images, Colors} = useTheme();
 
@@ -106,7 +106,14 @@ const Startup = ({navigation}) => {
         justifyContent: 'center',
         backgroundColor: Colors.contentBackground,
       }}>
-      <Image source={Images.logoTitle} />
+      <Image
+        source={Images.pLogo}
+        style={{
+          width: responsiveWidth(200),
+          height: responsiveHeight(120),
+          resizeMode: 'contain',
+        }}
+      />
       <View
         style={{
           position: 'absolute',

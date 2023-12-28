@@ -36,6 +36,7 @@ const Login = ({navigation}) => {
   const [wrongId, setWrongId] = useState(false);
   const [wrongRes, setWrongRes] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {Layout, Images, Fonts, Colors} = useTheme();
   const inputRef = useRef(null);
 
@@ -47,10 +48,9 @@ const Login = ({navigation}) => {
       setWrongId(true);
       return;
     }
-    setWrongId(false);
-    setWrongRes(false);
-    setWrongPassword(false);
+
     if (id.length >= 0 && password.length >= 0) {
+      setLoading(true);
       let response = await fetch(API_URL + '/user/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -75,15 +75,20 @@ const Login = ({navigation}) => {
       } else {
         switch (response['code']) {
           case 'U01':
+            setWrongId(false);
             setWrongRes(true);
+            setWrongPassword(false);
             break;
           case 'U02':
+            setWrongId(false);
+            setWrongRes(false);
             setWrongPassword(true);
             break;
           default:
             alert('서버 에러!');
         }
       }
+      setLoading(false);
     }
   };
 
@@ -173,7 +178,11 @@ const Login = ({navigation}) => {
           }}>
           <Image
             source={Images.pLogo}
-            style={{width: responsiveWidth(150), height: responsiveHeight(150)}}
+            style={{
+              width: responsiveWidth(200),
+              height: responsiveHeight(120),
+              resizeMode: 'contain',
+            }}
           />
         </View>
 
@@ -187,16 +196,23 @@ const Login = ({navigation}) => {
             ref={inputRef}
           />
           {wrongId && (
-            <Text style={[styles.wrongInput, Fonts.contentRegualrMedium]}>
-              {t('wrongId')}
-            </Text>
+            <View style={{height: responsiveHeight(15)}}>
+              <Text style={[styles.wrongInput, Fonts.contentRegualrMedium]}>
+                {t('wrongId')}
+              </Text>
+            </View>
           )}
           {wrongRes && (
-            <Text style={[styles.wrongInput, Fonts.contentRegualrMedium]}>
-              {t('wrongInfo')}
-            </Text>
+            <View style={{height: responsiveHeight(15)}}>
+              <Text style={[styles.wrongInput, Fonts.contentRegualrMedium]}>
+                {t('wrongInfo')}
+              </Text>
+            </View>
           )}
-          <View style={{marginTop: responsiveHeight(10)}} />
+          {!wrongId && !wrongRes && (
+            <View style={{height: responsiveHeight(15)}} />
+          )}
+          <View style={{marginTop: responsiveHeight(5)}} />
 
           <InputBox
             title={'비밀번호'}
@@ -209,12 +225,19 @@ const Login = ({navigation}) => {
           />
 
           {wrongPassword && (
-            <Text style={styles.wrongInput}>{t('wrongPassword')}</Text>
+            <View style={{height: responsiveHeight(15)}}>
+              <Text style={styles.wrongInput}>{t('wrongPassword')}</Text>
+            </View>
           )}
+          {!wrongPassword && <View style={{height: responsiveHeight(15)}} />}
           <Text style={[Fonts.contentRegualrMedium, styles.forgetSentence]}>
             {t('forget')}
           </Text>
-          <SubmitButton onPress={loginSubmit} title={t('loginBtn')} />
+          <SubmitButton
+            onPress={loginSubmit}
+            title={t('loginBtn')}
+            loading={loading}
+          />
 
           {/* SNS 로그인*/}
 

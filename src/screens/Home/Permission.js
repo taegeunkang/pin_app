@@ -129,11 +129,15 @@ const Permission = ({close}) => {
         }}>
         {permissions.photo == false ? (
           <ActiveButton
+            img={Images.album}
             title={'앨범 읽기/쓰기 허용'}
             onPress={getAlbumPermission}
           />
         ) : (
-          <InactiveButton title={'앨범 읽기/쓰기 허용'} />
+          <InactiveButton
+            img={Images.albumInactive}
+            title={'앨범 읽기/쓰기 허용'}
+          />
         )}
         {/* <ActiveButton
           title={'카메라 엑세스 허용'}
@@ -146,11 +150,12 @@ const Permission = ({close}) => {
         <View style={{marginTop: responsiveHeight(10)}} />
         {permissions.location == false ? (
           <ActiveButton
+            img={Images.loc}
             title={'GPS 엑세스 허용'}
             onPress={getLocationPermission}
           />
         ) : (
-          <InactiveButton title={'GPS 엑세스 허용'} />
+          <InactiveButton img={Images.locInactive} title={'GPS 엑세스 허용'} />
         )}
         <View style={{marginTop: responsiveHeight(20)}} />
       </View>

@@ -464,7 +464,12 @@ const Detail = ({navigation, route}) => {
               fetchComment();
             }
           }}
-          scrollEventThrottle={400}>
+          scrollEventThrottle={400}
+          style={{
+            flex: 1,
+            width: '100%',
+            backgroundColor: Colors.contentBackground,
+          }}>
           <View style={styles.container}>
             <View style={styles.postContainer}>
               <View style={styles.writerBox}>
@@ -666,71 +671,73 @@ const Detail = ({navigation, route}) => {
                 )}
               </View>
             </View>
-            {commentList &&
-              commentList.map((comment, index) => (
-                <>
-                  <Comment
-                    key={index}
-                    writerId={comment.writerId}
-                    commentId={comment.commentId}
-                    nickname={comment.writer}
-                    profileImage={comment.profileImage}
-                    createdDate={comment.createdDate}
-                    content={comment.content}
-                    replyCount={comment.replyCount}
-                    showReply={getReply}
-                    onPress={() => {
-                      setModalVisible(true);
-                      setSelectedComment(comment.commentId);
-                    }}
-                    onReplyPress={() => {
-                      setReply(comment.commentId);
-                      inptRef.current.focus();
-                    }}
-                  />
-                  {replyList[comment.commentId] &&
-                    replyList[comment.commentId].map((r, index1) => {
-                      return (
-                        <CommentComment
-                          key={index1}
-                          commentId={r.commentId}
-                          nickname={r.writer}
-                          writerId={r.writerId}
-                          profileImage={r.profileImage}
-                          content={r.content}
-                          createdDate={r.createdDate}
-                          onPress={() => {
-                            setReplyModalVisible(true);
-                            setSelectedComment(comment.commentId);
-                            setSelectedReply(r.commentId);
-                          }}
-                          onReplyPress={() => {
-                            setReply(comment.commentId);
-                            inptRef.current.focus();
-                          }}
-                        />
-                      );
-                    })}
-                  {replyList[comment.commentId] &&
-                    comment.replyCount >
-                      replyList[comment.commentId].length && (
-                      <Pressable
-                        onPress={() => getReply(comment.commentId)}
-                        style={{
-                          width: '100%',
-                          height: responsiveHeight(20),
-                        }}>
-                        <Text
-                          style={[
-                            Fonts.contentRegualrMedium,
-                            {marginLeft: responsiveWidth(30)},
-                          ]}>
-                          더보기
-                        </Text>
-                      </Pressable>
-                    )}
-                </>
-              ))}
+            <View>
+              {commentList &&
+                commentList.map((comment, index) => (
+                  <>
+                    <Comment
+                      key={index}
+                      writerId={comment.writerId}
+                      commentId={comment.commentId}
+                      nickname={comment.writer}
+                      profileImage={comment.profileImage}
+                      createdDate={comment.createdDate}
+                      content={comment.content}
+                      replyCount={comment.replyCount}
+                      showReply={getReply}
+                      onPress={() => {
+                        setModalVisible(true);
+                        setSelectedComment(comment.commentId);
+                      }}
+                      onReplyPress={() => {
+                        setReply(comment.commentId);
+                        inptRef.current.focus();
+                      }}
+                    />
+                    {replyList[comment.commentId] &&
+                      replyList[comment.commentId].map((r, index1) => {
+                        return (
+                          <CommentComment
+                            key={index1}
+                            commentId={r.commentId}
+                            nickname={r.writer}
+                            writerId={r.writerId}
+                            profileImage={r.profileImage}
+                            content={r.content}
+                            createdDate={r.createdDate}
+                            onPress={() => {
+                              setReplyModalVisible(true);
+                              setSelectedComment(comment.commentId);
+                              setSelectedReply(r.commentId);
+                            }}
+                            onReplyPress={() => {
+                              setReply(comment.commentId);
+                              inptRef.current.focus();
+                            }}
+                          />
+                        );
+                      })}
+                    {replyList[comment.commentId] &&
+                      comment.replyCount >
+                        replyList[comment.commentId].length && (
+                        <Pressable
+                          onPress={() => getReply(comment.commentId)}
+                          style={{
+                            width: '100%',
+                            height: responsiveHeight(20),
+                          }}>
+                          <Text
+                            style={[
+                              Fonts.contentRegualrMedium,
+                              {marginLeft: responsiveWidth(30)},
+                            ]}>
+                            더보기
+                          </Text>
+                        </Pressable>
+                      )}
+                  </>
+                ))}
+            </View>
 
             <View style={{height: responsiveHeight(70)}} />
 
