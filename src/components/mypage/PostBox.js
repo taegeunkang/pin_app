@@ -250,7 +250,7 @@ const PostBox = ({
               />
               <Text
                 style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
-                {locationName}
+                {locationName.substring(0, 20)}
               </Text>
             </View>
           )}

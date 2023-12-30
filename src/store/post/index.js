@@ -2,18 +2,20 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const slice = createSlice({
   name: 'post',
-  initialState: {post: []},
+  initialState: {post: {}},
   reducers: {
-    setInitialPost: (state, {payload: {post}}) => {
-      if (post != undefined) {
-        state.post = Array.from(post);
+    setInitialPost: (state, {payload: {userId, post}}) => {
+      if (userId != undefined && post != undefined) {
+        state.post[userId] = post;
       }
     },
-    appendPost: (state, {payload: {post}}) => {
-      state.post = post ? state.post.concat(post) : state.post;
+    appendPost: (state, {payload: {userId, post}}) => {
+      if (userId != undefined && post != undefined) {
+        state.post[userId] = state.post[userId].concat(post);
+      }
     },
-    removePost: (state, {payload: {postId}}) => {
-      const a = state.post;
+    removePost: (state, {payload: {userId, postId}}) => {
+      const a = state.post[userId];
       let b = [];
       for (let i = 0; i < a.length; i++) {
         if (a[i].postId == postId) {
@@ -22,48 +24,47 @@ const slice = createSlice({
         b.push(a[i]);
       }
 
-      state.post = Array.from(b);
+      state.post[userId] = Array.from(b);
     },
-    likeToggle: (state, {payload: {postId}}) => {
+    likeToggle: (state, {payload: {userId, postId}}) => {
       let idx = -1;
 
-      for (let i = 0; i < state.post.length; i++) {
-        if (state.post[i].postId == postId) {
+      for (let i = 0; i < state.post[userId].length; i++) {
+        if (state.post[userId][i].postId === postId) {
           idx = i;
         }
       }
 
-      state.post[idx] = {
-        ...state.post[idx],
-        liked: !state.post[idx].liked,
+      state.post[userId][idx] = {
+        ...state.post[userId][idx],
+        liked: !state.post[userId][idx].liked,
       };
-      console.log(2);
     },
-    setLikeCount: (state, {payload: {postId, count}}) => {
+    setLikeCount: (state, {payload: {userId, postId, count}}) => {
       let idx = -1;
 
-      for (let i = 0; i < state.post.length; i++) {
-        if (state.post[i].postId == postId) {
+      for (let i = 0; i < state.post[userId].length; i++) {
+        if (state.post[userId][i].postId == postId) {
           idx = i;
         }
       }
-      state.post[idx] = {
-        ...state.post[idx],
+      state.post[userId][idx] = {
+        ...state.post[userId][idx],
         likesCount: count,
       };
     },
 
-    setCommentCount: (state, {payload: {postId, count}}) => {
+    setCommentCount: (state, {payload: {userId, postId, count}}) => {
       let idx = -1;
 
-      for (let i = 0; i < state.post.length; i++) {
-        if (state.post[i].postId == postId) {
+      for (let i = 0; i < state.post[userId].length; i++) {
+        if (state.post[userId][i].postId == postId) {
           idx = i;
         }
       }
 
-      state.post[idx] = {
-        ...state.post[idx],
+      state.post[userId][idx] = {
+        ...state.post[userId][idx],
         commentsCount: count,
       };
     },

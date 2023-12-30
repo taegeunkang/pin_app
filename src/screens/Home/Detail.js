@@ -99,8 +99,8 @@ const Detail = ({navigation, route}) => {
 
     if (response.status == 200) {
       const r = await response.json();
-      dispatch(setLikeCount({postId: postId, count: r}));
-      dispatch(likeToggle({postId: postId}));
+      dispatch(setLikeCount({userId: userId, postId: postId, count: r}));
+      dispatch(likeToggle({userId: userId, postId: postId}));
 
       return r;
     } else if (response.status == 400) {
@@ -218,7 +218,9 @@ const Detail = ({navigation, route}) => {
         setReplyList(c);
       }
 
-      dispatch(setCmtCnt({postId: postId, count: commentsCount + 1}));
+      dispatch(
+        setCmtCnt({userId: userId, postId: postId, count: commentsCount + 1}),
+      );
       setCommentCount(commentsCount + 1);
       setInpt('');
     } else if (response.status == 400) {

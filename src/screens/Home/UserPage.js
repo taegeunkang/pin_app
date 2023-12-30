@@ -23,6 +23,7 @@ import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
 import {useDispatch, useSelector} from 'react-redux';
 import {setInitialPost, appendPost} from '../../store/post';
+import {setLikeCount, likeToggle} from '../../store/post';
 // 게시글 없을 때 check
 
 const UserPage = ({navigation, route}) => {
@@ -35,10 +36,11 @@ const UserPage = ({navigation, route}) => {
   const [page, setPage] = useState(0);
   const [modlaVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState({});
+  const [followLoading, setFollowLoading] = useState(false);
   const [f, setF] = useState(-1);
 
   const postList = useSelector(state => state.post.post);
-  console.log(postList);
+
   const dispatch = useDispatch();
 
   const fetchData = async () => {
@@ -60,7 +62,7 @@ const UserPage = ({navigation, route}) => {
         if (r.length > 0) setPage(page + 1);
         let a = postList;
         a = a.concat(r);
-        dispatch(appendPost(r));
+        dispatch(appendPost({userId: userId, post: r}));
         break;
       case 400:
         const k = await response.json();
@@ -101,7 +103,7 @@ const UserPage = ({navigation, route}) => {
     switch (response.status) {
       case 200:
         let r = await response.json();
-        dispatch(setInitialPost({post: r}));
+        dispatch(setInitialPost({userId: userId, post: r}));
         break;
       case 400:
         const k = await response.json();
@@ -154,8 +156,8 @@ const UserPage = ({navigation, route}) => {
 
     if (response.status == 200) {
       const r = await response.json();
-      dispatch(setLikeCount({postId: postId, count: r}));
-      dispatch(likeToggle({postId: postId}));
+      dispatch(setLikeCount({userId: userId, postId: postId, count: r}));
+      dispatch(likeToggle({userId: userId, postId: postId}));
       return r;
     } else if (response.status == 400) {
       const k = await response.json();
@@ -419,32 +421,33 @@ const UserPage = ({navigation, route}) => {
           </View>
         </View>
         <View style={{marginBottom: responsiveHeight(5)}} />
-        {postList.map((post, index) => {
-          return (
-            <PostBox
-              key={index}
-              postId={post.postId}
-              writerName={post.nickname}
-              writerProfileImage={post.profileImage}
-              content={post.content}
-              mediaFiles={post.mediaFiles}
-              locationName={post.locationName}
-              isLiked={post.liked}
-              likeCount={post.likesCount}
-              commentCount={post.commentsCount}
-              createdDate={post.createdDate}
-              thumbsUp={thumbsUp}
-              mention={post.mention}
-              onPress={() => {
-                navigation.push('Detail', {
-                  ...post,
-                  userId: userId,
-                  before: 'MyPage',
-                });
-              }}
-            />
-          );
-        })}
+        {postList[userId] &&
+          postList[userId].map((post, index) => {
+            return (
+              <PostBox
+                key={index}
+                postId={post.postId}
+                writerName={post.nickname}
+                writerProfileImage={post.profileImage}
+                content={post.content}
+                mediaFiles={post.mediaFiles}
+                locationName={post.locationName}
+                isLiked={post.liked}
+                likeCount={post.likesCount}
+                commentCount={post.commentsCount}
+                createdDate={post.createdDate}
+                thumbsUp={thumbsUp}
+                mention={post.mention}
+                onPress={() => {
+                  navigation.push('Detail', {
+                    ...post,
+                    userId: userId,
+                    before: 'MyPage',
+                  });
+                }}
+              />
+            );
+          })}
         {postList.length == 0 && (
           <View
             style={{

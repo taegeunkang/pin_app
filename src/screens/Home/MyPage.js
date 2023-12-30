@@ -85,8 +85,9 @@ const MyPage = ({navigation}) => {
 
     if (response.status == 200) {
       const r = await response.json();
-      dispatch(setLikeCount({postId: postId, count: r}));
-      dispatch(likeToggle({postId: postId}));
+    
+      dispatch(setLikeCount({userId: id, postId: postId, count: r}));
+      dispatch(likeToggle({userId: id, postId: postId}));
 
       return r;
     } else if (response.status == 400) {
@@ -117,7 +118,8 @@ const MyPage = ({navigation}) => {
     switch (response.status) {
       case 200:
         let r = await response.json();
-        dispatch(setInitialPost({post: r}));
+        dispatch(setInitialPost({userId: userId, post: r}));
+        console.log(postList[id]);
         break;
       case 400:
         const k = await response.json();
@@ -150,7 +152,7 @@ const MyPage = ({navigation}) => {
       case 200:
         let r = await response.json();
         if (r.length > 0) setPage(page + 1);
-        dispatch(appendPost(r));
+        dispatch(appendPost({userId: id, post: r}));
         break;
 
       case 400:
@@ -386,30 +388,31 @@ const MyPage = ({navigation}) => {
           </View>
         </View>
         <View style={{marginBottom: responsiveHeight(5)}} />
-        {postList.map((post, index) => (
-          <PostBox
-            key={index}
-            postId={post.postId}
-            writerName={post.nickname}
-            writerProfileImage={post.profileImage}
-            content={post.content}
-            mediaFiles={post.mediaFiles}
-            locationName={post.locationName}
-            isLiked={post.liked}
-            likeCount={post.likesCount}
-            commentCount={post.commentsCount}
-            createdDate={post.createdDate}
-            thumbsUp={thumbsUp}
-            mention={post.mention}
-            onPress={() => {
-              navigation.push('Detail', {
-                ...post,
-                userId: id,
-                before: 'MyPage',
-              });
-            }}
-          />
-        ))}
+        {postList[id] &&
+          postList[id].map((post, index) => (
+            <PostBox
+              key={index}
+              postId={post.postId}
+              writerName={post.nickname}
+              writerProfileImage={post.profileImage}
+              content={post.content}
+              mediaFiles={post.mediaFiles}
+              locationName={post.locationName}
+              isLiked={post.liked}
+              likeCount={post.likesCount}
+              commentCount={post.commentsCount}
+              createdDate={post.createdDate}
+              thumbsUp={thumbsUp}
+              mention={post.mention}
+              onPress={() => {
+                navigation.push('Detail', {
+                  ...post,
+                  userId: id,
+                  before: 'MyPage',
+                });
+              }}
+            />
+          ))}
         {postList.length == 0 && (
           <View
             style={{
