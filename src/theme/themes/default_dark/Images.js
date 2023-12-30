@@ -8,8 +8,8 @@ export default function () {
     checkNotSelect: require('../../assets/images/dark/check-not-select.png'),
     checkSelect: require('../../assets/images/dark/check-select.png'),
     close: require('../../assets/images/dark/close.png'),
-    commentNotSelect: require('../../assets/images/dark/comment-not-select.png'),
-    commentSelect: require('../../assets/images/dark/comment-select.png'),
+    commentNotSelect: require('../../assets/images/dark/comment.png'),
+    commentSelect: require('../../assets/images/dark/comment.png'),
     confirmed: require('../../assets/images/dark/confirmed.png'),
     currentLocation: require('../../assets/images/dark/current-location.png'),
     detail: require('../../assets/images/dark/detail.png'),
@@ -27,5 +27,6 @@ export default function () {
     uploadSelect: require('../../assets/images/dark/upload-select.png'),
     userNotSelect: require('../../assets/images/dark/user-not-select.png'),
     userSelect: require('../../assets/images/dark/user-select.png'),
+    plusMainBtn: require('../../assets/images/nav/plus-main.png'),
   };
 }

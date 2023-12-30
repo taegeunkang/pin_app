@@ -1,19 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import {useEffect, useLayoutEffect, useState} from 'react';
 import {
   Image,
   Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { responsiveHeight, responsiveWidth } from '../../components/Scale';
-import { useTheme } from '../../hooks';
-import { API_URL } from '../../utils/constants';
-import { reIssue } from '../../utils/login';
-import { timeAgo } from '../../utils/util';
+import {ScrollView} from 'react-native-gesture-handler';
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import {useTheme} from '../../hooks';
+import {API_URL} from '../../utils/constants';
+import {reIssue} from '../../utils/login';
+import {timeAgo} from '../../utils/util';
 const Alram = ({navigation}) => {
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -79,8 +79,6 @@ const Alram = ({navigation}) => {
     load();
   }, []);
 
- 
-
   return (
     <View>
       {notification.length > 0 && (
@@ -102,7 +100,7 @@ const Alram = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Text style={Fonts.contentMediumMedium}>
+          <Text style={[Fonts.contentMediumMedium, {color: Colors.textBold}]}>
             최근 7일간 알림이 없습니다.
           </Text>
         </View>

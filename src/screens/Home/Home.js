@@ -372,7 +372,6 @@ const Home = ({navigation}) => {
                     onPress={() => {
                       setDetailPressed(true);
                       const p = content.detail;
-                      console.log(content.userId, content.detail.userId);
                       navigation.push('MapDetail', {
                         postId: p.postId,
                         nickname: p.nickname,

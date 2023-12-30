@@ -147,10 +147,12 @@ const Detail = ({navigation, route}) => {
       const r = await response.json();
       if (page == -1 || isRefresh) {
         setCommentList(r);
+        dispatch(setCmtCnt({userId: userId, postId: postId, count: r.length}));
       } else {
         let a = commentList;
         a = a.concat(r);
         setCommentList(a);
+        dispatch(setCmtCnt({userId: userId, postId: postId, count: a.length}));
       }
       if (r.length > 0 && !isRefresh) {
         setPage(page + 1);
