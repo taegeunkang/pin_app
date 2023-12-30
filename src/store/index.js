@@ -13,11 +13,15 @@ import {
 import { MMKV } from 'react-native-mmkv';
 import { api } from '../services/api';
 import theme from './theme';
+
+
 const reducers = combineReducers({
   theme,
   [api.reducerPath]: api.reducer,
 });
+
 const storage = new MMKV();
+
 export const reduxStorage = {
   setItem: (key, value) => {
     storage.set(key, value);
@@ -32,12 +36,15 @@ export const reduxStorage = {
     return Promise.resolve();
   },
 };
+
 const persistConfig = {
   key: 'root',
   storage: reduxStorage,
   whitelist: ['theme', 'auth'],
 };
+
 const persistedReducer = persistReducer(persistConfig, reducers);
+
 const store = configureStore({
   reducer: persistedReducer,
   middleware: getDefaultMiddleware => {
@@ -53,6 +60,9 @@ const store = configureStore({
     return middlewares;
   },
 });
+
 const persistor = persistStore(store);
 setupListeners(store.dispatch);
+
+
 export { store, persistor };

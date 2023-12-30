@@ -6,9 +6,10 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  TouchableWithoutFeedback,
+  Keyboard,
   SafeAreaView,
   Alert,
+  Pressable,
 } from 'react-native';
 import {useEffect, useRef, useState} from 'react';
 import {BorderRadius, FontSize} from '../../theme/Variables';
@@ -42,6 +43,11 @@ const WriteContent = ({navigation, route}) => {
     checkRefreshMediaFiles();
     getCurrentLocation();
   });
+
+  const closeKeyboard = () => {
+    Keyboard.dismiss();
+    console.log('누름');
+  };
 
   const checkRefreshMediaFiles = () => {
     if (mediaFiles) {
@@ -205,195 +211,189 @@ const WriteContent = ({navigation, route}) => {
   });
 
   return (
-    <TouchableWithoutFeedback onPress={() => inptRef.current.blur()}>
-      <SafeAreaView
-        style={{flex: 1, backgroundColor: Colors.contentBackground}}>
-        <View style={styles.inptContainer}>
-          {media && media.length > 0 && (
-            <>
-              <ScrollView
-                horizontal={true}
-                style={{
-                  width: '100%',
-                  paddingHorizontal: responsiveWidth(10),
-                  height: responsiveHeight(110),
-                  paddingVertical: responsiveHeight(5),
-                }}>
-                {media.map((m, index) => (
-                  <View key={index} style={styles.imageContainer}>
-                    <Image
-                      style={{
-                        width: responsiveWidth(95),
-                        height: responsiveWidth(95),
-                        borderRadius: responsiveWidth(12),
-                      }}
-                      source={{uri: m.uri}}
-                    />
-                  </View>
-                ))}
-              </ScrollView>
-            </>
-          )}
-
-          <View style={{marginTop: responsiveHeight(10)}} />
-
-          <View
-            style={{
-              width: '100%',
-              height: responsiveHeight(180),
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: Colors.screenBackground,
-              marginBottom: responsiveHeight(20),
-            }}>
-            <TextInput
-              value={text}
-              placeholder={t('write.content.placeholder')}
-              placeholderTextColor={Colors.inputPlaceHolder}
-              multiline={true}
-              style={[
-                Fonts.contentMediumMedium,
-                {
-                  width: responsiveWidth(370),
-                  height: responsiveHeight(160),
-                  textAlignVertical: 'top',
-                  color: Colors.textNormal,
-                  backgroundColor: Colors.contentBackground,
-                  borderRadius: responsiveWidth(12),
-                  paddingVertical: responsiveHeight(10),
-                  paddingHorizontal: responsiveWidth(10),
-                },
-              ]}
-              onChangeText={e => setText(e)}
-              ref={inptRef}
-              maxLength={500}
-            />
-          </View>
-        </View>
-
-        <View style={{flex: 1, paddingHorizontal: responsiveWidth(10)}}>
-          <View style={styles.listContent}>
-            <View
+    <SafeAreaView style={{flex: 1, backgroundColor: Colors.contentBackground}}>
+      <View style={styles.inptContainer}>
+        {media && media.length > 0 && (
+          <>
+            <ScrollView
+              horizontal={true}
               style={{
-                flexDirection: 'row',
+                width: '100%',
+                paddingHorizontal: responsiveWidth(10),
+                height: responsiveHeight(115),
+                paddingVertical: responsiveHeight(5),
               }}>
-              <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
-                위치
-              </Text>
-              <View
-                style={{
-                  marginBottom: responsiveHeight(5),
-                }}
-              />
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('FindingLocation', {lat: lat, lon: lon})
-                }>
-                <Image
-                  source={Images.plus}
-                  style={{
-                    width: responsiveWidth(20),
-                    height: responsiveWidth(20),
-                    marginTop: responsiveHeight(2),
-                    marginLeft: responsiveWidth(5),
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-            {loc && (
-              <Text
-                style={[
-                  Fonts.contentMediumRegualr,
-                  {
-                    color: Colors.textNormal,
-                  },
-                ]}>
-                {loc}
-              </Text>
-            )}
-          </View>
-
-          <View style={styles.friendsList}>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
-                함께한 친구
-              </Text>
-              <View style={{marginBottom: responsiveHeight(5)}} />
-              <TouchableOpacity onPress={moveToFindingFriends}>
-                <Image
-                  source={Images.plus}
-                  style={{
-                    width: responsiveWidth(20),
-                    height: responsiveWidth(20),
-                    marginTop: responsiveHeight(2),
-                    marginLeft: responsiveWidth(5),
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-            {f &&
-              f.map((u, index) => (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    marginBottom: responsiveHeight(5),
-                  }}>
+              {media.map((m, index) => (
+                <View key={index} style={styles.imageContainer}>
                   <Image
-                    source={{
-                      uri:
-                        API_URL + `/user/profile/image?watch=${u.profileImg}`,
+                    style={{
+                      width: responsiveWidth(95),
+                      height: responsiveWidth(95),
+                      borderRadius: responsiveWidth(12),
                     }}
-                    style={styles.friendsImage}
+                    source={{uri: m.uri}}
                   />
-                  <Text
-                    style={[
-                      Fonts.contentMediumMedium,
-                      {color: Colors.textNormal},
-                    ]}>
-                    {u.nickname}
-                  </Text>
                 </View>
               ))}
-          </View>
+            </ScrollView>
+          </>
+        )}
 
-          {/* 친구 기능 추가 후 생성 */}
-          {/* <View style={styles.listContent}>
+        {/* <View style={{marginTop: responsiveHeight(10)}} /> */}
+
+        <View
+          style={{
+            width: '100%',
+            height: responsiveHeight(180),
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: Colors.screenBackground,
+            marginBottom: responsiveHeight(20),
+          }}>
+          <TextInput
+            value={text}
+            placeholder={t('write.content.placeholder')}
+            placeholderTextColor={Colors.inputPlaceHolder}
+            multiline={true}
+            style={[
+              Fonts.contentMediumMedium,
+              {
+                width: responsiveWidth(370),
+                height: responsiveHeight(160),
+                textAlignVertical: 'top',
+                color: Colors.textNormal,
+                backgroundColor: Colors.contentBackground,
+                borderRadius: responsiveWidth(12),
+                paddingVertical: responsiveHeight(10),
+                paddingHorizontal: responsiveWidth(10),
+              },
+            ]}
+            onChangeText={e => setText(e)}
+            ref={inptRef}
+            maxLength={500}
+          />
+        </View>
+      </View>
+
+      <Pressable
+        style={{flex: 1, paddingHorizontal: responsiveWidth(10)}}
+        onPress={() => closeKeyboard()}>
+        <View style={styles.listContent}>
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
+              위치
+            </Text>
+            <View
+              style={{
+                marginBottom: responsiveHeight(5),
+              }}
+            />
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('FindingLocation', {lat: lat, lon: lon})
+              }>
+              <Image
+                source={Images.plusBtn}
+                style={{
+                  width: responsiveWidth(25),
+                  height: responsiveWidth(25),
+                  // marginTop: responsiveHeight(2),
+                  marginLeft: responsiveWidth(5),
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+          {loc && (
+            <Text
+              style={[
+                Fonts.contentMediumRegualr,
+                {
+                  color: Colors.textNormal,
+                },
+              ]}>
+              {loc}
+            </Text>
+          )}
+        </View>
+
+        <View style={styles.friendsList}>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
+              함께한 친구
+            </Text>
+            <View style={{marginBottom: responsiveHeight(5)}} />
+            <TouchableOpacity onPress={moveToFindingFriends}>
+              <Image
+                source={Images.plusBtn}
+                style={{
+                  width: responsiveWidth(25),
+                  height: responsiveWidth(25),
+                  // marginTop: responsiveHeight(2),
+                  marginLeft: responsiveWidth(5),
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+          {f &&
+            f.map((u, index) => (
+              <View
+                key={index}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  marginBottom: responsiveHeight(5),
+                }}>
+                <Image
+                  source={{
+                    uri: API_URL + `/user/profile/image?watch=${u.profileImg}`,
+                  }}
+                  style={styles.friendsImage}
+                />
+                <Text
+                  style={[
+                    Fonts.contentMediumMedium,
+                    {color: Colors.textNormal},
+                  ]}>
+                  {u.nickname}
+                </Text>
+              </View>
+            ))}
+        </View>
+
+        {/* 친구 기능 추가 후 생성 */}
+        {/* <View style={styles.listContent}>
           <Text style={{fontSize: FontSize.medium}}>함꼐한 친구</Text>
           <WithLocalSvg asset={RightArrow} width={20} height={20} />
         </View> */}
-          <View style={styles.listContent}>
-            <Text
-              style={[
-                Fonts.contentMediumBold,
-                {color: Colors.textBold, marginBottom: responsiveHeight(5)},
-              ]}>
-              비공개
-            </Text>
-            <Switch
-              value={isPrivate}
-              onValueChange={() => setIsPrivate(!isPrivate)}
-              color={Colors.buttonSecondContent}
-            />
-          </View>
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              marginBottom: responsiveHeight(10),
-            }}>
-            <SubmitButton
-              title={'완료'}
-              onPress={submitPost}
-              loading={loading}
-            />
-          </View>
+        <View style={styles.listContent}>
+          <Text
+            style={[
+              Fonts.contentMediumBold,
+              {color: Colors.textBold, marginBottom: responsiveHeight(5)},
+            ]}>
+            비공개
+          </Text>
+          <Switch
+            value={isPrivate}
+            onValueChange={() => setIsPrivate(!isPrivate)}
+            color={Colors.buttonSecondContent}
+          />
         </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            marginBottom: responsiveHeight(10),
+          }}>
+          <SubmitButton title={'완료'} onPress={submitPost} loading={loading} />
+        </View>
+      </Pressable>
+    </SafeAreaView>
   );
 };
 

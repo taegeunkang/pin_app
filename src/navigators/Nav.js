@@ -60,7 +60,7 @@ const Nav = () => {
           } else if (route.name == 'Medias') {
             return focused ? (
               <Image
-                source={Images.uploadSelect}
+                source={Images.uploadNotSelect}
                 style={{
                   width: responsiveWidth(30),
                   height: responsiveHeight(30),
@@ -68,7 +68,7 @@ const Nav = () => {
               />
             ) : (
               <Image
-                source={Images.uploadNotSelect}
+                source={Images.plusBtn}
                 style={{
                   width: responsiveWidth(30),
                   height: responsiveHeight(30),
