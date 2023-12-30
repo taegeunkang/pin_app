@@ -5,48 +5,75 @@ const slice = createSlice({
   initialState: {post: []},
   reducers: {
     setInitialPost: (state, {payload: {post}}) => {
-      state.post = post;
+      if (post != undefined) {
+        state.post = Array.from(post);
+      }
     },
     appendPost: (state, {payload: {post}}) => {
-      state.post = state.post.concat(post);
+      state.post = post ? state.post.concat(post) : state.post;
+    },
+    removePost: (state, {payload: {postId}}) => {
+      const a = state.post;
+      let b = [];
+      for (let i = 0; i < a.length; i++) {
+        if (a[i].postId == postId) {
+          continue;
+        }
+        b.push(a[i]);
+      }
+
+      state.post = Array.from(b);
     },
     likeToggle: (state, {payload: {postId}}) => {
-      state.post[postId] = {
-        ...state.post[postId],
-        liked: !state.post[postId].liked,
-      };
-    },
-    addLikeCount: (state, {payload: postId}) => {
-      state.post[postId] = {
-        ...state.post[postId],
-        likesCount: state.post[postId].likesCount + 1,
-      };
-    },
-    subLikeCount: (state, {payload: postId}) => {
-      if (state.post[postId].likesCount - 1 < 0) {
-        return;
+      let idx = -1;
+
+      for (let i = 0; i < state.post.length; i++) {
+        if (state.post[i].postId == postId) {
+          idx = i;
+        }
       }
-      state.post[postId] = {
-        ...state.post[postId],
-        likesCount: state.post[postId].likesCount - 1,
+
+      state.post[idx] = {
+        ...state.post[idx],
+        liked: !state.post[idx].liked,
       };
+      console.log(2);
     },
-    addCommentCount: (state, {payload: postId}) => {
-      state.post[postId] = {
-        ...state.post[postId],
-        commentsCount: state.post[postId].commentsCount + 1,
-      };
-    },
-    subCommentCount: (state, {payload: postId}) => {
-      if (state.post[postId].commentsCount - 1 < 0) {
-        return;
+    setLikeCount: (state, {payload: {postId, count}}) => {
+      let idx = -1;
+
+      for (let i = 0; i < state.post.length; i++) {
+        if (state.post[i].postId == postId) {
+          idx = i;
+        }
       }
-      state.post[postId] = {
-        ...state.post[postId],
-        commentsCount: state.post[postId].commentsCount - 1,
+      state.post[idx] = {
+        ...state.post[idx],
+        likesCount: count,
+      };
+    },
+
+    setCommentCount: (state, {payload: {postId, count}}) => {
+      let idx = -1;
+
+      for (let i = 0; i < state.post.length; i++) {
+        if (state.post[i].postId == postId) {
+          idx = i;
+        }
+      }
+
+      state.post[idx] = {
+        ...state.post[idx],
+        commentsCount: count,
       };
     },
   },
 });
-export const {addVal, subVal} = slice.actions;
+export const {
+  setInitialPost,
+  appendPost,
+  likeToggle,
+  setLikeCount,
+  setCommentCount,
+} = slice.actions;
 export default slice.reducer;

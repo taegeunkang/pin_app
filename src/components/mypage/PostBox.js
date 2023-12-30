@@ -17,19 +17,10 @@ const PostBox = ({
   likeCount,
   commentCount,
   createdDate,
-  onPress,
   thumbsUp,
+  onPress,
 }) => {
-  const [liked, setLiked] = useState(isLiked);
-  const [likedCount, setLikedCount] = useState(likeCount);
   const {Images, Fonts, Colors} = useTheme();
-  const onLikePress = async () => {
-    const r = await thumbsUp(postId);
-    setLiked(!liked);
-    setLikedCount(r);
-  };
-
-  // useEffect(() => {}, [liked]);
 
   const styles = StyleSheet.create({
     container: {
@@ -198,8 +189,8 @@ const PostBox = ({
               marginRight: responsiveWidth(10),
               marginBottom: responsiveHeight(5),
             }}>
-            {liked ? (
-              <Pressable onPress={() => onLikePress(postId)}>
+            {isLiked ? (
+              <Pressable onPress={() => thumbsUp(postId)}>
                 <Image
                   source={Images.smileSelect}
                   style={{
@@ -211,7 +202,7 @@ const PostBox = ({
                 />
               </Pressable>
             ) : (
-              <Pressable onPress={() => onLikePress(postId)}>
+              <Pressable onPress={() => thumbsUp(postId)}>
                 <Image
                   source={Images.smileNotSelect}
                   style={{
@@ -225,7 +216,7 @@ const PostBox = ({
             )}
             <Text
               style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
-              {formatNumber(likedCount)}
+              {formatNumber(likeCount)}
             </Text>
           </View>
 

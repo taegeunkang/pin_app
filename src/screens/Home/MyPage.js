@@ -19,6 +19,13 @@ import ProfileButton from '../../components/mypage/ProfileButton';
 import {useTheme} from '../../hooks';
 import {API_URL} from '../../utils/constants';
 import {reIssue} from '../../utils/login';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  appendPost,
+  likeToggle,
+  setInitialPost,
+  setLikeCount,
+} from '../../store/post';
 // 게시글 없을 때 check
 
 const MyPage = ({navigation}) => {
@@ -30,12 +37,16 @@ const MyPage = ({navigation}) => {
   const [modlaVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [id, setId] = useState(null);
-  const [postList, setPostList] = useState([]);
+
   const [reloadLoading, setReloadLoading] = useState(false);
+
+  const postList = useSelector(state => state.post.post);
+  const dispatch = useDispatch();
 
   const reload = async postid => {
     if (reloadLoading) return;
-
+    // 게시글 삭제 후 state에서 삭제
+    // 리덕스로 교체 후 바꿈
     setReloadLoading(true);
     // setIsPopped(true);
     let a = postList;
@@ -65,8 +76,33 @@ const MyPage = ({navigation}) => {
       setRefreshing(false);
     }, 1000);
   };
-  // 사용자의 포스트 목록 조회
 
+  const thumbsUp = async postId => {
+    const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+
+    if (response.status == 200) {
+      const r = await response.json();
+      dispatch(setLikeCount({postId: postId, count: r}));
+      dispatch(likeToggle({postId: postId}));
+
+      return r;
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await thumbsUp(postId);
+          break;
+      }
+    }
+  };
+
+  // 사용자의 포스트 목록 조회
   const initData = async () => {
     setLoading(true);
     const userId = await AsyncStorage.getItem('id');
@@ -83,7 +119,8 @@ const MyPage = ({navigation}) => {
     switch (response.status) {
       case 200:
         let r = await response.json();
-        setPostList(r);
+        console.log('db 데이터 ', r);
+        dispatch(setInitialPost({post: r}));
         break;
       case 400:
         const k = await response.json();
@@ -116,10 +153,9 @@ const MyPage = ({navigation}) => {
       case 200:
         let r = await response.json();
         if (r.length > 0) setPage(page + 1);
-        let a = postList;
-        a = a.concat(r);
-        setPostList(a);
+        dispatch(appendPost(r));
         break;
+
       case 400:
         const k = await response.json();
         switch (k['code']) {
@@ -151,29 +187,6 @@ const MyPage = ({navigation}) => {
         case 'U08':
           await reIssue();
           await getProfile();
-          break;
-      }
-    }
-  };
-
-  const thumbsUp = async postId => {
-    console.log('호출');
-    const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
-      },
-    });
-
-    if (response.status == 200) {
-      const r = await response.json();
-      return r;
-    } else if (response.status == 400) {
-      const k = await response.json();
-      switch (k['code']) {
-        case 'U08':
-          await reIssue();
-          await thumbsUp(postId);
           break;
       }
     }
@@ -389,17 +402,15 @@ const MyPage = ({navigation}) => {
             likeCount={post.likesCount}
             commentCount={post.commentsCount}
             createdDate={post.createdDate}
+            thumbsUp={thumbsUp}
             mention={post.mention}
             onPress={() => {
               navigation.push('Detail', {
                 ...post,
                 userId: id,
-                reload: reload,
-                thumbsUp: thumbsUp,
                 before: 'MyPage',
               });
             }}
-            thumbsUp={thumbsUp}
           />
         ))}
         {postList.length == 0 && (

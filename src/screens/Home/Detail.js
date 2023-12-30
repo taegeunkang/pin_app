@@ -27,6 +27,13 @@ import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
 import {timeAgo} from '../../utils/util';
 import HeaderLeftButton from '../../components/HeaderLeftButton';
+import {
+  likeToggle,
+  setLikeCount,
+  setCommentCount as setCmtCnt,
+} from '../../store/post';
+import {useDispatch} from 'react-redux';
+
 const Detail = ({navigation, route}) => {
   const {
     postId,
@@ -40,7 +47,6 @@ const Detail = ({navigation, route}) => {
     commentsCount,
     createdDate,
     mention,
-    thumbsUp,
     userId,
     reload,
     before,
@@ -79,6 +85,34 @@ const Detail = ({navigation, route}) => {
   const [replyLoading, setReplyLoading] = useState(false);
   const {Colors, Fonts, Images} = useTheme();
   const inptRef = useRef(null);
+
+  // redux dispatcher
+  const dispatch = useDispatch();
+
+  const thumbsUp = async postId => {
+    const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+
+    if (response.status == 200) {
+      const r = await response.json();
+      dispatch(setLikeCount({postId: postId, count: r}));
+      dispatch(likeToggle({postId: postId}));
+
+      return r;
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await thumbsUp(postId);
+          break;
+      }
+    }
+  };
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -183,6 +217,9 @@ const Detail = ({navigation, route}) => {
         c[reply] = c[reply].concat(d);
         setReplyList(c);
       }
+
+      dispatch(setCmtCnt({postId: postId, count: commentsCount + 1}));
+      setCommentCount(commentsCount + 1);
       setInpt('');
     } else if (response.status == 400) {
       const k = await response.json();
@@ -272,11 +309,6 @@ const Detail = ({navigation, route}) => {
     }
   };
 
-  const isMyPost = async () => {
-    const myId = await AsyncStorage.getItem('id');
-    console.log(myId == userId);
-    return myId == userId;
-  };
   const deletePost = async () => {
     const response = await fetch(API_URL + `/post/delete?id=${postId}`, {
       method: 'DELETE',
