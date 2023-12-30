@@ -67,8 +67,6 @@ const MyPage = ({navigation}) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-
-    // 여기서 데이터를 새로 고치는 로직을 추가합니다.
     setPage(0);
     await getProfile();
     await initData();
@@ -119,7 +117,6 @@ const MyPage = ({navigation}) => {
     switch (response.status) {
       case 200:
         let r = await response.json();
-        console.log('db 데이터 ', r);
         dispatch(setInitialPost({post: r}));
         break;
       case 400:
