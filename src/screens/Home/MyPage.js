@@ -1,26 +1,24 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  ScrollView,
+  Modal,
+  Pressable,
   RefreshControl,
   SafeAreaView,
-  Pressable,
-  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Edit from '../../components/Content/Edit';
-import React from 'react';
-import {useSSR, useTranslation} from 'react-i18next';
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import PostBox from '../../components/mypage/PostBox';
 import ProfileButton from '../../components/mypage/ProfileButton';
 import {useTheme} from '../../hooks';
-import PostBox from '../../components/mypage/PostBox';
-import {useState, useEffect} from 'react';
-import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {reIssue} from '../../utils/login';
-import FastImage from 'react-native-fast-image';
 // 게시글 없을 때 check
 
 const MyPage = ({navigation}) => {
@@ -33,7 +31,6 @@ const MyPage = ({navigation}) => {
   const [userInfo, setUserInfo] = useState({});
   const [id, setId] = useState(null);
   const [postList, setPostList] = useState([]);
-  const [isPopped, setIsPopped] = useState(false);
   const [reloadLoading, setReloadLoading] = useState(false);
 
   const reload = async postid => {

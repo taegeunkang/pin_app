@@ -1,19 +1,19 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import {
   Image,
-  View,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
-  Pressable,
+  View
 } from 'react-native';
-import {useTheme} from '../../hooks';
-import {ScrollView} from 'react-native-gesture-handler';
-import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import {useEffect, useLayoutEffect, useState} from 'react';
-import {API_URL} from '../../utils/constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {reIssue} from '../../utils/login';
-import {timeAgo} from '../../utils/util';
+import { ScrollView } from 'react-native-gesture-handler';
+import { responsiveHeight, responsiveWidth } from '../../components/Scale';
+import { useTheme } from '../../hooks';
+import { API_URL } from '../../utils/constants';
+import { reIssue } from '../../utils/login';
+import { timeAgo } from '../../utils/util';
 const Alram = ({navigation}) => {
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -78,6 +78,8 @@ const Alram = ({navigation}) => {
   useEffect(() => {
     load();
   }, []);
+
+ 
 
   return (
     <View>
