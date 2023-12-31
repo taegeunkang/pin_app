@@ -16,6 +16,7 @@ const Nav = () => {
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
+        animationEnabled: false,
         tabBarIcon: ({focused}) => {
           if (route.name == 'MapNavigator') {
             return focused ? (

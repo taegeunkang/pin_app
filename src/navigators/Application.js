@@ -140,6 +140,21 @@ const ApplicationNavigator = () => {
             options={{
               headerBackTitleVisible: false,
               title: t('newPost:media.preview'),
+              presentation: 'transparentModal',
+              cardStyleInterpolator: ({current, layouts}) => {
+                return {
+                  cardStyle: {
+                    transform: [
+                      {
+                        translateX: current.progress.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [layouts.screen.width, 0],
+                        }),
+                      },
+                    ],
+                  },
+                };
+              },
             }}
           />
           <Stack.Screen
@@ -187,6 +202,21 @@ const ApplicationNavigator = () => {
             options={{
               headerBackTitleVisible: false,
               title: t('newPost:media.location'),
+              presentation: 'transparentModal',
+              cardStyleInterpolator: ({current, layouts}) => {
+                return {
+                  cardStyle: {
+                    transform: [
+                      {
+                        translateX: current.progress.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [layouts.screen.width, 0],
+                        }),
+                      },
+                    ],
+                  },
+                };
+              },
             }}
           />
           <Stack.Screen
@@ -195,6 +225,21 @@ const ApplicationNavigator = () => {
             options={{
               headerBackTitleVisible: false,
               title: t('newPost:media.friends'),
+              presentation: 'transparentModal',
+              cardStyleInterpolator: ({current, layouts}) => {
+                return {
+                  cardStyle: {
+                    transform: [
+                      {
+                        translateX: current.progress.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [layouts.screen.width, 0],
+                        }),
+                      },
+                    ],
+                  },
+                };
+              },
             }}
           />
 

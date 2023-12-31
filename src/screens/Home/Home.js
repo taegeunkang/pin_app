@@ -7,6 +7,7 @@ import {
   Animated as Ani,
   Image,
   Modal,
+  Dimensions,
 } from 'react-native';
 import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
@@ -33,20 +34,21 @@ const Home = ({navigation}) => {
   const [permission, setPermission] = useState(true);
   const [detailPressed, setDetailPressed] = useState(false);
   const mapRef = useRef(null);
-  const {Gutters, Images, Colors} = useTheme();
+  const {Gutters, Images, Colors, Fonts} = useTheme();
   const scaleValue = useState(new Ani.Value(1))[0];
+  const refreshScale = useState(new Ani.Value(1))[0];
 
   const dispatch = useDispatch();
-  const onButtonPressIn = () => {
-    Ani.timing(scaleValue, {
+  const onButtonPressIn = scale => {
+    Ani.timing(scale, {
       toValue: 0.95,
       duration: 100,
       useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
     }).start();
   };
 
-  const onButtonPressOut = () => {
-    Ani.timing(scaleValue, {
+  const onButtonPressOut = scale => {
+    Ani.timing(scale, {
       toValue: 1,
       duration: 150,
       useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
@@ -306,8 +308,8 @@ const Home = ({navigation}) => {
               transform: [{scale: scaleValue}],
             }}>
             <Pressable
-              onPressIn={onButtonPressIn}
-              onPressOut={onButtonPressOut}
+              onPressIn={() => onButtonPressIn(scaleValue)}
+              onPressOut={() => onButtonPressOut(scaleValue)}
               style={{}}
               onPress={returnCurrentLocation}>
               <Image
@@ -318,6 +320,41 @@ const Home = ({navigation}) => {
                   resizeMode: 'contain',
                 }}
               />
+            </Pressable>
+          </Ani.View>
+          {/* 게시글 새로 생성했을 때 새로고침 버튼 표시  */}
+          <Ani.View
+            style={{
+              width: responsiveWidth(100),
+              height: responsiveWidth(30),
+              position: 'absolute',
+              top: responsiveHeight(40),
+              left: '38%', // 화면 좌측에서 50% 위치
+              backgroundColor: Colors.buttonSecondBackground,
+              borderRadius: responsiveWidth(100),
+              zIndex: 100,
+              shadowOffset: {width: 0, height: responsiveHeight(3)},
+              shadowOpacity: 0.25,
+              shadowRadius: responsiveWidth(3),
+              shadowColor: '#000000',
+              elevation: 3,
+              alignItems: 'center',
+              justifyContent: 'center',
+              transform: [{scale: refreshScale}],
+            }}>
+            <Pressable
+              onPressIn={() => onButtonPressIn(refreshScale)}
+              onPressOut={() => onButtonPressOut(refreshScale)}
+              style={{
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={[Fonts.contentMediumMedium, {color: Colors.primary}]}>
+                새로고침
+              </Text>
             </Pressable>
           </Ani.View>
 
