@@ -84,7 +84,7 @@ const Startup = ({navigation}) => {
     });
     const result = await response.json();
     if (response.status == 200) {
-      alert('재발금 성공');
+ 
       await AsyncStorage.setItem('token', result['token']);
       await AsyncStorage.setItem('refreshToken', result['refreshToken']);
       return true;

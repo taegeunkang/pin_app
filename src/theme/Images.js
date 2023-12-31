@@ -38,5 +38,6 @@ export default function ({}) {
     albumInactive: require('./assets/images/nav/album-inactive.png'),
     locInactive: require('./assets/images/nav/loc-inactive.png'),
     plusMainBtn: require('./assets/images/light/plus-btn.png'),
+    plusBtn: require('./assets/images/light/plus-btn.png'),
   };
 }

@@ -28,5 +28,6 @@ export default function () {
     userNotSelect: require('../../assets/images/dark/user-not-select.png'),
     userSelect: require('../../assets/images/dark/user-select.png'),
     plusMainBtn: require('../../assets/images/nav/plus-main.png'),
+    plusBtn: require('../../assets/images/nav/plus-main.png'),
   };
 }

@@ -27,30 +27,11 @@ import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
 import {timeAgo} from '../../utils/util';
 import HeaderLeftButton from '../../components/HeaderLeftButton';
-import {
-  likeToggle,
-  setLikeCount,
-  setCommentCount as setCmtCnt,
-} from '../../store/post';
-import {useDispatch} from 'react-redux';
+import {likeToggle, setLikeCount, setCommentCount} from '../../store/post';
+import {useDispatch, useSelector} from 'react-redux';
 
 const Detail = ({navigation, route}) => {
-  const {
-    postId,
-    nickname,
-    profileImage,
-    content,
-    mediaFiles,
-    locationName,
-    liked,
-    likesCount,
-    commentsCount,
-    createdDate,
-    mention,
-    userId,
-    reload,
-    before,
-  } = route.params;
+  const {postId, userId, reload, before} = route.params;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -65,10 +46,12 @@ const Detail = ({navigation, route}) => {
       ),
     });
   });
-  const [myId, setMyId] = useState(null);
-  const [isLiked, setIsLiked] = useState(liked);
-  const [likedCount, setLikedCount] = useState(likesCount);
-  const [commentCount, setCommentCount] = useState(commentsCount);
+
+  // 사용자 정보
+  const [myId, setMyId] = useState('');
+  const [myNickname, setMyNickname] = useState('');
+  const [myProfileImage, setMyProfileImage] = useState('');
+
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [commentList, setCommentList] = useState([]);
@@ -85,6 +68,18 @@ const Detail = ({navigation, route}) => {
   const [replyLoading, setReplyLoading] = useState(false);
   const {Colors, Fonts, Images} = useTheme();
   const inptRef = useRef(null);
+  const [postDetail, setPostDetail] = useState({});
+  const post = useSelector(state => state.post.post);
+
+  const findPostByPostId = (userId, post, postId) => {
+    for (let i = 0; i < post[userId].length; i++) {
+      if (post[userId][i].postId == postId) {
+        console.log('찾음');
+        return post[userId][i];
+      }
+    }
+    return null;
+  };
 
   // redux dispatcher
   const dispatch = useDispatch();
@@ -124,8 +119,6 @@ const Detail = ({navigation, route}) => {
 
   const onLike = async () => {
     const r = await thumbsUp(postId);
-    setIsLiked(!isLiked);
-    setLikedCount(r);
   };
   // 댓글 조회
   const fetchComment = async isRefresh => {
@@ -147,12 +140,16 @@ const Detail = ({navigation, route}) => {
       const r = await response.json();
       if (page == -1 || isRefresh) {
         setCommentList(r);
-        dispatch(setCmtCnt({userId: userId, postId: postId, count: r.length}));
+        dispatch(
+          setCommentCount({userId: userId, postId: postId, count: r.length}),
+        );
       } else {
         let a = commentList;
         a = a.concat(r);
         setCommentList(a);
-        dispatch(setCmtCnt({userId: userId, postId: postId, count: a.length}));
+        dispatch(
+          setCommentCount({userId: userId, postId: postId, count: a.length}),
+        );
       }
       if (r.length > 0 && !isRefresh) {
         setPage(page + 1);
@@ -196,9 +193,9 @@ const Detail = ({navigation, route}) => {
         let b = {
           commentId: cId,
           content: inpt,
-          writer: nickname,
-          writerId: await AsyncStorage.getItem('id'),
-          profileImage: profileImage,
+          writer: myNickname,
+          writerId: myId,
+          profileImage: myProfileImage,
           replyCount: 0,
           createdDate: new Date().toISOString().replace('Z', '+00:00'),
         };
@@ -211,9 +208,9 @@ const Detail = ({navigation, route}) => {
         let d = {
           commentId: cId,
           content: inpt,
-          writer: nickname,
-          writerId: await AsyncStorage.getItem('id'),
-          profileImage: profileImage,
+          writer: myNickname,
+          writerId: myId,
+          profileImage: myProfileImage,
           createdDate: new Date().toISOString().replace('Z', '+00:00'),
         };
         c[reply] = c[reply].concat(d);
@@ -221,9 +218,12 @@ const Detail = ({navigation, route}) => {
       }
 
       dispatch(
-        setCmtCnt({userId: userId, postId: postId, count: commentsCount + 1}),
+        setCommentCount({
+          userId: userId,
+          postId: postId,
+          count: commentsCount + 1,
+        }),
       );
-      setCommentCount(commentsCount + 1);
       setInpt('');
     } else if (response.status == 400) {
       const k = await response.json();
@@ -256,7 +256,6 @@ const Detail = ({navigation, route}) => {
         a.push(commentList[i]);
       }
       setSelectedComment(-1);
-      setCommentCount(commentCount - 1);
       setCommentList(a);
     } else if (response.status == 400) {
       const k = await response.json();
@@ -386,6 +385,10 @@ const Detail = ({navigation, route}) => {
   };
   const init = async () => {
     setMyId(await AsyncStorage.getItem('id'));
+    setMyNickname(await AsyncStorage.getItem('myNickname'));
+    setMyProfileImage(await AsyncStorage.getItem('myProfileImage'));
+    const r = findPostByPostId(userId, post, postId);
+    setPostDetail(r);
   };
   useEffect(() => {
     const t = async () => {
@@ -394,6 +397,16 @@ const Detail = ({navigation, route}) => {
     fetchComment();
     t();
   }, []);
+
+  const reRender = async () => {
+    const r = findPostByPostId(userId, post, postId);
+    setPostDetail(r);
+  };
+
+  useEffect(() => {
+    reRender();
+    console.log('재 렌더링');
+  }, [post]);
 
   const styles = StyleSheet.create({
     container: {
@@ -516,7 +529,9 @@ const Detail = ({navigation, route}) => {
                   style={{flexDirection: 'row', alignItems: 'center'}}>
                   <FastImage
                     source={{
-                      uri: API_URL + `/post/image?watch=${profileImage}`,
+                      uri:
+                        API_URL +
+                        `/post/image?watch=${postDetail.profileImage}`,
                       priority: FastImage.priority.high,
                     }}
                     style={styles.writerImage}
@@ -529,48 +544,52 @@ const Detail = ({navigation, route}) => {
                         color: Colors.textNormal,
                       },
                     ]}>
-                    {nickname}
+                    {postDetail.nickname}
                   </Text>
                   <Text
                     style={[
                       Fonts.contentRegualrMedium,
                       {color: Colors.textNormal},
                     ]}>
-                    {timeAgo(createdDate)}
+                    {timeAgo(postDetail.createdDate)}
                   </Text>
                 </Pressable>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  {mention && (
+                  {postDetail.mention && postDetail.mention && (
                     <Pressable
                       onPress={() => {
-                        navigation.push('DetailMention', {friends: mention});
+                        navigation.push('DetailMention', {
+                          friends: postDetail.mention,
+                        });
                       }}
                       style={{
                         flexDirection: 'row',
                         backgroundColor: Colors.screenBackground,
                       }}>
-                      {mention.map((f, index) => {
-                        if (index < 2) {
-                          return (
-                            <FastImage
-                              key={index}
-                              source={{
-                                uri:
-                                  API_URL +
-                                  `/user/profile/image?watch=${f.profileImage}`,
-                                priority: FastImage.priority.high,
-                              }}
-                              style={styles.writerImage}
-                            />
-                          );
-                        } else {
-                          return;
-                        }
-                      })}
+                      {postDetail.mention &&
+                        postDetail.mention.map((f, index) => {
+                          if (index < 2) {
+                            return (
+                              <FastImage
+                                key={index}
+                                source={{
+                                  uri:
+                                    API_URL +
+                                    `/user/profile/image?watch=${f.profileImage}`,
+                                  priority: FastImage.priority.high,
+                                }}
+                                style={styles.writerImage}
+                              />
+                            );
+                          } else {
+                            return;
+                          }
+                        })}
 
-                      {mention.length - 2 > 0 && (
-                        <MoreFriends count={mention.length - 2} />
-                      )}
+                      {postDetail.mention &&
+                        postDetail.mention.length - 2 > 0 && (
+                          <MoreFriends count={postDetail.mention.length - 2} />
+                        )}
                     </Pressable>
                   )}
 
@@ -601,18 +620,18 @@ const Detail = ({navigation, route}) => {
                   Fonts.contentMediumMedium,
                   {width: responsiveWidth(370), color: Colors.textNormal},
                 ]}>
-                {content}
+                {postDetail.content}
               </Text>
               <View style={{marginTop: responsiveHeight(10)}} />
 
               {/* 첨부 파일*/}
-              {mediaFiles.length > 0 && (
+              {postDetail.mediaFiles && postDetail.mediaFiles.length > 0 && (
                 <View
                   style={{
                     width: responsiveWidth(370),
                     height: responsiveWidth(370),
                   }}>
-                  <Slider media={mediaFiles} />
+                  <Slider media={postDetail.mediaFiles} />
                 </View>
               )}
               <View style={{marginBottom: responsiveHeight(20)}} />
@@ -628,7 +647,7 @@ const Detail = ({navigation, route}) => {
                     marginRight: responsiveWidth(10),
                     marginBottom: responsiveHeight(5),
                   }}>
-                  {isLiked ? (
+                  {postDetail.liked ? (
                     <Pressable onPress={() => onLike()}>
                       <Image
                         source={Images.smileSelect}
@@ -659,7 +678,7 @@ const Detail = ({navigation, route}) => {
                       Fonts.contentMediumMedium,
                       {color: Colors.textNormal},
                     ]}>
-                    {formatNumber(likedCount)}
+                    {formatNumber(postDetail.likesCount)}
                   </Text>
                 </View>
 
@@ -682,10 +701,10 @@ const Detail = ({navigation, route}) => {
                       Fonts.contentMediumMedium,
                       {color: Colors.textNormal},
                     ]}>
-                    {formatNumber(commentCount)}
+                    {formatNumber(postDetail.commentsCount)}
                   </Text>
                 </View>
-                {locationName && (
+                {postDetail.locationName && (
                   <View style={{flexDirection: 'row'}}>
                     <Image
                       source={Images.pinNotSelect}
@@ -701,7 +720,7 @@ const Detail = ({navigation, route}) => {
                         Fonts.contentMediumMedium,
                         {color: Colors.textNormal},
                       ]}>
-                      {locationName}
+                      {postDetail.locationName}
                     </Text>
                   </View>
                 )}
@@ -859,7 +878,7 @@ const formatNumber = num => {
     // 1,000 이상
     return (num / 1e3).toFixed(1) + 'k';
   } else {
-    return num.toString();
+    return num;
   }
 };
 

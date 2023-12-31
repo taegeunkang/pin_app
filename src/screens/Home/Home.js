@@ -22,7 +22,8 @@ import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
 import {fcmService} from '../../firebase/push.fcm';
 import {localNotificationService} from '../../firebase/push.noti';
-import messaging from '@react-native-firebase/messaging';
+import {useDispatch} from 'react-redux';
+import {likeToggle, setLikeCount} from '../../store/post';
 
 const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
@@ -35,6 +36,7 @@ const Home = ({navigation}) => {
   const {Gutters, Images, Colors} = useTheme();
   const scaleValue = useState(new Ani.Value(1))[0];
 
+  const dispatch = useDispatch();
   const onButtonPressIn = () => {
     Ani.timing(scaleValue, {
       toValue: 0.95,
@@ -115,7 +117,6 @@ const Home = ({navigation}) => {
   };
 
   const thumbsUp = async postId => {
-    console.log('호출11');
     const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
       method: 'POST',
       headers: {
@@ -125,6 +126,9 @@ const Home = ({navigation}) => {
 
     if (response.status == 200) {
       const r = await response.json();
+      dispatch(setLikeCount({userId: id, postId: postId, count: r}));
+      dispatch(likeToggle({userId: id, postId: postId}));
+
       return r;
     } else if (response.status == 400) {
       const k = await response.json();
@@ -137,6 +141,10 @@ const Home = ({navigation}) => {
     }
   };
 
+  /**
+   * @description 지도상에서 사용자가 올린 전체 게시글과 24시간 내의 업로드된 팔로잉 하는 사용자들의 게시글을 받아옴
+   *
+   */
   const getMyPosts = async () => {
     setMyUserId(await AsyncStorage.getItem('id'));
 
@@ -210,9 +218,30 @@ const Home = ({navigation}) => {
     console.log('[App] onOpenNotification : notify :', notify);
   };
 
+  const getUserProfile = async () => {
+    const userId = await AsyncStorage.getItem('id');
+
+    let response = await fetch(
+      API_URL + '/user/profile/info?userId=' + userId,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        },
+      },
+    );
+    if (response.status == 200) {
+      const r = await response.json();
+      await AsyncStorage.setItem('myProfileImage', r.profileImg);
+      await AsyncStorage.setItem('myNickname', r.nickname);
+    }
+  };
+
   useEffect(() => {
     checkPermissions();
     getMyPosts();
+    getUserProfile();
     const intervalId = setInterval(getCurrentLocation, 2000);
 
     fcmService.registerAppWithFCM();
