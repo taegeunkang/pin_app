@@ -221,7 +221,7 @@ const Detail = ({navigation, route}) => {
         setCommentCount({
           userId: userId,
           postId: postId,
-          count: commentsCount + 1,
+          count: postDetail.commentsCount + 1,
         }),
       );
       setInpt('');
