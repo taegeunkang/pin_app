@@ -23,8 +23,9 @@ import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
 import {fcmService} from '../../firebase/push.fcm';
 import {localNotificationService} from '../../firebase/push.noti';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {likeToggle, setLikeCount} from '../../store/post';
+import {updateNewPost} from '../../store/newPost';
 
 const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
@@ -33,12 +34,16 @@ const Home = ({navigation}) => {
   const [contents, setContents] = useState([]);
   const [permission, setPermission] = useState(true);
   const [detailPressed, setDetailPressed] = useState(false);
+  const [homeRefresh, setHomeRefresh] = useState(false);
   const mapRef = useRef(null);
   const {Gutters, Images, Colors, Fonts} = useTheme();
   const scaleValue = useState(new Ani.Value(1))[0];
   const refreshScale = useState(new Ani.Value(1))[0];
 
   const dispatch = useDispatch();
+  const isNewPost = useSelector(state => state.newPost.newPost);
+  console.log('새 게시글 업로드 상태 ', isNewPost);
+
   const onButtonPressIn = scale => {
     Ani.timing(scale, {
       toValue: 0.95,
@@ -182,8 +187,6 @@ const Home = ({navigation}) => {
     getMyPosts();
   }, [detailPressed]);
 
-  useEffect(() => {}, []);
-
   const onRegister = tk => {
     console.log('[App] onRegister : token :', tk);
     if (tk) {
@@ -238,6 +241,20 @@ const Home = ({navigation}) => {
       await AsyncStorage.setItem('myProfileImage', r.profileImg);
       await AsyncStorage.setItem('myNickname', r.nickname);
     }
+  };
+
+  /**
+   * @description 새 게시물이 게시되고 새로고침 버튼 활성화 및 새로고침 완료후 버튼 사라짐
+   */
+  const refreshPost = async () => {
+    setHomeRefresh(true);
+    // 게시물 새로 받아오는 로직 추가
+    // 새로 게시된것만 애니메이션으로 추가할 수 있는지?
+
+    setTimeout(() => {
+      setHomeRefresh(false);
+      dispatch(updateNewPost({newState: false}));
+    }, 2000);
   };
 
   useEffect(() => {
@@ -323,40 +340,60 @@ const Home = ({navigation}) => {
             </Pressable>
           </Ani.View>
           {/* 게시글 새로 생성했을 때 새로고침 버튼 표시  */}
-          <Ani.View
-            style={{
-              width: responsiveWidth(100),
-              height: responsiveWidth(30),
-              position: 'absolute',
-              top: responsiveHeight(40),
-              left: '38%', // 화면 좌측에서 50% 위치
-              backgroundColor: Colors.buttonSecondBackground,
-              borderRadius: responsiveWidth(100),
-              zIndex: 100,
-              shadowOffset: {width: 0, height: responsiveHeight(3)},
-              shadowOpacity: 0.25,
-              shadowRadius: responsiveWidth(3),
-              shadowColor: '#000000',
-              elevation: 3,
-              alignItems: 'center',
-              justifyContent: 'center',
-              transform: [{scale: refreshScale}],
-            }}>
-            <Pressable
-              onPressIn={() => onButtonPressIn(refreshScale)}
-              onPressOut={() => onButtonPressOut(refreshScale)}
+          {isNewPost && (
+            <Ani.View
               style={{
-                width: '100%',
-                height: '100%',
+                width: responsiveWidth(120),
+                height: responsiveWidth(30),
+                position: 'absolute',
+                top: responsiveHeight(40),
+                left: '35%', // 화면 좌측에서 50% 위치
+                backgroundColor: Colors.buttonSecondBackground,
+                borderRadius: responsiveWidth(100),
+                zIndex: 100,
+                shadowOffset: {width: 0, height: responsiveHeight(3)},
+                shadowOpacity: 0.25,
+                shadowRadius: responsiveWidth(3),
+                shadowColor: '#000000',
+                elevation: 3,
                 alignItems: 'center',
                 justifyContent: 'center',
+                transform: [{scale: refreshScale}],
               }}>
-              <Text
-                style={[Fonts.contentMediumMedium, {color: Colors.primary}]}>
-                새로고침
-              </Text>
-            </Pressable>
-          </Ani.View>
+              <Pressable
+                onPressIn={() => onButtonPressIn(refreshScale)}
+                onPressOut={() => onButtonPressOut(refreshScale)}
+                onPress={() => refreshPost()}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  position: 'relative',
+                }}>
+                <Text
+                  style={[Fonts.contentMediumMedium, {color: Colors.primary}]}>
+                  새로고침
+                </Text>
+                {homeRefresh && (
+                  <ActivityIndicator
+                    size={'small'}
+                    style={[
+                      Gutters.largeVMargin,
+                      {
+                        width: responsiveWidth(25),
+                        height: responsiveHeight(25),
+                        position: 'absolute',
+                        right: responsiveWidth(7),
+                      },
+                    ]}
+                    color={Colors.primary}
+                  />
+                )}
+              </Pressable>
+            </Ani.View>
+          )}
 
           <MapView
             style={styles.map}

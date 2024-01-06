@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
     width: '100%',
     minHeight: responsiveHeight(70),
     marginTop: responsiveHeight(10),
+    // backgroundColor: 'yellow',
   },
   content: {
     width: responsiveWidth(370),

@@ -15,11 +15,13 @@ import {api} from '../services/api';
 import theme from './theme';
 import post from './post';
 import map from './map';
+import newPost from './newPost';
 
 const reducers = combineReducers({
   theme,
   post,
   map,
+  newPost,
   [api.reducerPath]: api.reducer,
 });
 
@@ -43,7 +45,7 @@ export const reduxStorage = {
 const persistConfig = {
   key: 'root',
   storage: reduxStorage,
-  whitelist: ['theme', 'auth', 'post'],
+  whitelist: ['theme', 'auth', 'post', 'newPost'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);

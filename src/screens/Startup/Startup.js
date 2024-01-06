@@ -12,8 +12,14 @@ import {useTheme} from '../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import {useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
+
+import {setInitialNewPost} from '../../store/newPost';
 const Startup = ({navigation}) => {
   const {Layout, Gutters, Fonts, Images, Colors} = useTheme();
+  const newPost = useSelector(state => state.newPost.newPost);
+  const dispatch = useDispatch();
 
   const init = async () => {
     // 의미 없는 delay but -> 나중에 AD 게시 가능
@@ -23,6 +29,8 @@ const Startup = ({navigation}) => {
       }, 2000),
     );
     setDefaultTheme({theme: 'default', darkMode: null});
+    dispatch(setInitialNewPost());
+    console.log(newPost);
 
     let token = await AsyncStorage.getItem('token'); // 토큰
     let refreshToken = await AsyncStorage.getItem('refreshToken'); // 리프레시 토큰
@@ -84,7 +92,6 @@ const Startup = ({navigation}) => {
     });
     const result = await response.json();
     if (response.status == 200) {
- 
       await AsyncStorage.setItem('token', result['token']);
       await AsyncStorage.setItem('refreshToken', result['refreshToken']);
       return true;

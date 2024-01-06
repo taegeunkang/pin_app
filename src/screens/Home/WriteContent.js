@@ -24,6 +24,9 @@ import {useTheme} from '../../hooks';
 import * as RNFS from 'react-native-fs';
 import {reIssue} from '../../utils/login';
 
+import {useDispatch} from 'react-redux';
+import {updateNewPost} from '../../store/newPost';
+
 const WriteContent = ({navigation, route}) => {
   const [text, setText] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
@@ -37,6 +40,8 @@ const WriteContent = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const [lat, setLat] = useState(null);
   const [lon, setLon] = useState(null);
+
+  const dispatch = useDispatch();
 
   const inptRef = useRef(null);
   useEffect(() => {
@@ -99,6 +104,10 @@ const WriteContent = ({navigation, route}) => {
   // API_URL + "/post/create"
   // 동영상 기능 추가해야함
   const submitPost = async () => {
+    dispatch(updateNewPost({newState: true}));
+    navigation.popToTop();
+    return;
+
     if (text.trim().length == 0) {
       Alert.alert('내용을 입력해 주세요.');
       return;
@@ -154,7 +163,9 @@ const WriteContent = ({navigation, route}) => {
       body: formData,
     });
     if (response.status == 200) {
-      navigation.navigate('Home');
+      dispatch(updateNewPost({newState : true}));
+      navigation.popToTop();
+      setLoading(false);
     } else if (response.status == 400) {
       const k = await response.json();
       switch (k['code']) {
