@@ -11,7 +11,7 @@ import {
   Alert,
   Pressable,
 } from 'react-native';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState, useLayoutEffect} from 'react';
 import {BorderRadius, FontSize} from '../../theme/Variables';
 import Geolocation from '@react-native-community/geolocation';
 import {Switch} from 'react-native-paper';
@@ -23,47 +23,32 @@ import SubmitButton from '../../components/SubmitButton';
 import {useTheme} from '../../hooks';
 import * as RNFS from 'react-native-fs';
 import {reIssue} from '../../utils/login';
-
-import {useDispatch} from 'react-redux';
+import HeaderLeftButton from '../../components/HeaderLeftButton';
+import {useDispatch, useSelector} from 'react-redux';
 import {updateNewPost} from '../../store/newPost';
+import {setInitialWriting, saveText, savePrivate} from '../../store/writing';
+import {setInitialFriends} from '../../store/friends';
 
 const WriteContent = ({navigation, route}) => {
-  const [text, setText] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
   const [gpsPermission, setGpsPermission] = useState(false);
   const {t} = useTranslation('newPost');
-  const [media, setMeida] = useState(null);
-  const [loc, setLoc] = useState('');
-  const [f, setF] = useState([]);
-  const {mediaFiles, locationName, friends} = route.params;
   const {Images, Fonts, Colors} = useTheme();
   const [loading, setLoading] = useState(false);
   const [lat, setLat] = useState(null);
   const [lon, setLon] = useState(null);
 
   const dispatch = useDispatch();
+  const writingContent = useSelector(state => state.writing.writing);
+  const friendsList = useSelector(state => state.friends.friends);
 
   const inptRef = useRef(null);
   useEffect(() => {
-    checkRefreshMediaFiles();
     getCurrentLocation();
   });
 
   const closeKeyboard = () => {
     Keyboard.dismiss();
-    console.log('누름');
-  };
-
-  const checkRefreshMediaFiles = () => {
-    if (mediaFiles) {
-      setMeida(mediaFiles);
-    }
-    if (locationName) {
-      setLoc(locationName);
-    }
-    if (friends) {
-      setF(friends);
-    }
   };
 
   const getAbsolutePath = async assetPath => {
@@ -104,11 +89,8 @@ const WriteContent = ({navigation, route}) => {
   // API_URL + "/post/create"
   // 동영상 기능 추가해야함
   const submitPost = async () => {
-    dispatch(updateNewPost({newState: true}));
-    navigation.popToTop();
-    return;
-
-    if (text.trim().length == 0) {
+    
+    if (writingContent.text.trim().length == 0) {
       Alert.alert('내용을 입력해 주세요.');
       return;
     }
@@ -117,10 +99,10 @@ const WriteContent = ({navigation, route}) => {
     const formData = new FormData();
     let m = []; // 미디어 파일들
     let thumbnails = [];
-    formData.append('content', text); // 글 내용
-    if (media) {
-      for (let i = 0; i < media.length; i++) {
-        const med = media[i];
+    formData.append('content', writingContent.text); // 글 내용
+    if (writingContent.media) {
+      for (let i = 0; i < writingContent.media.length; i++) {
+        const med = writingContent.media[i];
         if (med.accessUri.substring(med.accessUri.length - 3) === 'mp4') {
           const absolutePath = await getAbsolutePath(med.uri);
           m.push({uri: absolutePath, type: 'video/mp4', name: `video${i}`});
@@ -145,12 +127,12 @@ const WriteContent = ({navigation, route}) => {
 
     formData.append('lat', lat); // latitude;
     formData.append('lon', lon); // lontitude;
-    formData.append('locationName', loc);
+    formData.append('locationName', writingContent.location);
     formData.append('isPrivate', isPrivate);
-    if (friends) {
+    if (friendsList) {
       let fff = [];
-      for (let j = 0; j < friends.length; j++) {
-        fff.push(friends[j].userId);
+      for (let j = 0; j < friendsList.length; j++) {
+        fff.push(friendsList[j].userId);
       }
       formData.append('mention', fff);
     }
@@ -163,7 +145,9 @@ const WriteContent = ({navigation, route}) => {
       body: formData,
     });
     if (response.status == 200) {
-      dispatch(updateNewPost({newState : true}));
+      dispatch(updateNewPost({newState: true}));
+      dispatch(setInitialFriends());
+      dispatch(setInitialWriting());
       navigation.popToTop();
       setLoading(false);
     } else if (response.status == 400) {
@@ -224,7 +208,7 @@ const WriteContent = ({navigation, route}) => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: Colors.contentBackground}}>
       <View style={styles.inptContainer}>
-        {media && media.length > 0 && (
+        {writingContent.media && writingContent.media.length > 0 && (
           <>
             <ScrollView
               horizontal={true}
@@ -234,7 +218,7 @@ const WriteContent = ({navigation, route}) => {
                 height: responsiveHeight(115),
                 paddingVertical: responsiveHeight(5),
               }}>
-              {media.map((m, index) => (
+              {writingContent.media.map((m, index) => (
                 <View key={index} style={styles.imageContainer}>
                   <Image
                     style={{
@@ -262,7 +246,7 @@ const WriteContent = ({navigation, route}) => {
             marginBottom: responsiveHeight(20),
           }}>
           <TextInput
-            value={text}
+            value={writingContent.text}
             placeholder={t('write.content.placeholder')}
             placeholderTextColor={Colors.inputPlaceHolder}
             multiline={true}
@@ -279,7 +263,7 @@ const WriteContent = ({navigation, route}) => {
                 paddingHorizontal: responsiveWidth(10),
               },
             ]}
-            onChangeText={e => setText(e)}
+            onChangeText={e => dispatch(saveText({text: e}))}
             ref={inptRef}
             maxLength={500}
           />
@@ -293,6 +277,7 @@ const WriteContent = ({navigation, route}) => {
           <View
             style={{
               flexDirection: 'row',
+              marginBottom: responsiveHeight(5),
             }}>
             <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
               위치
@@ -311,13 +296,12 @@ const WriteContent = ({navigation, route}) => {
                 style={{
                   width: responsiveWidth(25),
                   height: responsiveWidth(25),
-                  // marginTop: responsiveHeight(2),
                   marginLeft: responsiveWidth(5),
                 }}
               />
             </TouchableOpacity>
           </View>
-          {loc && (
+          {writingContent.location && (
             <Text
               style={[
                 Fonts.contentMediumRegualr,
@@ -325,17 +309,17 @@ const WriteContent = ({navigation, route}) => {
                   color: Colors.textNormal,
                 },
               ]}>
-              {loc}
+              {writingContent.location}
             </Text>
           )}
         </View>
 
         <View style={styles.friendsList}>
-          <View style={{flexDirection: 'row'}}>
+          <View
+            style={{flexDirection: 'row', marginBottom: responsiveHeight(5)}}>
             <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
               함께한 친구
             </Text>
-            <View style={{marginBottom: responsiveHeight(5)}} />
             <TouchableOpacity onPress={moveToFindingFriends}>
               <Image
                 source={Images.plusBtn}
@@ -348,31 +332,27 @@ const WriteContent = ({navigation, route}) => {
               />
             </TouchableOpacity>
           </View>
-          {f &&
-            f.map((u, index) => (
-              <View
-                key={index}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  marginBottom: responsiveHeight(5),
-                }}>
-                <Image
-                  source={{
-                    uri: API_URL + `/user/profile/image?watch=${u.profileImg}`,
-                  }}
-                  style={styles.friendsImage}
-                />
-                <Text
-                  style={[
-                    Fonts.contentMediumMedium,
-                    {color: Colors.textNormal},
-                  ]}>
-                  {u.nickname}
-                </Text>
-              </View>
-            ))}
+          {friendsList.map((u, index) => (
+            <View
+              key={index}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                marginBottom: responsiveHeight(5),
+              }}>
+              <Image
+                source={{
+                  uri: API_URL + `/user/profile/image?watch=${u.profileImg}`,
+                }}
+                style={styles.friendsImage}
+              />
+              <Text
+                style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+                {u.nickname}
+              </Text>
+            </View>
+          ))}
         </View>
 
         {/* 친구 기능 추가 후 생성 */}
@@ -389,8 +369,10 @@ const WriteContent = ({navigation, route}) => {
             비공개
           </Text>
           <Switch
-            value={isPrivate}
-            onValueChange={() => setIsPrivate(!isPrivate)}
+            value={writingContent.private}
+            onValueChange={() =>
+              dispatch(savePrivate({isPrivate: !writingContent.private}))
+            }
             color={Colors.buttonSecondContent}
           />
         </View>

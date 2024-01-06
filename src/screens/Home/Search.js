@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useEffect, useRef, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   Image,
   SafeAreaView,
@@ -11,10 +11,10 @@ import {
   View,
 } from 'react-native';
 import UserCell from '../../components/Content/UserCell';
-import { responsiveHeight, responsiveWidth } from '../../components/Scale';
-import { useTheme } from '../../hooks';
-import { API_URL } from '../../utils/constants';
-import { reIssue } from '../../utils/login';
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import {useTheme} from '../../hooks';
+import {API_URL} from '../../utils/constants';
+import {reIssue} from '../../utils/login';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
@@ -187,6 +187,7 @@ const Search = ({navigation}) => {
               width: responsiveWidth(370),
               flexDirection: 'row',
               justifyContent: 'flex-start',
+              marginBottom: responsiveHeight(10),
             }}>
             <Text style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
               {t('search.history')}

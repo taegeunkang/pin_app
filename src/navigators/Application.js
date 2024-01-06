@@ -25,6 +25,7 @@ import WriteContent from '../screens/Home/WriteContent';
 import FindingFriends from '../screens/Home/FindingFriends';
 import FindingLocation from '../screens/Home/FindingLocation';
 import SearchNavigator from './SearchNavigator';
+import {useSelector} from 'react-redux';
 
 const Stack = createStackNavigator();
 // @refresh reset
@@ -32,11 +33,13 @@ const ApplicationNavigator = () => {
   const {t} = useTranslation(['login', 'myPage', 'newPost', 'content']);
   const {Layout, darkMode, NavigationTheme, Fonts, Colors} = useTheme();
   const navigationRef = useNavigationContainerRef();
+
+  console.log('현재 모드 : ', darkMode);
+
   useFlipper(navigationRef);
   return (
     <View style={[Layout.fill, {backgroundColor: Colors.card}]}>
       <NavigationContainer theme={NavigationTheme} ref={navigationRef}>
-        <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} />
         <Stack.Navigator
           screenOptions={{
             headerShown: true,

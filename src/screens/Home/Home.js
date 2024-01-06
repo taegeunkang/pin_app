@@ -42,7 +42,6 @@ const Home = ({navigation}) => {
 
   const dispatch = useDispatch();
   const isNewPost = useSelector(state => state.newPost.newPost);
-  console.log('새 게시글 업로드 상태 ', isNewPost);
 
   const onButtonPressIn = scale => {
     Ani.timing(scale, {
@@ -183,10 +182,6 @@ const Home = ({navigation}) => {
     setDetailPressed(false);
   };
 
-  useEffect(() => {
-    getMyPosts();
-  }, [detailPressed]);
-
   const onRegister = tk => {
     console.log('[App] onRegister : token :', tk);
     if (tk) {
@@ -250,11 +245,10 @@ const Home = ({navigation}) => {
     setHomeRefresh(true);
     // 게시물 새로 받아오는 로직 추가
     // 새로 게시된것만 애니메이션으로 추가할 수 있는지?
-
-    setTimeout(() => {
-      setHomeRefresh(false);
-      dispatch(updateNewPost({newState: false}));
-    }, 2000);
+    await getMyPosts();
+    returnCurrentLocation();
+    setHomeRefresh(false);
+    dispatch(updateNewPost({newState: false}));
   };
 
   useEffect(() => {

@@ -33,6 +33,7 @@ const UserPage = ({navigation, route}) => {
   const {Fonts, Colors} = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [contentClicked, setContentClicked] = useState(false);
   const [page, setPage] = useState(0);
   const [modlaVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState({});
@@ -40,12 +41,10 @@ const UserPage = ({navigation, route}) => {
   const [f, setF] = useState(-1);
 
   const postList = useSelector(state => state.post.post);
-
   const dispatch = useDispatch();
 
   const fetchData = async () => {
     setLoading(true);
-    const userId = await AsyncStorage.getItem('id');
     const response = await fetch(
       API_URL + `/post/find/all?userId=${userId}&page=${page + 1}&size=${20}`,
       {
@@ -60,8 +59,6 @@ const UserPage = ({navigation, route}) => {
       case 200:
         let r = await response.json();
         if (r.length > 0) setPage(page + 1);
-        let a = postList;
-        a = a.concat(r);
         dispatch(appendPost({userId: userId, post: r}));
         break;
       case 400:
@@ -186,6 +183,17 @@ const UserPage = ({navigation, route}) => {
           />
         );
     }
+  };
+
+  const moveToDetail = async post => {
+    if (contentClicked) return;
+
+    setContentClicked(true);
+    navigation.push('Detail', {
+      ...post,
+      userId: userId,
+      before: 'MyPage',
+    });
   };
 
   const follow = async () => {
@@ -438,13 +446,7 @@ const UserPage = ({navigation, route}) => {
                 createdDate={post.createdDate}
                 thumbsUp={thumbsUp}
                 mention={post.mention}
-                onPress={() => {
-                  navigation.push('Detail', {
-                    ...post,
-                    userId: userId,
-                    before: 'MyPage',
-                  });
-                }}
+                onPress={() => moveToDetail(post)}
               />
             );
           })}

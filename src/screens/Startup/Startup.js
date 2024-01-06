@@ -16,9 +16,10 @@ import {useDispatch} from 'react-redux';
 import {useSelector} from 'react-redux';
 
 import {setInitialNewPost} from '../../store/newPost';
+import {setInitialFriends} from '../../store/friends';
+import { setInitialWriting } from '../../store/writing';
 const Startup = ({navigation}) => {
   const {Layout, Gutters, Fonts, Images, Colors} = useTheme();
-  const newPost = useSelector(state => state.newPost.newPost);
   const dispatch = useDispatch();
 
   const init = async () => {
@@ -30,7 +31,8 @@ const Startup = ({navigation}) => {
     );
     setDefaultTheme({theme: 'default', darkMode: null});
     dispatch(setInitialNewPost());
-    console.log(newPost);
+    dispatch(setInitialFriends());
+    dispatch(setInitialWriting());
 
     let token = await AsyncStorage.getItem('token'); // 토큰
     let refreshToken = await AsyncStorage.getItem('refreshToken'); // 리프레시 토큰

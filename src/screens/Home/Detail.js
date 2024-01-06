@@ -74,7 +74,6 @@ const Detail = ({navigation, route}) => {
   const findPostByPostId = (userId, post, postId) => {
     for (let i = 0; i < post[userId].length; i++) {
       if (post[userId][i].postId == postId) {
-        console.log('찾음');
         return post[userId][i];
       }
     }
@@ -405,7 +404,6 @@ const Detail = ({navigation, route}) => {
 
   useEffect(() => {
     reRender();
-    console.log('재 렌더링');
   }, [post]);
 
   const styles = StyleSheet.create({
@@ -564,7 +562,6 @@ const Detail = ({navigation, route}) => {
                       }}
                       style={{
                         flexDirection: 'row',
-                        backgroundColor: Colors.screenBackground,
                       }}>
                       {postDetail.mention &&
                         postDetail.mention.map((f, index) => {

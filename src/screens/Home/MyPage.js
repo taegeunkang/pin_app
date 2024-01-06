@@ -85,7 +85,7 @@ const MyPage = ({navigation}) => {
 
     if (response.status == 200) {
       const r = await response.json();
-    
+
       dispatch(setLikeCount({userId: id, postId: postId, count: r}));
       dispatch(likeToggle({userId: id, postId: postId}));
 
@@ -119,7 +119,6 @@ const MyPage = ({navigation}) => {
       case 200:
         let r = await response.json();
         dispatch(setInitialPost({userId: userId, post: r}));
-        console.log(postList[id]);
         break;
       case 400:
         const k = await response.json();

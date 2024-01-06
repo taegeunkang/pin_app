@@ -19,14 +19,13 @@ import {useTheme} from '../../hooks';
 // 검색 후 -> 결과 잇을 때, 없을 때
 
 const FindingFriends = ({navigation, route}) => {
-  const {userId, selectedFriends} = route.params;
+  const {userId} = route.params;
   const {t} = useTranslation('content');
   const [inpt, setInpt] = useState('');
   const inputRef = useRef(null);
   const [page, setPage] = useState(0);
   const [userList, setUserList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [friendsList, setFriendsList] = useState([]);
   const {Images, Colors, Fonts} = useTheme();
 
   const search = async () => {
@@ -164,9 +163,7 @@ const FindingFriends = ({navigation, route}) => {
       headerRight: () => (
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('WriteContent', {
-              friends: friendsList,
-            });
+            navigation.pop();
           }}
           style={{
             backgroundColor: Colors.transparent,
@@ -190,23 +187,6 @@ const FindingFriends = ({navigation, route}) => {
     });
   });
 
-  const addFriends = async user => {
-    let a = friendsList;
-    a = a.concat(user);
-    setFriendsList(a);
-  };
-
-  const subFriends = async user => {
-    let a = [];
-    for (let i = 0; i < friendsList; i++) {
-      if (friendsList[i].userId == user.userId) {
-        continue;
-      }
-      a.push(friendsList[i]);
-    }
-    setFriendsList(a);
-  };
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -224,6 +204,7 @@ const FindingFriends = ({navigation, route}) => {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'flex-start',
+      marginBottom: responsiveHeight(20),
     },
   });
 
@@ -277,14 +258,7 @@ const FindingFriends = ({navigation, route}) => {
         }}
         scrollEventThrottle={400}>
         {userList.map((user, index) => (
-          <FriendsCell
-            key={index}
-            nickname={user.nickname}
-            profileImage={user.profileImg}
-            onAdd={() => addFriends(user)}
-            onSub={() => subFriends(user)}
-            onPress={() => navigation.push('UserPage', {userId: user.userId})}
-          />
+          <FriendsCell key={index} user={user} />
         ))}
       </ScrollView>
 
@@ -307,6 +281,7 @@ const FindingFriends = ({navigation, route}) => {
             ]}>
             {t('search.notFound')}
           </Text>
+          <View style={{marginTop: responsiveHeight(120)}} />
         </View>
       )}
     </SafeAreaView>
