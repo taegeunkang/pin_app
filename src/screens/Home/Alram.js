@@ -1,17 +1,17 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useEffect, useLayoutEffect, useState} from 'react';
 import {
   Image,
-  View,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
-  Pressable,
+  View,
 } from 'react-native';
-import {useTheme} from '../../hooks';
 import {ScrollView} from 'react-native-gesture-handler';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import {useEffect, useLayoutEffect, useState} from 'react';
+import {useTheme} from '../../hooks';
 import {API_URL} from '../../utils/constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {reIssue} from '../../utils/login';
 import {timeAgo} from '../../utils/util';
 const Alram = ({navigation}) => {
@@ -34,7 +34,7 @@ const Alram = ({navigation}) => {
       ),
     });
   });
-  const {Images, Colors} = useTheme();
+  const {Images, Colors, Fonts} = useTheme();
   const [notification, setNotification] = useState([]);
   const [myId, setMyId] = useState(null);
   const load = async () => {
@@ -80,15 +80,32 @@ const Alram = ({navigation}) => {
   }, []);
 
   return (
-    <ScrollView style={{backgroundColor: Colors.contentBackground}}>
-      {notification.map((noti, index) => (
-        <Notify
-          message={noti.message}
-          createdDate={noti.createdDate}
-          onPress={() => moveToDetail(noti.detail.postId, noti.detail)}
-        />
-      ))}
-    </ScrollView>
+    <View>
+      {notification.length > 0 && (
+        <ScrollView>
+          {notification.map((noti, index) => (
+            <Notify
+              message={noti.message}
+              createdDate={noti.createdDate}
+              onPress={() => moveToDetail(noti.detail.postId, noti.detail)}
+            />
+          ))}
+        </ScrollView>
+      )}
+      {notification.length == 0 && (
+        <View
+          style={{
+            backgroundColor: Colors.contentBackground,
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text style={[Fonts.contentMediumMedium, {color: Colors.textBold}]}>
+            최근 7일간 알림이 없습니다.
+          </Text>
+        </View>
+      )}
+    </View>
   );
 };
 

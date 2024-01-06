@@ -16,7 +16,6 @@ const DetailMention = ({navigation, route}) => {
       flex: 1,
       backgroundColor: Colors.contentBackground,
       alignItems: 'center',
-      paddingVertical: responsiveHeight(20),
     },
     loginInput: {
       height: responsiveHeight(48),
@@ -32,22 +31,25 @@ const DetailMention = ({navigation, route}) => {
   });
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{marginTop: responsiveHeight(20)}} />
       {/* 첫 화면 진입시 검색 기록이 존재 하지 않을 때 */}
       {/* <View style={{flex: 1, backgroundColor: Colors.white}}></View> */}
 
       {/* 검색 결과가 있을 때*/}
-      <ScrollView scrollEventThrottle={400}>
-        {friends.map((friend, index) => (
-          <UserCell
-            key={index}
-            name={friend.nickname}
-            profileImage={friend.profileImage}
-            onPress={() => {
-              navigation.push('UserPage', {userId: friend.userId});
-            }}
-          />
-        ))}
+      <ScrollView scrollEventThrottle={400} style={{width: '100%'}}>
+        <View style={{width: '100%', alignItems: 'center'}}>
+          {friends.map((friend, index) => (
+            <View style={{width: responsiveWidth(370)}}>
+              <UserCell
+                key={index}
+                name={friend.nickname}
+                profileImage={friend.profileImage}
+                onPress={() => {
+                  navigation.push('UserPage', {userId: friend.userId});
+                }}
+              />
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

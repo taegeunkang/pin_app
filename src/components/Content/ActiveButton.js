@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {View, Text, TouchableOpacity, Animated} from 'react-native';
+import {View, Text, TouchableOpacity, Animated, Image} from 'react-native';
 import {responsiveHeight, responsiveWidth} from '../Scale';
 import {useTheme} from '../../hooks';
 const ActiveButton = ({img, title, onPress}) => {
@@ -43,15 +43,33 @@ const ActiveButton = ({img, title, onPress}) => {
             },
             ,
           ]}>
-          <Text
-            style={[
-              Fonts.contentMediumBold,
-              {
-                color: Colors.buttonFirstContent,
-              },
-            ]}>
-            {title}
-          </Text>
+          <View
+            style={{
+              width: responsiveWidth(180),
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              paddingLeft: responsiveWidth(10),
+            }}>
+            <Image
+              source={img}
+              style={{
+                width: responsiveWidth(30),
+                height: responsiveHeight(30),
+                resizeMode: 'contain',
+                marginRight: responsiveWidth(10),
+              }}
+            />
+            <Text
+              style={[
+                Fonts.contentMediumBold,
+                {
+                  color: Colors.buttonFirstContent,
+                },
+              ]}>
+              {title}
+            </Text>
+          </View>
         </TouchableOpacity>
       </Animated.View>
     </View>

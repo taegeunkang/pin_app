@@ -14,8 +14,8 @@ export default function ({}) {
     checkNotSelect: require('./assets/images/light/check-not-select.png'),
     checkSelect: require('./assets/images/light/check-select.png'),
     close: require('./assets/images/light/close.png'),
-    commentNotSelect: require('./assets/images/light/comment-not-select.png'),
-    commentSelect: require('./assets/images/light/comment-select.png'),
+    commentNotSelect: require('./assets/images/light/comment.png'),
+    commentSelect: require('./assets/images/light/comment.png'),
     confirmed: require('./assets/images/light/confirmed.png'),
     currentLocation: require('./assets/images/light/current-location.png'),
     detail: require('./assets/images/light/detail.png'),
@@ -33,5 +33,11 @@ export default function ({}) {
     uploadSelect: require('./assets/images/light/upload-select.png'),
     userNotSelect: require('./assets/images/light/user-not-select.png'),
     userSelect: require('./assets/images/light/user-select.png'),
+    album: require('./assets/images/nav/album.png'),
+    loc: require('./assets/images/nav/loc.png'),
+    albumInactive: require('./assets/images/nav/album-inactive.png'),
+    locInactive: require('./assets/images/nav/loc-inactive.png'),
+    plusMainBtn: require('./assets/images/light/plus-btn.png'),
+    plusBtn: require('./assets/images/light/plus-btn.png'),
   };
 }

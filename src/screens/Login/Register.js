@@ -294,6 +294,7 @@ const Register = ({navigation}) => {
               width: responsiveWidth(370),
               alignItems: 'flex-start',
               marginTop: responsiveHeight(5),
+              height: responsiveHeight(15),
             }}>
             <Text
               style={[
@@ -305,6 +306,14 @@ const Register = ({navigation}) => {
               {t('input.wrongEmail')}
             </Text>
           </View>
+        )}
+        {!wrongReg && (
+          <View
+            style={{
+              height: responsiveHeight(15),
+              marginTop: responsiveHeight(5),
+            }}
+          />
         )}
 
         <View style={{marginBottom: 10}} />
@@ -456,6 +465,7 @@ const Register = ({navigation}) => {
                   width: responsiveWidth(370),
                   alignItems: 'flex-start',
                   marginTop: responsiveHeight(5),
+                  height: responsiveHeight(20),
                 }}>
                 <Text
                   style={{
@@ -475,6 +485,7 @@ const Register = ({navigation}) => {
                   width: responsiveWidth(370),
                   alignItems: 'flex-start',
                   marginTop: responsiveHeight(5),
+                  height: responsiveHeight(20),
                 }}>
                 <Text
                   style={{
@@ -494,6 +505,7 @@ const Register = ({navigation}) => {
                   width: responsiveWidth(370),
                   alignItems: 'flex-start',
                   marginTop: responsiveHeight(5),
+                  height: responsiveHeight(20),
                 }}>
                 <Text
                   style={{
@@ -506,6 +518,9 @@ const Register = ({navigation}) => {
                   {t('verify.exist')}
                 </Text>
               </View>
+            )}
+            {!expired && !wrongCode && !alreadyVerified && (
+              <View style={{height: responsiveHeight(20)}} />
             )}
           </>
         )}
@@ -520,7 +535,13 @@ const Register = ({navigation}) => {
           isWrong={wrongPasswordReg}
         />
         {wrongPasswordReg && (
-          <View style={{width: responsiveWidth(370), alignItems: 'flex-start'}}>
+          <View
+            style={{
+              width: responsiveWidth(370),
+              alignItems: 'flex-start',
+              height: responsiveHeight(20),
+              // backgroundColor: 'black',
+            }}>
             <Text
               style={[
                 {
@@ -536,6 +557,8 @@ const Register = ({navigation}) => {
             </Text>
           </View>
         )}
+        {!wrongPasswordReg && <View style={{height: responsiveHeight(20)}} />}
+
         <View style={{marginBottom: responsiveHeight(10)}} />
         <InputBox
           title={'비밀번호 재입력'}
@@ -546,7 +569,12 @@ const Register = ({navigation}) => {
           isWrong={!passwordCorrect}
         />
         {!passwordCorrect && (
-          <View style={{width: responsiveWidth(370), alignItems: 'flex-start'}}>
+          <View
+            style={{
+              width: responsiveWidth(370),
+              alignItems: 'flex-start',
+              height: responsiveHeight(20),
+            }}>
             <Text
               style={[
                 {
@@ -562,8 +590,9 @@ const Register = ({navigation}) => {
             </Text>
           </View>
         )}
+        {passwordCorrect && <View style={{height: responsiveHeight(20)}} />}
 
-        <View style={{marginBottom: responsiveHeight(10)}} />
+        {/* <View style={{marginBottom: responsiveHeight(10)}} /> */}
         <View style={styles.checkBox}>
           {policyCheck ? (
             <Pressable onPress={() => setPolicyCheck(!policyCheck)}>

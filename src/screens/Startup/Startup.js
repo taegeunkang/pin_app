@@ -11,9 +11,16 @@ import {setDefaultTheme} from '../../store/theme';
 import {useTheme} from '../../hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
-import {responsiveHeight} from '../../components/Scale';
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import {useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
+
+import {setInitialNewPost} from '../../store/newPost';
+import {setInitialFriends} from '../../store/friends';
+import { setInitialWriting } from '../../store/writing';
 const Startup = ({navigation}) => {
   const {Layout, Gutters, Fonts, Images, Colors} = useTheme();
+  const dispatch = useDispatch();
 
   const init = async () => {
     // 의미 없는 delay but -> 나중에 AD 게시 가능
@@ -23,6 +30,9 @@ const Startup = ({navigation}) => {
       }, 2000),
     );
     setDefaultTheme({theme: 'default', darkMode: null});
+    dispatch(setInitialNewPost());
+    dispatch(setInitialFriends());
+    dispatch(setInitialWriting());
 
     let token = await AsyncStorage.getItem('token'); // 토큰
     let refreshToken = await AsyncStorage.getItem('refreshToken'); // 리프레시 토큰
@@ -84,7 +94,6 @@ const Startup = ({navigation}) => {
     });
     const result = await response.json();
     if (response.status == 200) {
-      alert('재발금 성공');
       await AsyncStorage.setItem('token', result['token']);
       await AsyncStorage.setItem('refreshToken', result['refreshToken']);
       return true;
@@ -106,7 +115,14 @@ const Startup = ({navigation}) => {
         justifyContent: 'center',
         backgroundColor: Colors.contentBackground,
       }}>
-      <Image source={Images.logoTitle} />
+      <Image
+        source={Images.pLogo}
+        style={{
+          width: responsiveWidth(200),
+          height: responsiveHeight(120),
+          resizeMode: 'contain',
+        }}
+      />
       <View
         style={{
           position: 'absolute',

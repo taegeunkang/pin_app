@@ -1,26 +1,31 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  ScrollView,
+  Modal,
+  Pressable,
   RefreshControl,
   SafeAreaView,
-  Pressable,
-  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Edit from '../../components/Content/Edit';
-import React from 'react';
-import {useSSR, useTranslation} from 'react-i18next';
+import {responsiveHeight, responsiveWidth} from '../../components/Scale';
+import PostBox from '../../components/mypage/PostBox';
 import ProfileButton from '../../components/mypage/ProfileButton';
 import {useTheme} from '../../hooks';
-import PostBox from '../../components/mypage/PostBox';
-import {useState, useEffect} from 'react';
-import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
 import {reIssue} from '../../utils/login';
-import FastImage from 'react-native-fast-image';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  appendPost,
+  likeToggle,
+  setInitialPost,
+  setLikeCount,
+} from '../../store/post';
 // 게시글 없을 때 check
 
 const MyPage = ({navigation}) => {
@@ -32,13 +37,16 @@ const MyPage = ({navigation}) => {
   const [modlaVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [id, setId] = useState(null);
-  const [postList, setPostList] = useState([]);
-  const [isPopped, setIsPopped] = useState(false);
+
   const [reloadLoading, setReloadLoading] = useState(false);
+
+  const postList = useSelector(state => state.post.post);
+  const dispatch = useDispatch();
 
   const reload = async postid => {
     if (reloadLoading) return;
-
+    // 게시글 삭제 후 state에서 삭제
+    // 리덕스로 교체 후 바꿈
     setReloadLoading(true);
     // setIsPopped(true);
     let a = postList;
@@ -59,8 +67,6 @@ const MyPage = ({navigation}) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-
-    // 여기서 데이터를 새로 고치는 로직을 추가합니다.
     setPage(0);
     await getProfile();
     await initData();
@@ -68,8 +74,34 @@ const MyPage = ({navigation}) => {
       setRefreshing(false);
     }, 1000);
   };
-  // 사용자의 포스트 목록 조회
 
+  const thumbsUp = async postId => {
+    const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+
+    if (response.status == 200) {
+      const r = await response.json();
+
+      dispatch(setLikeCount({userId: id, postId: postId, count: r}));
+      dispatch(likeToggle({userId: id, postId: postId}));
+
+      return r;
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await thumbsUp(postId);
+          break;
+      }
+    }
+  };
+
+  // 사용자의 포스트 목록 조회
   const initData = async () => {
     setLoading(true);
     const userId = await AsyncStorage.getItem('id');
@@ -86,7 +118,7 @@ const MyPage = ({navigation}) => {
     switch (response.status) {
       case 200:
         let r = await response.json();
-        setPostList(r);
+        dispatch(setInitialPost({userId: userId, post: r}));
         break;
       case 400:
         const k = await response.json();
@@ -119,10 +151,9 @@ const MyPage = ({navigation}) => {
       case 200:
         let r = await response.json();
         if (r.length > 0) setPage(page + 1);
-        let a = postList;
-        a = a.concat(r);
-        setPostList(a);
+        dispatch(appendPost({userId: id, post: r}));
         break;
+
       case 400:
         const k = await response.json();
         switch (k['code']) {
@@ -154,29 +185,6 @@ const MyPage = ({navigation}) => {
         case 'U08':
           await reIssue();
           await getProfile();
-          break;
-      }
-    }
-  };
-
-  const thumbsUp = async postId => {
-    console.log('호출');
-    const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
-      },
-    });
-
-    if (response.status == 200) {
-      const r = await response.json();
-      return r;
-    } else if (response.status == 400) {
-      const k = await response.json();
-      switch (k['code']) {
-        case 'U08':
-          await reIssue();
-          await thumbsUp(postId);
           break;
       }
     }
@@ -379,32 +387,31 @@ const MyPage = ({navigation}) => {
           </View>
         </View>
         <View style={{marginBottom: responsiveHeight(5)}} />
-        {postList.map((post, index) => (
-          <PostBox
-            key={index}
-            postId={post.postId}
-            writerName={post.nickname}
-            writerProfileImage={post.profileImage}
-            content={post.content}
-            mediaFiles={post.mediaFiles}
-            locationName={post.locationName}
-            isLiked={post.liked}
-            likeCount={post.likesCount}
-            commentCount={post.commentsCount}
-            createdDate={post.createdDate}
-            mention={post.mention}
-            onPress={() => {
-              navigation.push('Detail', {
-                ...post,
-                userId: id,
-                reload: reload,
-                thumbsUp: thumbsUp,
-                before: 'MyPage',
-              });
-            }}
-            thumbsUp={thumbsUp}
-          />
-        ))}
+        {postList[id] &&
+          postList[id].map((post, index) => (
+            <PostBox
+              key={index}
+              postId={post.postId}
+              writerName={post.nickname}
+              writerProfileImage={post.profileImage}
+              content={post.content}
+              mediaFiles={post.mediaFiles}
+              locationName={post.locationName}
+              isLiked={post.liked}
+              likeCount={post.likesCount}
+              commentCount={post.commentsCount}
+              createdDate={post.createdDate}
+              thumbsUp={thumbsUp}
+              mention={post.mention}
+              onPress={() => {
+                navigation.push('Detail', {
+                  ...post,
+                  userId: id,
+                  before: 'MyPage',
+                });
+              }}
+            />
+          ))}
         {postList.length == 0 && (
           <View
             style={{

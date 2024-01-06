@@ -28,10 +28,11 @@ const Edit = ({
       backgroundColor: 'rgba(0,0,0, 0.3)',
       justifyContent: 'flex-end',
       alignItems: 'center',
+      paddingBottom: responsiveHeight(25),
     },
     content: {
       width: responsiveWidth(370),
-      borderRadius: responsiveWidth(12),
+      borderRadius: responsiveWidth(16),
       backgroundColor: Colors.contentBackground,
     },
     btn: {
@@ -44,12 +45,12 @@ const Edit = ({
     last: {
       marginVertical: responsiveHeight(10),
       backgroundColor: Colors.contentBackground,
-      borderRadius: responsiveWidth(12),
+      borderRadius: responsiveWidth(16),
     },
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.content}>
         <TouchableOpacity
           onPress={setBackgroundImage}
@@ -85,7 +86,7 @@ const Edit = ({
           취소
         </Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 

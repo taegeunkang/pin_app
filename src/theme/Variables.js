@@ -20,6 +20,7 @@ export const Colors = {
   lightGray: '#E4E4E4',
   DarkGray: '#BBBBBB',
   red: '#E44949',
+  heartRed: '#F04452',
 
   screenBackground: '#F2F4F6',
   contentBackground: '#FFFFFF',

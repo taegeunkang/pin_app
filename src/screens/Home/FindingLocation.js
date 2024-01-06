@@ -11,6 +11,8 @@ import {
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import {useTheme} from '../../hooks';
+import {useDispatch} from 'react-redux';
+import {saveLocation} from '../../store/writing';
 const FindingLocation = ({navigation, route}) => {
   const {lat, lon} = route.params;
   const [nearByLocations, setNearByLocations] = useState([]);
@@ -19,6 +21,7 @@ const FindingLocation = ({navigation, route}) => {
   const {t} = useTranslation('newPost');
   const inputRef = useRef(null);
   const {Colors, Images, Fonts} = useTheme();
+  const dispatch = useDispatch();
 
   const getNearByLocations = async () => {
     const response = await fetch(
@@ -33,7 +36,8 @@ const FindingLocation = ({navigation, route}) => {
   };
 
   const goBack = item => {
-    navigation.navigate('WriteContent', {locationName: item});
+    dispatch(saveLocation({location: item}));
+    navigation.navigate('WriteContent');
   };
   const onChangeTyping = e => {
     setCustomTyping(e);
@@ -126,17 +130,16 @@ const FindingLocation = ({navigation, route}) => {
           <Pressable
             style={styles.locationList}
             onPress={() => goBack(customTyping)}>
-            <Text
-              style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+            <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
               {customTyping}
             </Text>
           </Pressable>
         ) : (
           <Pressable
             style={styles.locationList}
-            onPress={() => goBack(customTyping)}>
-            <Text
-              style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+            //onPress={() => goBack(customTyping)}
+          >
+            <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
               직접 입력
             </Text>
           </Pressable>

@@ -19,38 +19,32 @@ import FollowButton from '../../components/mypage/FollowButton';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '../../utils/constants';
-import {useFocusEffect} from '@react-navigation/native';
 import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
+import {useDispatch, useSelector} from 'react-redux';
+import {setInitialPost, appendPost} from '../../store/post';
+import {setLikeCount, likeToggle} from '../../store/post';
 // 게시글 없을 때 check
 
 const UserPage = ({navigation, route}) => {
-  const {userId} = route.params;
+  let {userId} = route.params;
+
   const {t} = useTranslation('myPage');
   const {Fonts, Colors} = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [contentClicked, setContentClicked] = useState(false);
   const [page, setPage] = useState(0);
   const [modlaVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState({});
-  const [id, setId] = useState(null);
-  const [postList, setPostList] = useState([]);
-  const [isPopped, setIsPopped] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
   const [f, setF] = useState(-1);
-  useFocusEffect(
-    React.useCallback(() => {
-      if (isPopped) {
-        // pop 후에만 실행할 동작
-        // initData();
-        setIsPopped(false);
-      }
-    }, [isPopped]), // isPopped 의존성을 추가
-  );
+
+  const postList = useSelector(state => state.post.post);
+  const dispatch = useDispatch();
 
   const fetchData = async () => {
     setLoading(true);
-    const userId = await AsyncStorage.getItem('id');
     const response = await fetch(
       API_URL + `/post/find/all?userId=${userId}&page=${page + 1}&size=${20}`,
       {
@@ -65,9 +59,7 @@ const UserPage = ({navigation, route}) => {
       case 200:
         let r = await response.json();
         if (r.length > 0) setPage(page + 1);
-        let a = postList;
-        a = a.concat(r);
-        setPostList(a);
+        dispatch(appendPost({userId: userId, post: r}));
         break;
       case 400:
         const k = await response.json();
@@ -108,7 +100,7 @@ const UserPage = ({navigation, route}) => {
     switch (response.status) {
       case 200:
         let r = await response.json();
-        setPostList(r);
+        dispatch(setInitialPost({userId: userId, post: r}));
         break;
       case 400:
         const k = await response.json();
@@ -161,7 +153,8 @@ const UserPage = ({navigation, route}) => {
 
     if (response.status == 200) {
       const r = await response.json();
-      likeRefreshPost(postId, r);
+      dispatch(setLikeCount({userId: userId, postId: postId, count: r}));
+      dispatch(likeToggle({userId: userId, postId: postId}));
       return r;
     } else if (response.status == 400) {
       const k = await response.json();
@@ -174,15 +167,6 @@ const UserPage = ({navigation, route}) => {
     }
   };
 
-  const likeRefreshPost = (postId, likeCount) => {
-    let tmp = postList;
-    for (let i = 0; i < tmp.length; i++) {
-      if (tmp[i].postId == postId) {
-        tmp[i].likesCount = likeCount;
-      }
-    }
-    setPostList(tmp);
-  };
   const followStatus = () => {
     switch (userInfo.followStatus) {
       case 3:
@@ -199,6 +183,17 @@ const UserPage = ({navigation, route}) => {
           />
         );
     }
+  };
+
+  const moveToDetail = async post => {
+    if (contentClicked) return;
+
+    setContentClicked(true);
+    navigation.push('Detail', {
+      ...post,
+      userId: userId,
+      before: 'MyPage',
+    });
   };
 
   const follow = async () => {
@@ -434,36 +429,27 @@ const UserPage = ({navigation, route}) => {
           </View>
         </View>
         <View style={{marginBottom: responsiveHeight(5)}} />
-        {postList.map((post, index) => {
-          return (
-            <PostBox
-              key={index}
-              postId={post.postId}
-              writerName={post.nickname}
-              writerProfileImage={post.profileImage}
-              content={post.content}
-              mediaFiles={post.mediaFiles}
-              locationName={post.locationName}
-              isLiked={post.liked}
-              likeCount={post.likesCount}
-              commentCount={post.commentsCount}
-              createdDate={post.createdDate}
-              mention={post.mention}
-              onPress={() => {
-                navigation.push('Detail', {
-                  ...post,
-                  thumbsUp: thumbsUp,
-                  userId: userId,
-                  before: 'UserPage',
-                  reload: () => {
-                    setIsPopped(true);
-                  },
-                });
-              }}
-              thumbsUp={thumbsUp}
-            />
-          );
-        })}
+        {postList[userId] &&
+          postList[userId].map((post, index) => {
+            return (
+              <PostBox
+                key={index}
+                postId={post.postId}
+                writerName={post.nickname}
+                writerProfileImage={post.profileImage}
+                content={post.content}
+                mediaFiles={post.mediaFiles}
+                locationName={post.locationName}
+                isLiked={post.liked}
+                likeCount={post.likesCount}
+                commentCount={post.commentsCount}
+                createdDate={post.createdDate}
+                thumbsUp={thumbsUp}
+                mention={post.mention}
+                onPress={() => moveToDetail(post)}
+              />
+            );
+          })}
         {postList.length == 0 && (
           <View
             style={{

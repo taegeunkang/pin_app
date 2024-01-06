@@ -1,20 +1,20 @@
-import {
-  StyleSheet,
-  View,
-  TextInput,
-  ScrollView,
-  Text,
-  SafeAreaView,
-  Image,
-} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useState, useRef, useEffect} from 'react';
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import UserCell from '../../components/Content/UserCell';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useTheme} from '../../hooks';
 import {API_URL} from '../../utils/constants';
 import {reIssue} from '../../utils/login';
-import {useTheme} from '../../hooks';
 // 첫 화면 -> 검색기록 없을 때, 있을 때,
 // 검색 후 -> 결과 잇을 때, 없을 때
 
@@ -187,6 +187,7 @@ const Search = ({navigation}) => {
               width: responsiveWidth(370),
               flexDirection: 'row',
               justifyContent: 'flex-start',
+              marginBottom: responsiveHeight(10),
             }}>
             <Text style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
               {t('search.history')}

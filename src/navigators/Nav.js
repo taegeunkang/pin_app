@@ -16,6 +16,7 @@ const Nav = () => {
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
+        animationEnabled: false,
         tabBarIcon: ({focused}) => {
           if (route.name == 'MapNavigator') {
             return focused ? (
@@ -60,7 +61,7 @@ const Nav = () => {
           } else if (route.name == 'Medias') {
             return focused ? (
               <Image
-                source={Images.uploadSelect}
+                source={Images.plusMainBtn}
                 style={{
                   width: responsiveWidth(30),
                   height: responsiveHeight(30),
@@ -68,7 +69,7 @@ const Nav = () => {
               />
             ) : (
               <Image
-                source={Images.uploadNotSelect}
+                source={Images.plusMainBtn}
                 style={{
                   width: responsiveWidth(30),
                   height: responsiveHeight(30),

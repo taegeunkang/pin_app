@@ -119,9 +119,9 @@ const BackgroundImage = ({navigation, route}) => {
       <View
         style={{
           width: '100%',
-          height: responsiveHeight(250),
+          height: responsiveHeight(230),
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
         }}>
         <Image
           source={{

@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "스플래시_찐 1.png",
+      "filename" : "splash.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -12,7 +12,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "스플래시_찐 2.png",
+      "filename" : "splash 1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -23,7 +23,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Group 481735.png",
+      "filename" : "splash 2.png",
       "idiom" : "universal",
       "scale" : "1x"
     },

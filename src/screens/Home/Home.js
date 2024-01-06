@@ -7,6 +7,7 @@ import {
   Animated as Ani,
   Image,
   Modal,
+  Dimensions,
 } from 'react-native';
 import {Marker} from 'react-native-maps';
 import MapView from 'react-native-map-clustering';
@@ -22,7 +23,9 @@ import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
 import {fcmService} from '../../firebase/push.fcm';
 import {localNotificationService} from '../../firebase/push.noti';
-import messaging from '@react-native-firebase/messaging';
+import {useDispatch, useSelector} from 'react-redux';
+import {likeToggle, setLikeCount} from '../../store/post';
+import {updateNewPost} from '../../store/newPost';
 
 const Home = ({navigation}) => {
   const [latitude, setLatitude] = useState(null);
@@ -31,20 +34,25 @@ const Home = ({navigation}) => {
   const [contents, setContents] = useState([]);
   const [permission, setPermission] = useState(true);
   const [detailPressed, setDetailPressed] = useState(false);
+  const [homeRefresh, setHomeRefresh] = useState(false);
   const mapRef = useRef(null);
-  const {Gutters, Images, Colors} = useTheme();
+  const {Gutters, Images, Colors, Fonts} = useTheme();
   const scaleValue = useState(new Ani.Value(1))[0];
+  const refreshScale = useState(new Ani.Value(1))[0];
 
-  const onButtonPressIn = () => {
-    Ani.timing(scaleValue, {
+  const dispatch = useDispatch();
+  const isNewPost = useSelector(state => state.newPost.newPost);
+
+  const onButtonPressIn = scale => {
+    Ani.timing(scale, {
       toValue: 0.95,
       duration: 100,
       useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
     }).start();
   };
 
-  const onButtonPressOut = () => {
-    Ani.timing(scaleValue, {
+  const onButtonPressOut = scale => {
+    Ani.timing(scale, {
       toValue: 1,
       duration: 150,
       useNativeDriver: true, // 원활한 성능을 위해 네이티브 드라이버 사용
@@ -115,7 +123,6 @@ const Home = ({navigation}) => {
   };
 
   const thumbsUp = async postId => {
-    console.log('호출11');
     const response = await fetch(API_URL + `/post/like?postId=${postId}`, {
       method: 'POST',
       headers: {
@@ -125,6 +132,9 @@ const Home = ({navigation}) => {
 
     if (response.status == 200) {
       const r = await response.json();
+      dispatch(setLikeCount({userId: id, postId: postId, count: r}));
+      dispatch(likeToggle({userId: id, postId: postId}));
+
       return r;
     } else if (response.status == 400) {
       const k = await response.json();
@@ -137,6 +147,10 @@ const Home = ({navigation}) => {
     }
   };
 
+  /**
+   * @description 지도상에서 사용자가 올린 전체 게시글과 24시간 내의 업로드된 팔로잉 하는 사용자들의 게시글을 받아옴
+   *
+   */
   const getMyPosts = async () => {
     setMyUserId(await AsyncStorage.getItem('id'));
 
@@ -167,12 +181,6 @@ const Home = ({navigation}) => {
   const close = async () => {
     setDetailPressed(false);
   };
-
-  useEffect(() => {
-    getMyPosts();
-  }, [detailPressed]);
-
-  useEffect(() => {}, []);
 
   const onRegister = tk => {
     console.log('[App] onRegister : token :', tk);
@@ -210,9 +218,43 @@ const Home = ({navigation}) => {
     console.log('[App] onOpenNotification : notify :', notify);
   };
 
+  const getUserProfile = async () => {
+    const userId = await AsyncStorage.getItem('id');
+
+    let response = await fetch(
+      API_URL + '/user/profile/info?userId=' + userId,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+        },
+      },
+    );
+    if (response.status == 200) {
+      const r = await response.json();
+      await AsyncStorage.setItem('myProfileImage', r.profileImg);
+      await AsyncStorage.setItem('myNickname', r.nickname);
+    }
+  };
+
+  /**
+   * @description 새 게시물이 게시되고 새로고침 버튼 활성화 및 새로고침 완료후 버튼 사라짐
+   */
+  const refreshPost = async () => {
+    setHomeRefresh(true);
+    // 게시물 새로 받아오는 로직 추가
+    // 새로 게시된것만 애니메이션으로 추가할 수 있는지?
+    await getMyPosts();
+    returnCurrentLocation();
+    setHomeRefresh(false);
+    dispatch(updateNewPost({newState: false}));
+  };
+
   useEffect(() => {
     checkPermissions();
     getMyPosts();
+    getUserProfile();
     const intervalId = setInterval(getCurrentLocation, 2000);
 
     fcmService.registerAppWithFCM();
@@ -277,8 +319,8 @@ const Home = ({navigation}) => {
               transform: [{scale: scaleValue}],
             }}>
             <Pressable
-              onPressIn={onButtonPressIn}
-              onPressOut={onButtonPressOut}
+              onPressIn={() => onButtonPressIn(scaleValue)}
+              onPressOut={() => onButtonPressOut(scaleValue)}
               style={{}}
               onPress={returnCurrentLocation}>
               <Image
@@ -291,6 +333,61 @@ const Home = ({navigation}) => {
               />
             </Pressable>
           </Ani.View>
+          {/* 게시글 새로 생성했을 때 새로고침 버튼 표시  */}
+          {isNewPost && (
+            <Ani.View
+              style={{
+                width: responsiveWidth(120),
+                height: responsiveWidth(30),
+                position: 'absolute',
+                top: responsiveHeight(40),
+                left: '35%', // 화면 좌측에서 50% 위치
+                backgroundColor: Colors.buttonSecondBackground,
+                borderRadius: responsiveWidth(100),
+                zIndex: 100,
+                shadowOffset: {width: 0, height: responsiveHeight(3)},
+                shadowOpacity: 0.25,
+                shadowRadius: responsiveWidth(3),
+                shadowColor: '#000000',
+                elevation: 3,
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: [{scale: refreshScale}],
+              }}>
+              <Pressable
+                onPressIn={() => onButtonPressIn(refreshScale)}
+                onPressOut={() => onButtonPressOut(refreshScale)}
+                onPress={() => refreshPost()}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  position: 'relative',
+                }}>
+                <Text
+                  style={[Fonts.contentMediumMedium, {color: Colors.primary}]}>
+                  새로고침
+                </Text>
+                {homeRefresh && (
+                  <ActivityIndicator
+                    size={'small'}
+                    style={[
+                      Gutters.largeVMargin,
+                      {
+                        width: responsiveWidth(25),
+                        height: responsiveHeight(25),
+                        position: 'absolute',
+                        right: responsiveWidth(7),
+                      },
+                    ]}
+                    color={Colors.primary}
+                  />
+                )}
+              </Pressable>
+            </Ani.View>
+          )}
 
           <MapView
             style={styles.map}
@@ -372,7 +469,6 @@ const Home = ({navigation}) => {
                     onPress={() => {
                       setDetailPressed(true);
                       const p = content.detail;
-                      console.log(content.userId, content.detail.userId);
                       navigation.push('MapDetail', {
                         postId: p.postId,
                         nickname: p.nickname,
@@ -414,7 +510,7 @@ const Home = ({navigation}) => {
                           backgroundColor: Colors.contentBackground,
                           marginBottom: responsiveHeight(10),
                         }}
-                        resizeMode="contain"
+                        resizeMode="cover"
                       />
 
                       <Image

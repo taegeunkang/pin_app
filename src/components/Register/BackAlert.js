@@ -1,7 +1,7 @@
 import {View, StyleSheet, Text, Pressable} from 'react-native';
 import {BorderRadius, Colors, FontSize} from '../../theme/Variables';
 import {useTranslation} from 'react-i18next';
-import SubmitButton2 from '../SubmitButton2';
+import SubmitButton4 from '../SubmitButton4';
 import SubmitButton from '../SubmitButton';
 import {responsiveHeight, responsiveWidth} from '../Scale';
 import {useTheme} from '../../hooks';
@@ -63,7 +63,7 @@ const BackAlert = ({cancle, go_back}) => {
           </Text>
         </View>
         <View style={styles.buttonContainer}>
-          <SubmitButton2
+          <SubmitButton4
             onPress={cancle}
             title={t('back.cancel')}
             width={170}
