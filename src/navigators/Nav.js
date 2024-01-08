@@ -129,6 +129,15 @@ const Nav = () => {
         component={MapNavigator}
         options={{
           headerShown: false,
+          cardStyleInterpolator: ({current}) => ({
+            cardStyle: {
+              opacity: current.progress,
+            },
+          }),
+          transitionSpec: {
+            open: {animation: 'timing', config: {duration: 0}},
+            close: {animation: 'timing', config: {duration: 0}},
+          },
         }}
       />
       <Tab.Screen
@@ -136,6 +145,15 @@ const Nav = () => {
         component={SearchNavigator}
         options={{
           headerShown: false,
+          cardStyleInterpolator: ({current}) => ({
+            cardStyle: {
+              opacity: current.progress,
+            },
+          }),
+          transitionSpec: {
+            open: {animation: 'timing', config: {duration: 0}},
+            close: {animation: 'timing', config: {duration: 0}},
+          },
         }}
       />
 
@@ -160,12 +178,34 @@ const Nav = () => {
       <Tab.Screen
         name={'MyPageNavigator'}
         component={MyPageNavigator}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+          cardStyleInterpolator: ({current}) => ({
+            cardStyle: {
+              opacity: current.progress,
+            },
+          }),
+          transitionSpec: {
+            open: {animation: 'timing', config: {duration: 0}},
+            close: {animation: 'timing', config: {duration: 0}},
+          },
+        }}
       />
       <Tab.Screen
         name={t('nav.alram')}
         component={AlertNavigator}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+          cardStyleInterpolator: ({current}) => ({
+            cardStyle: {
+              opacity: current.progress,
+            },
+          }),
+          transitionSpec: {
+            open: {animation: 'timing', config: {duration: 0}},
+            close: {animation: 'timing', config: {duration: 0}},
+          },
+        }}
       />
     </Tab.Navigator>
   );

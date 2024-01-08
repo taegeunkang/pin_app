@@ -27,18 +27,25 @@ import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
 import {timeAgo} from '../../utils/util';
 import HeaderLeftButton from '../../components/HeaderLeftButton';
-import {likeToggle, setLikeCount, setCommentCount} from '../../store/post';
+import {
+  likeToggle,
+  setLikeCount,
+  setCommentCount,
+  appendPost,
+} from '../../store/post';
 import {useDispatch, useSelector} from 'react-redux';
+import {removeMapPost} from '../../store/map';
+import {updateNewPost} from '../../store/newPost';
 
 const Detail = ({navigation, route}) => {
-  const {postId, userId, reload, before} = route.params;
+  const {postId, userId, before, open} = route.params;
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
         <HeaderLeftButton
           onPress={() => {
-            if (reload != null) reload();
+            if (open) open(false);
             navigation.pop();
           }}
           close={before == 'Home' || before == 'Alram' ? true : false}
@@ -71,13 +78,49 @@ const Detail = ({navigation, route}) => {
   const [postDetail, setPostDetail] = useState({});
   const post = useSelector(state => state.post.post);
 
-  const findPostByPostId = (userId, post, postId) => {
-    for (let i = 0; i < post[userId].length; i++) {
-      if (post[userId][i].postId == postId) {
-        return post[userId][i];
+  const findPostByPostId = async () => {
+    console.log(1, postId);
+    if (post[userId]) {
+      for (let i = 0; i < post[userId].length; i++) {
+        if (post[userId][i].postId == postId) {
+          return post[userId][i];
+        }
       }
     }
-    return null;
+
+    console.log(2);
+
+    const response = await fetch(API_URL + `/post/find?id=${postId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+    if (response.status == 200) {
+      const r = await response.json();
+      console.log(r);
+      r;
+      dispatch(appendPost({userId: userId, post: r}));
+      return r;
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await findPostByPostId();
+          break;
+      }
+    } else if (response.status == 500) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'P01':
+          Alert('게시글이 존재하지 않습니다.');
+          navigation.pop();
+          break;
+      }
+    }
+
+    console.log(3);
   };
 
   // redux dispatcher
@@ -135,6 +178,7 @@ const Detail = ({navigation, route}) => {
         },
       },
     );
+    console.log(response.status);
     if (response.status == 200) {
       const r = await response.json();
       if (page == -1 || isRefresh) {
@@ -157,6 +201,7 @@ const Detail = ({navigation, route}) => {
       }
     } else if (response.status == 400) {
       const k = await response.json();
+
       switch (k['code']) {
         case 'P01':
           Alert.alert('게시글이 존재하지 않음', '게시글이 존재하지 않습니다.');
@@ -164,6 +209,15 @@ const Detail = ({navigation, route}) => {
         case 'U08':
           await reIssue();
           await fetchComment(isRefresh);
+          break;
+      }
+    } else if (response.status == 500) {
+      const k = await response.json();
+
+      switch (k['code']) {
+        case 'P01':
+          Alert.alert('게시글이 존재하지 않음', '게시글이 존재하지 않습니다.');
+          navigation.pop();
           break;
       }
     }
@@ -320,7 +374,10 @@ const Detail = ({navigation, route}) => {
       },
     });
     if (response.status == 200) {
-      if (reload != null) reload(postId);
+      dispatch(removeMapPost({userId: userId, postId: postId}));
+      dispatch(removeMapPost({postId: postId}));
+      dispatch(updateNewPost({newState: true}));
+
       navigation.pop();
     } else if (response.status == 400) {
       const k = await response.json();
@@ -386,25 +443,27 @@ const Detail = ({navigation, route}) => {
     setMyId(await AsyncStorage.getItem('id'));
     setMyNickname(await AsyncStorage.getItem('myNickname'));
     setMyProfileImage(await AsyncStorage.getItem('myProfileImage'));
-    const r = findPostByPostId(userId, post, postId);
+    const r = await findPostByPostId();
     setPostDetail(r);
+    console.log(1111);
+
+    await fetchComment();
   };
   useEffect(() => {
     const t = async () => {
       await init();
     };
-    fetchComment();
     t();
   }, []);
 
-  const reRender = async () => {
-    const r = findPostByPostId(userId, post, postId);
-    setPostDetail(r);
-  };
-
-  useEffect(() => {
-    reRender();
-  }, [post]);
+  /**
+   * @description ??? 용도가 뭐지
+   */
+  // const reRender = async () => {
+  //   const r = findPostByPostId(userId, post, postId);
+  //   setPostDetail(r);
+  //   console.log('리렌더링');
+  // };
 
   const styles = StyleSheet.create({
     container: {

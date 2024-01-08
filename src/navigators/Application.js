@@ -34,7 +34,6 @@ const ApplicationNavigator = () => {
   const {Layout, darkMode, NavigationTheme, Fonts, Colors} = useTheme();
   const navigationRef = useNavigationContainerRef();
 
-  console.log('현재 모드 : ', darkMode);
 
   useFlipper(navigationRef);
   return (

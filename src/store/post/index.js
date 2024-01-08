@@ -4,27 +4,33 @@ const slice = createSlice({
   name: 'post',
   initialState: {post: {}},
   reducers: {
+    setInitialPostReset: state => {
+      state.post = {};
+    },
     setInitialPost: (state, {payload: {userId, post}}) => {
       if (userId != undefined && post != undefined) {
         state.post[userId] = post;
       }
     },
     appendPost: (state, {payload: {userId, post}}) => {
+      if (state.post[userId]) {
+        for (let i = 0; i > state.post[userId].length; i++) {
+          if (state.post[userId][i].postId == post.postId) {
+            return;
+          }
+        }
+      }
+
       if (userId != undefined && post != undefined) {
-        state.post[userId] = state.post[userId].concat(post);
+        if (state.post[userId])
+          state.post[userId] = state.post[userId].concat(post);
+        else state.post[userId] = [post];
       }
     },
     removePost: (state, {payload: {userId, postId}}) => {
-      const a = state.post[userId];
-      let b = [];
-      for (let i = 0; i < a.length; i++) {
-        if (a[i].postId == postId) {
-          continue;
-        }
-        b.push(a[i]);
-      }
-
-      state.post[userId] = Array.from(b);
+      state.post[userId] = state.post[userId].filter(
+        item => item.postId !== postId,
+      );
     },
     likeToggle: (state, {payload: {userId, postId}}) => {
       let idx = -1;
@@ -71,6 +77,7 @@ const slice = createSlice({
   },
 });
 export const {
+  setInitialPostReset,
   setInitialPost,
   appendPost,
   likeToggle,
