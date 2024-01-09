@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Pressable,
   Modal,
+  TouchableOpacity,
 } from 'react-native';
 import Edit from '../../components/Content/Edit';
 import React from 'react';
@@ -382,7 +383,7 @@ const UserPage = ({navigation, route}) => {
                 </Text>
               </View>
 
-              <Pressable
+              <TouchableOpacity
                 onPress={() => {
                   navigation.push('FollowerList', {userId: userId});
                 }}
@@ -403,8 +404,8 @@ const UserPage = ({navigation, route}) => {
                   style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
                   {formatNumber(userInfo.follower)}
                 </Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -424,7 +425,7 @@ const UserPage = ({navigation, route}) => {
                   style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
                   {formatNumber(userInfo.following)}
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
