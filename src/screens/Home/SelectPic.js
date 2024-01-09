@@ -154,6 +154,18 @@ const Medias = ({navigation}) => {
       }}>
       {/* 갤러리 사진 */}
 
+      <View
+        style={{
+          height: responsiveHeight(50),
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: responsiveWidth(20),
+          backgroundColor: 'rgba(234,243,254, 1)',
+        }}>
+        <Text>최대 10개의 사진, 동영상을 선택할 수 있습니다.</Text>
+      </View>
+
       <FlatList
         data={photos}
         onEndReached={getGalleryPhotos} // 스크롤이 끝나면 사진 불러오기 함수 호출
@@ -223,18 +235,15 @@ const Medias = ({navigation}) => {
       />
       <View
         style={{
-          height: responsiveHeight(50),
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingHorizontal: responsiveWidth(20),
-          backgroundColor: 'rgba(234,243,254, 1)',
+          position: 'absolute',
+          right: responsiveWidth(20),
+          bottom: responsiveHeight(40),
         }}>
-        <Text>최대 10개의 사진, 동영상을 선택할 수 있습니다.</Text>
         <SubmitButton
           title="다음"
-          width={40}
-          height={40}
+          width={60}
+          height={60}
+          borderRadius={999}
           onPress={() => {
             dispatch(saveMedia({media: array}));
             navigation.navigate('WriteContent', {mediaFiles: array});

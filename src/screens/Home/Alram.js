@@ -49,7 +49,6 @@ const Alram = ({navigation}) => {
     switch (response.status) {
       case 200:
         let r1 = await response.json();
-        console.log(r1);
         setNotification(r1);
         break;
       case 400:

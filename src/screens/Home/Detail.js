@@ -25,7 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditComment from '../../components/Content/EditComment';
 import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
-import {timeAgo} from '../../utils/util';
+import {getUtcPlus9Time, timeAgo} from '../../utils/util';
 import HeaderLeftButton from '../../components/HeaderLeftButton';
 import {
   likeToggle,
@@ -79,7 +79,6 @@ const Detail = ({navigation, route}) => {
   const post = useSelector(state => state.post.post);
 
   const findPostByPostId = async () => {
-    console.log(1, postId);
     if (post[userId]) {
       for (let i = 0; i < post[userId].length; i++) {
         if (post[userId][i].postId == postId) {
@@ -87,8 +86,6 @@ const Detail = ({navigation, route}) => {
         }
       }
     }
-
-    console.log(2);
 
     const response = await fetch(API_URL + `/post/find?id=${postId}`, {
       method: 'POST',
@@ -98,8 +95,6 @@ const Detail = ({navigation, route}) => {
     });
     if (response.status == 200) {
       const r = await response.json();
-      console.log(r);
-      r;
       dispatch(appendPost({userId: userId, post: r}));
       return r;
     } else if (response.status == 400) {
@@ -119,8 +114,6 @@ const Detail = ({navigation, route}) => {
           break;
       }
     }
-
-    console.log(3);
   };
 
   // redux dispatcher
@@ -178,7 +171,7 @@ const Detail = ({navigation, route}) => {
         },
       },
     );
-    console.log(response.status);
+
     if (response.status == 200) {
       const r = await response.json();
       if (page == -1 || isRefresh) {
@@ -250,7 +243,7 @@ const Detail = ({navigation, route}) => {
           writerId: myId,
           profileImage: myProfileImage,
           replyCount: 0,
-          createdDate: new Date().toISOString().replace('Z', '+00:00'),
+          createdDate: getUtcPlus9Time().toString(),
         };
         a = a.concat(b);
         setCommentList(a);
@@ -264,7 +257,7 @@ const Detail = ({navigation, route}) => {
           writer: myNickname,
           writerId: myId,
           profileImage: myProfileImage,
-          createdDate: new Date().toISOString().replace('Z', '+00:00'),
+          createdDate: getUtcPlus9Time().toString(),
         };
         c[reply] = c[reply].concat(d);
         setReplyList(c);
@@ -445,7 +438,6 @@ const Detail = ({navigation, route}) => {
     setMyProfileImage(await AsyncStorage.getItem('myProfileImage'));
     const r = await findPostByPostId();
     setPostDetail(r);
-    console.log(1111);
 
     await fetchComment();
   };
@@ -455,15 +447,6 @@ const Detail = ({navigation, route}) => {
     };
     t();
   }, []);
-
-  /**
-   * @description ??? 용도가 뭐지
-   */
-  // const reRender = async () => {
-  //   const r = findPostByPostId(userId, post, postId);
-  //   setPostDetail(r);
-  //   console.log('리렌더링');
-  // };
 
   const styles = StyleSheet.create({
     container: {

@@ -41,7 +41,6 @@ const MyPage = ({navigation}) => {
   const [reloadLoading, setReloadLoading] = useState(false);
 
   const postList = useSelector(state => state.post.post);
-  console.log('재렌더링', postList);
 
   const dispatch = useDispatch();
 

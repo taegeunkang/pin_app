@@ -17,18 +17,6 @@ import SubmitButton from '../../components/SubmitButton';
 import InputBox from '../../components/InputBox';
 import {responsiveWidth, responsiveHeight} from '../../components/Scale';
 
-// import {
-//   GoogleSignin,
-//   statusCodes,
-// } from '@react-native-google-signin/google-signin';
-// import { login, loginWithKakaoAccount } from '@react-native-seoul/kakao-login';
-// messaging().setBackgroundMessageHandler(async remoteMessage => {
-//   console.log('Background remote message: ', remoteMessage);
-// });
-// messaging().onMessage(async remoteMessage => {
-//   console.log('[Remote Message] ', JSON.stringify(remoteMessage));
-// });
-
 const Login = ({navigation}) => {
   const {t} = useTranslation('login');
   const [id, setId] = useState('');

@@ -89,9 +89,6 @@ const Home = ({navigation}) => {
       const photo = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
       const location = await check(PERMISSIONS.IOS.LOCATION_ALWAYS); // 혹은 LOCATION_ALWAYS
       const locationUsage = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-      // console.log('사진 : ' + photo);
-      // console.log('위치 정보 항상 : ' + location);
-      // console.log('사용할 때만 위치 : ' + locationUsage);
 
       setPermission(
         // camera === RESULTS.GRANTED &&

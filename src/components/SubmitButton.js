@@ -9,7 +9,14 @@ import {
 } from 'react-native';
 import {useTheme} from '../hooks';
 import {responsiveHeight, responsiveWidth} from './Scale';
-const SubmitButton = ({onPress, title, width, height, loading}) => {
+const SubmitButton = ({
+  onPress,
+  title,
+  width,
+  height,
+  loading,
+  borderRadius,
+}) => {
   const {Fonts, Gutters, Colors} = useTheme();
   const scaleValue = useState(new Animated.Value(1))[0];
 
@@ -34,7 +41,7 @@ const SubmitButton = ({onPress, title, width, height, loading}) => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: Colors.buttonFirstBackground,
-      borderRadius: responsiveWidth(12),
+      borderRadius: borderRadius ? borderRadius : responsiveWidth(12),
     },
   });
 

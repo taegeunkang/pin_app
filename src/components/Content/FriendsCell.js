@@ -25,12 +25,10 @@ const FriendsCell = ({user}) => {
   const isSelectedUser = async () => {
     for (let i = 0; i < friendsList.length; i++) {
       if (friendsList[i].userId == user.userId) {
-        console.log('있음');
         setAdded(true);
         return;
       }
     }
-    console.log('없음');
     setAdded(false);
   };
 
