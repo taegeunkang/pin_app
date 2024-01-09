@@ -1,4 +1,12 @@
-import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Image,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
 import {useTheme} from '../../hooks';
 import {useState} from 'react';
 import {responsiveHeight, responsiveWidth} from '../Scale';
@@ -26,11 +34,13 @@ const PostBox = ({
     container: {
       flex: 1,
       maxHeight: responsiveHeight(300),
-      backgroundColor: Colors.contentBackground,
       alignItems: 'center',
       marginBottom: responsiveHeight(5),
+      backgroundColor: Colors.contentBackground,
     },
-    postContainer: {width: responsiveWidth(370)},
+    postContainer: {
+      width: responsiveWidth(370),
+    },
     writerImage: {
       width: responsiveWidth(30),
       height: responsiveWidth(30),
@@ -111,136 +121,123 @@ const PostBox = ({
   };
 
   return (
-    <Pressable style={styles.container} onPress={onPress}>
-      <View style={styles.postContainer}>
-        <View style={styles.writerBox}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <FastImage
-              source={{
-                uri:
-                  API_URL + `/user/profile/image?watch=${writerProfileImage}`,
-                priority: FastImage.priority.high,
-              }}
-              style={styles.writerImage}
-            />
+    <TouchableOpacity style={[{flex: 1}]} onPress={onPress}>
+      <View style={styles.container}>
+        <View style={styles.postContainer}>
+          <View style={styles.writerBox}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <FastImage
+                source={{
+                  uri:
+                    API_URL + `/user/profile/image?watch=${writerProfileImage}`,
+                  priority: FastImage.priority.high,
+                }}
+                style={styles.writerImage}
+              />
+              <Text
+                style={[
+                  Fonts.contentMediumBold,
+                  {marginRight: responsiveWidth(5), color: Colors.textBold},
+                ]}>
+                {writerName}
+              </Text>
+              <Text
+                style={[
+                  Fonts.contentRegualrMedium,
+                  {color: Colors.textNormal},
+                ]}>
+                {timeAgo(createdDate)}
+              </Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              {mention &&
+                mention.map((f, index) => {
+                  if (index < 2) {
+                    return (
+                      <FastImage
+                        key={index}
+                        source={{
+                          uri:
+                            API_URL +
+                            `/user/profile/image?watch=${f.profileImage}`,
+                          priority: FastImage.priority.high,
+                        }}
+                        style={styles.writerImage}
+                      />
+                    );
+                  } else {
+                    return;
+                  }
+                })}
+
+              {mention && mention.length - 2 > 0 && (
+                <MoreFriends count={mention.length - 2} />
+              )}
+            </View>
+          </View>
+          {/* 간략 목록 글 최대 200자 */}
+          {content && (
             <Text
               style={[
-                Fonts.contentMediumBold,
-                {marginRight: responsiveWidth(5), color: Colors.textBold},
+                Fonts.contentMediumMedium,
+                {color: Colors.textNormal, width: responsiveWidth(370)},
               ]}>
-              {writerName}
+              {content.substring(0, 200) +
+                (content.length > 200 ? '...더보기' : '')}
             </Text>
-            <Text
-              style={[Fonts.contentRegualrMedium, {color: Colors.textNormal}]}>
-              {timeAgo(createdDate)}
-            </Text>
-          </View>
-          <View style={{flexDirection: 'row'}}>
-            {mention &&
-              mention.map((f, index) => {
-                if (index < 2) {
-                  return (
-                    <FastImage
-                      key={index}
-                      source={{
-                        uri:
-                          API_URL +
-                          `/user/profile/image?watch=${f.profileImage}`,
-                        priority: FastImage.priority.high,
-                      }}
-                      style={styles.writerImage}
-                    />
-                  );
-                } else {
-                  return;
-                }
-              })}
+          )}
 
-            {mention && mention.length - 2 > 0 && (
-              <MoreFriends count={mention.length - 2} />
-            )}
-          </View>
-        </View>
-        {/* 간략 목록 글 최대 200자 */}
-        {content && (
-          <Text
-            style={[
-              Fonts.contentMediumMedium,
-              {color: Colors.textNormal, width: responsiveWidth(370)},
-            ]}>
-            {content.substring(0, 200) +
-              (content.length > 200 ? '...더보기' : '')}
-          </Text>
-        )}
-
-        {/* 첨부 파일*/}
-        <View style={{marginBottom: responsiveHeight(20)}} />
-        {mediaFiles && <PostFiles images={mediaFiles} />}
-        <View style={{marginBottom: responsiveHeight(20)}} />
-        {/* 좋아요, 댓글, 위치*/}
-        <View
-          style={{
-            flexDirection: 'row',
-            marginBottom: responsiveHeight(5),
-          }}>
+          {/* 첨부 파일*/}
+          <View style={{marginBottom: responsiveHeight(20)}} />
+          {mediaFiles && <PostFiles images={mediaFiles} />}
+          <View style={{marginBottom: responsiveHeight(20)}} />
+          {/* 좋아요, 댓글, 위치*/}
           <View
             style={{
               flexDirection: 'row',
-              marginRight: responsiveWidth(10),
               marginBottom: responsiveHeight(5),
             }}>
-            {isLiked ? (
-              <Pressable onPress={() => thumbsUp(postId)}>
-                <Image
-                  source={Images.smileSelect}
-                  style={{
-                    width: responsiveWidth(20),
-                    height: responsiveWidth(20),
-                    marginRight: responsiveWidth(5),
-                    resizeMode: 'contain',
-                  }}
-                />
-              </Pressable>
-            ) : (
-              <Pressable onPress={() => thumbsUp(postId)}>
-                <Image
-                  source={Images.smileNotSelect}
-                  style={{
-                    width: responsiveWidth(20),
-                    height: responsiveWidth(20),
-                    marginRight: responsiveWidth(5),
-                    resizeMode: 'contain',
-                  }}
-                />
-              </Pressable>
-            )}
-            <Text
-              style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
-              {formatNumber(likeCount)}
-            </Text>
-          </View>
-
-          <View
-            style={{flexDirection: 'row', marginRight: responsiveWidth(10)}}>
-            <Image
-              source={Images.commentNotSelect}
+            <View
               style={{
-                width: responsiveWidth(20),
-                height: responsiveWidth(20),
-                marginRight: responsiveWidth(5),
-                resizeMode: 'contain',
-              }}
-            />
-            <Text
-              style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
-              {formatNumber(commentCount)}
-            </Text>
-          </View>
+                flexDirection: 'row',
+                marginRight: responsiveWidth(10),
+                marginBottom: responsiveHeight(5),
+              }}>
+              {isLiked ? (
+                <TouchableOpacity onPress={() => thumbsUp(postId)}>
+                  <Image
+                    source={Images.smileSelect}
+                    style={{
+                      width: responsiveWidth(20),
+                      height: responsiveWidth(20),
+                      marginRight: responsiveWidth(5),
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={() => thumbsUp(postId)}>
+                  <Image
+                    source={Images.smileNotSelect}
+                    style={{
+                      width: responsiveWidth(20),
+                      height: responsiveWidth(20),
+                      marginRight: responsiveWidth(5),
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
+              <Text
+                style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+                {formatNumber(likeCount)}
+              </Text>
+            </View>
 
-          {locationName && (
-            <View style={{flexDirection: 'row'}}>
+            <View
+              style={{flexDirection: 'row', marginRight: responsiveWidth(10)}}>
               <Image
-                source={Images.pinNotSelect}
+                source={Images.commentNotSelect}
                 style={{
                   width: responsiveWidth(20),
                   height: responsiveWidth(20),
@@ -250,13 +247,34 @@ const PostBox = ({
               />
               <Text
                 style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
-                {locationName.substring(0, 20)}
+                {formatNumber(commentCount)}
               </Text>
             </View>
-          )}
+
+            {locationName && (
+              <View style={{flexDirection: 'row'}}>
+                <Image
+                  source={Images.pinNotSelect}
+                  style={{
+                    width: responsiveWidth(20),
+                    height: responsiveWidth(20),
+                    marginRight: responsiveWidth(5),
+                    resizeMode: 'contain',
+                  }}
+                />
+                <Text
+                  style={[
+                    Fonts.contentMediumMedium,
+                    {color: Colors.textNormal},
+                  ]}>
+                  {locationName.substring(0, 20)}
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

@@ -5,6 +5,7 @@ import {
   Text,
   Pressable,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import {useTheme} from '../../hooks';
 import {responsiveHeight, responsiveWidth} from '../Scale';
@@ -13,8 +14,40 @@ import FastImage from 'react-native-fast-image';
 const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
   const {Images, Fonts, Colors} = useTheme();
 
+  const buttonColor = new Animated.Value(0);
+  buttonColor.addListener(() => {
+    return;
+  });
+  const handleButtonPressIn = () => {
+    Animated.timing(buttonColor, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleButtonPressOut = () => {
+    Animated.timing(buttonColor, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const interpolateColor = buttonColor.interpolate({
+    inputRange: [0, 1],
+    outputRange: [Colors.contentBackground, Colors.contentBackground],
+  });
+  const animatedStyle = {
+    backgroundColor: interpolateColor,
+  };
+
   return (
-    <Pressable onPress={onPress} style={styles.container}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.container, animatedStyle]}
+      onPressIn={handleButtonPressIn}
+      onPressOut={handleButtonPressOut}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <FastImage
           source={{
@@ -50,7 +83,7 @@ const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
           />
         </TouchableOpacity>
       )}
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

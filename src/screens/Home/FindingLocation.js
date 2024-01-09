@@ -7,6 +7,8 @@ import {
   Pressable,
   SafeAreaView,
   Image,
+  Animated,
+  TouchableOpacity,
 } from 'react-native';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
@@ -22,6 +24,35 @@ const FindingLocation = ({navigation, route}) => {
   const inputRef = useRef(null);
   const {Colors, Images, Fonts} = useTheme();
   const dispatch = useDispatch();
+
+  const buttonColor = new Animated.Value(0);
+  buttonColor.addListener(() => {
+    return;
+  });
+  const handleButtonPressIn = () => {
+    Animated.timing(buttonColor, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleButtonPressOut = () => {
+    Animated.timing(buttonColor, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const interpolateColor = buttonColor.interpolate({
+    inputRange: [0, 1],
+    outputRange: [Colors.contentBackground, Colors.contentBackground],
+  });
+
+  const animatedStyle = {
+    backgroundColor: interpolateColor,
+  };
 
   const getNearByLocations = async () => {
     const response = await fetch(
@@ -127,36 +158,40 @@ const FindingLocation = ({navigation, route}) => {
         // }}
         scrollEventThrottle={400}>
         {typing ? (
-          <Pressable
-            style={styles.locationList}
+          <TouchableOpacity
+            style={[styles.locationList, animatedStyle]}
+            onPressIn={handleButtonPressIn}
+            onPressOut={handleButtonPressOut}
             onPress={() => goBack(customTyping)}>
             <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
               {customTyping}
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         ) : (
-          <Pressable
-            style={styles.locationList}
-            //onPress={() => goBack(customTyping)}
-          >
+          <TouchableOpacity
+            style={[styles.locationList, animatedStyle]}
+            onPressIn={handleButtonPressIn}
+            onPressOut={handleButtonPressOut}>
             <Text style={[Fonts.contentMediumBold, {color: Colors.textBold}]}>
               직접 입력
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         )}
         {nearByLocations &&
           !typing &&
           nearByLocations.map((item, key) => (
-            <Pressable
+            <TouchableOpacity
               key={key}
-              style={styles.locationList}
+              style={[styles.locationList, animatedStyle]}
+              onPressIn={handleButtonPressIn}
+              onPressOut={handleButtonPressOut}
               id={item}
               onPress={() => goBack(item)}>
               <Text
                 style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
                 {item}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           ))}
       </ScrollView>
     </SafeAreaView>

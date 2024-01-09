@@ -21,7 +21,7 @@ export const Colors = {
   DarkGray: '#BBBBBB',
   red: '#E44949',
   heartRed: '#F04452',
-
+  pressBackground: '#F2F4F6',
   screenBackground: '#F2F4F6',
   contentBackground: '#FFFFFF',
   textNormal: '#505866',

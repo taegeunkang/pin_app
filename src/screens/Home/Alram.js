@@ -136,7 +136,7 @@ const Notify = ({id, message, createdDate, onPress}) => {
   }, [p]);
 
   return (
-    <Pressable
+    <TouchableOpacity
       onPress={pressed}
       style={[
         styles.notiContainer,
@@ -157,7 +157,7 @@ const Notify = ({id, message, createdDate, onPress}) => {
           {timeAgo(createdDate)}
         </Text>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

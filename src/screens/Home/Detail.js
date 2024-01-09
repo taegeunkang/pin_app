@@ -12,7 +12,7 @@ import {
   Modal,
   Pressable,
   Dimensions,
-  ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import {useTheme} from '../../hooks';
 import {useState, useEffect, useRef, useLayoutEffect} from 'react';
@@ -77,6 +77,9 @@ const Detail = ({navigation, route}) => {
   const inptRef = useRef(null);
   const [postDetail, setPostDetail] = useState({});
   const post = useSelector(state => state.post.post);
+  const userPost = post[userId]
+    ? post[userId].filter(item => item.postId == postId)[0]
+    : {};
 
   const findPostByPostId = async () => {
     if (post[userId]) {
@@ -154,6 +157,7 @@ const Detail = ({navigation, route}) => {
 
   const onLike = async () => {
     const r = await thumbsUp(postId);
+    console.log(r);
   };
   // 댓글 조회
   const fetchComment = async isRefresh => {
@@ -490,7 +494,7 @@ const Detail = ({navigation, route}) => {
 
   const MoreFriends = ({count}) => {
     return (
-      <View
+      <TouchableOpacity
         style={{
           width: responsiveWidth(25),
           height: responsiveHeight(25),
@@ -510,7 +514,7 @@ const Detail = ({navigation, route}) => {
           }}>
           {'+' + count}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -562,30 +566,33 @@ const Detail = ({navigation, route}) => {
           <View style={styles.container}>
             <View style={styles.postContainer}>
               <View style={styles.writerBox}>
-                <Pressable
-                  onPress={() => {
-                    navigation.push('UserPage', {userId: userId});
-                  }}
-                  style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <FastImage
-                    source={{
-                      uri:
-                        API_URL +
-                        `/post/image?watch=${postDetail.profileImage}`,
-                      priority: FastImage.priority.high,
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.push('UserPage', {userId: userId});
                     }}
-                    style={styles.writerImage}
-                  />
-                  <Text
-                    style={[
-                      Fonts.contentMediumBold,
-                      {
-                        marginRight: responsiveWidth(5),
-                        color: Colors.textNormal,
-                      },
-                    ]}>
-                    {postDetail.nickname}
-                  </Text>
+                    style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <FastImage
+                      source={{
+                        uri:
+                          API_URL +
+                          `/post/image?watch=${postDetail.profileImage}`,
+                        priority: FastImage.priority.high,
+                      }}
+                      style={styles.writerImage}
+                    />
+                    <Text
+                      style={[
+                        Fonts.contentMediumBold,
+                        {
+                          marginRight: responsiveWidth(5),
+                          color: Colors.textNormal,
+                        },
+                      ]}>
+                      {postDetail.nickname}
+                    </Text>
+                  </TouchableOpacity>
+
                   <Text
                     style={[
                       Fonts.contentRegualrMedium,
@@ -593,7 +600,7 @@ const Detail = ({navigation, route}) => {
                     ]}>
                     {timeAgo(postDetail.createdDate)}
                   </Text>
-                </Pressable>
+                </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   {postDetail.mention && postDetail.mention && (
                     <Pressable
@@ -633,7 +640,7 @@ const Detail = ({navigation, route}) => {
                   )}
 
                   {myId == userId && (
-                    <Pressable
+                    <TouchableOpacity
                       onPress={() => setPostModalVisible(true)}
                       style={{
                         width: responsiveWidth(25),
@@ -649,7 +656,7 @@ const Detail = ({navigation, route}) => {
                           resizeMode: 'contain',
                         }}
                       />
-                    </Pressable>
+                    </TouchableOpacity>
                   )}
                 </View>
               </View>
@@ -686,8 +693,8 @@ const Detail = ({navigation, route}) => {
                     marginRight: responsiveWidth(10),
                     marginBottom: responsiveHeight(5),
                   }}>
-                  {postDetail.liked ? (
-                    <Pressable onPress={() => onLike()}>
+                  {userPost.liked ? (
+                    <TouchableOpacity onPress={() => onLike()}>
                       <Image
                         source={Images.smileSelect}
                         style={{
@@ -697,9 +704,9 @@ const Detail = ({navigation, route}) => {
                           resizeMode: 'contain',
                         }}
                       />
-                    </Pressable>
+                    </TouchableOpacity>
                   ) : (
-                    <Pressable onPress={() => onLike()}>
+                    <TouchableOpacity onPress={() => onLike()}>
                       <Image
                         source={Images.smileNotSelect}
                         style={{
@@ -709,7 +716,7 @@ const Detail = ({navigation, route}) => {
                           resizeMode: 'contain',
                         }}
                       />
-                    </Pressable>
+                    </TouchableOpacity>
                   )}
 
                   <Text
@@ -717,7 +724,7 @@ const Detail = ({navigation, route}) => {
                       Fonts.contentMediumMedium,
                       {color: Colors.textNormal},
                     ]}>
-                    {formatNumber(postDetail.likesCount)}
+                    {formatNumber(userPost.likesCount)}
                   </Text>
                 </View>
 
@@ -779,6 +786,9 @@ const Detail = ({navigation, route}) => {
                       content={comment.content}
                       replyCount={comment.replyCount}
                       showReply={getReply}
+                      move={() =>
+                        navigation.push('UserPage', {userId: comment.writerId})
+                      }
                       onPress={() => {
                         setModalVisible(true);
                         setSelectedComment(comment.commentId);

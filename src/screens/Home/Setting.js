@@ -1,4 +1,4 @@
-import {View, Text, SafeAreaView, Pressable} from 'react-native';
+import {View, Text, SafeAreaView, TouchableOpacity} from 'react-native';
 import {useTheme} from '../../hooks';
 import {ScrollView} from 'react-native-gesture-handler';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
@@ -16,7 +16,7 @@ const Setting = ({navigation}) => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView style={{flex: 1, backgroundColor: Colors.contentBackground}}>
-        <Pressable
+        <TouchableOpacity
           style={{
             width: '100%',
             height: responsiveHeight(55),
@@ -38,18 +38,18 @@ const Setting = ({navigation}) => {
               알림
             </Text>
           </View>
-        </Pressable>
+        </TouchableOpacity>
 
-        <Pressable
+        <TouchableOpacity
           style={{
             width: '100%',
             height: responsiveHeight(55),
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: Colors.contentBackground,
-          }}>
-          <Pressable
-            onPress={logout}
+          }}
+          onPress={logout}>
+          <View
             style={{
               width: responsiveWidth(370),
               height: responsiveHeight(55),
@@ -62,10 +62,10 @@ const Setting = ({navigation}) => {
             <Text style={[Fonts.contentMediumMedium, {color: Colors.textBold}]}>
               로그아웃
             </Text>
-          </Pressable>
-        </Pressable>
+          </View>
+        </TouchableOpacity>
 
-        <Pressable
+        <TouchableOpacity
           style={{
             width: '100%',
             height: responsiveHeight(55),
@@ -87,9 +87,9 @@ const Setting = ({navigation}) => {
               회원탈퇴
             </Text>
           </View>
-        </Pressable>
+        </TouchableOpacity>
 
-        <Pressable
+        <TouchableOpacity
           style={{
             width: '100%',
             height: responsiveHeight(55),
@@ -111,7 +111,7 @@ const Setting = ({navigation}) => {
               개인정보 처리 방침
             </Text>
           </View>
-        </Pressable>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

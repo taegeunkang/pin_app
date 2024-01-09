@@ -9,6 +9,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -341,7 +342,7 @@ const MyPage = ({navigation}) => {
                 </Text>
               </View>
 
-              <Pressable
+              <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('FollowerList', {userId: id})
                 }
@@ -362,8 +363,8 @@ const MyPage = ({navigation}) => {
                   style={(Fonts.contentRegularBold, {color: Colors.textBold})}>
                   {formatNumber(userInfo.follower)}
                 </Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -383,7 +384,7 @@ const MyPage = ({navigation}) => {
                   style={(Fonts.contentRegularBold, {color: Colors.textBold})}>
                   {formatNumber(userInfo.following)}
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
