@@ -318,7 +318,12 @@ const Home = ({navigation}) => {
             <Pressable
               onPressIn={() => onButtonPressIn(scaleValue)}
               onPressOut={() => onButtonPressOut(scaleValue)}
-              style={{}}
+              style={{
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
               onPress={returnCurrentLocation}>
               <Image
                 source={Images.currentLocation}
@@ -411,12 +416,16 @@ const Home = ({navigation}) => {
                     longitude: geometry.coordinates[0],
                     latitude: geometry.coordinates[1],
                   }}
-                  onPress={onPress}>
+                  onPress={onPress}
+                  style={{
+                    borderRadius: responsiveWidth(60),
+                  }}>
                   <View
                     style={{
                       position: 'relative',
                       width: responsiveWidth(100),
                       height: responsiveWidth(100),
+                      borderRadius: responsiveHeight(99),
                       flex: 1,
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -483,6 +492,9 @@ const Home = ({navigation}) => {
                         before: 'Home',
                         reload: close,
                       });
+                    }}
+                    style={{
+                      borderRadius: responsiveWidth(60),
                     }}>
                     <View
                       {...content}
@@ -490,6 +502,7 @@ const Home = ({navigation}) => {
                         position: 'relative',
                         width: responsiveWidth(100),
                         height: responsiveWidth(100),
+                        borderRadius: responsiveHeight(999),
                         flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',

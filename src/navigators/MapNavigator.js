@@ -169,6 +169,16 @@ const MapNavigator = props => {
               },
             };
           },
+          transitionSpec: {
+            open: {
+              animation: 'timing',
+              config: {duration: 250}, // Adjust the duration as needed
+            },
+            close: {
+              animation: 'timing',
+              config: {duration: 250}, // Adjust the duration as needed
+            },
+          },
         }}
       />
       <Stack.Screen

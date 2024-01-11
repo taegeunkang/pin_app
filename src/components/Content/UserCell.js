@@ -43,11 +43,7 @@ const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
   };
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[styles.container, animatedStyle]}
-      onPressIn={handleButtonPressIn}
-      onPressOut={handleButtonPressOut}>
+    <Pressable onPress={onPress} style={[styles.container, animatedStyle]}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <FastImage
           source={{
@@ -83,7 +79,7 @@ const UserCell = ({profileImage, name, closeAvailable, onPress, onClose}) => {
           />
         </TouchableOpacity>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

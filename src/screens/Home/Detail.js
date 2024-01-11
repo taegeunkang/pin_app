@@ -693,7 +693,7 @@ const Detail = ({navigation, route}) => {
                     marginRight: responsiveWidth(10),
                     marginBottom: responsiveHeight(5),
                   }}>
-                  {userPost.liked ? (
+                  {userPost && userPost.liked ? (
                     <TouchableOpacity onPress={() => onLike()}>
                       <Image
                         source={Images.smileSelect}
@@ -724,7 +724,7 @@ const Detail = ({navigation, route}) => {
                       Fonts.contentMediumMedium,
                       {color: Colors.textNormal},
                     ]}>
-                    {formatNumber(userPost.likesCount)}
+                    {userPost && formatNumber(userPost.likesCount)}
                   </Text>
                 </View>
 

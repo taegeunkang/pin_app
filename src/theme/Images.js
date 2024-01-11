@@ -39,5 +39,6 @@ export default function ({}) {
     locInactive: require('./assets/images/nav/loc-inactive.png'),
     plusMainBtn: require('./assets/images/light/plus-btn.png'),
     plusBtn: require('./assets/images/light/plus-btn.png'),
+    dot: require('./assets/images/dot.png'),
   };
 }
