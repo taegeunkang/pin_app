@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   Image,
-  ScrollView,
   RefreshControl,
   SafeAreaView,
   TextInput,
@@ -14,6 +13,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {useTheme} from '../../hooks';
 import {useState, useEffect, useRef, useLayoutEffect} from 'react';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
@@ -85,6 +85,8 @@ const Detail = ({navigation, route}) => {
     if (post[userId]) {
       for (let i = 0; i < post[userId].length; i++) {
         if (post[userId][i].postId == postId) {
+          console.log('이미 있음');
+          console.log(post[userId][i]);
           return post[userId][i];
         }
       }
@@ -98,6 +100,8 @@ const Detail = ({navigation, route}) => {
     });
     if (response.status == 200) {
       const r = await response.json();
+      console.log('여기임');
+      console.log(r);
       dispatch(appendPost({userId: userId, post: r}));
       return r;
     } else if (response.status == 400) {

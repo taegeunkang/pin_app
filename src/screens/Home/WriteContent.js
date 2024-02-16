@@ -101,7 +101,7 @@ const WriteContent = ({navigation, route}) => {
         formData.append('thumbnailFiles', t);
       });
     }
-    console.log("위도/경도", writingContent.latitude, writingContent.longitude)
+
     formData.append('lat', writingContent.latitude); // latitude;
     formData.append('lon', writingContent.longitude); // lontitude;
     formData.append('locationName', writingContent.location);

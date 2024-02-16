@@ -24,7 +24,12 @@ export const Slider = ({media, onLoadEnd}) => {
     <Swiper
       style={{backgroundColor: Colors.contentBackground}}
       removeClippedSubviews={false}
-      showsButtons={false}>
+      showsButtons={false}
+      scrollEnabled={true}
+      loadMinimal={true} // 이 옵션을 줘야지 이미지 스크롤 위치 에러 방지
+      onIndexChanged={idx => {
+        console.log('바끰', idx);
+      }}>
       {media.map((file, index) => {
         const ext = file.substring(file.length - 4, file.length);
         const fileHtml = ` <!DOCTYPE html>
