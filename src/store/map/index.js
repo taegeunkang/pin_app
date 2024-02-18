@@ -6,16 +6,16 @@ const slice = createSlice({
   reducers: {
     setInitialMapPost: (state, {payload: {post}}) => {
       if (post != undefined) {
-        state.post = post;
+        state.map = post;
       }
     },
     appendMapPost: (state, {payload: {post}}) => {
       if (post != undefined) {
-        state.post = state.post.concat(post);
+        state.map = state.map.concat(post);
       }
     },
     removeMapPost: (state, {payload: {postId}}) => {
-      const a = state.post;
+      const a = state.map;
       let b = [];
       for (let i = 0; i < a.length; i++) {
         if (a[i].postId == postId) {
@@ -23,7 +23,7 @@ const slice = createSlice({
         }
         b.push(a[i]);
       }
-      state.post = b;
+      state.map = Array.from(b);
     },
   },
 });

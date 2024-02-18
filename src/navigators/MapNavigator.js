@@ -84,6 +84,21 @@ const MapNavigator = props => {
         options={{
           headerShown: true,
           headerTitle: '프로필',
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateX: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.width, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
 
@@ -93,6 +108,21 @@ const MapNavigator = props => {
         options={{
           headerShown: true,
           headerTitle: t('myPage:profile.follower'),
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateX: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.width, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
       <Stack.Screen
@@ -101,6 +131,21 @@ const MapNavigator = props => {
         options={{
           headerShown: true,
           headerTitle: t('myPage:profile.following'),
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateX: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.width, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
       <Stack.Screen
@@ -109,6 +154,31 @@ const MapNavigator = props => {
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('myPage:profile.detail'),
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateX: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.width, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
+          transitionSpec: {
+            open: {
+              animation: 'timing',
+              config: {duration: 250}, // Adjust the duration as needed
+            },
+            close: {
+              animation: 'timing',
+              config: {duration: 250}, // Adjust the duration as needed
+            },
+          },
         }}
       />
       <Stack.Screen
@@ -117,6 +187,21 @@ const MapNavigator = props => {
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('myPage:post.friends'),
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateX: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.width, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
       <Stack.Screen
@@ -125,6 +210,21 @@ const MapNavigator = props => {
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('myPage:profile.profileImage'),
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateY: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.height, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
       <Stack.Screen
@@ -133,6 +233,21 @@ const MapNavigator = props => {
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('myPage:profile.backgroundImage'),
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateY: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.height, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
       <Stack.Screen
@@ -141,6 +256,21 @@ const MapNavigator = props => {
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('myPage:profile.nickname'),
+          presentation: 'transparentModal',
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateY: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.height, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
     </Stack.Navigator>

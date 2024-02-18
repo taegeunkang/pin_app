@@ -76,10 +76,8 @@ const Search = ({navigation}) => {
         },
         body: JSON.stringify({word: inpt, page: 0, size: 20}),
       });
-      console.log(response.status);
       if (response.status == 200) {
         const r = await response.json();
-        console.log(r);
         setUserList(r);
       } else if (response.status == 400) {
         const k = await response.json();
@@ -200,7 +198,6 @@ const Search = ({navigation}) => {
               profileImage={history.profileImg}
               closeAvailable={true}
               onPress={() => {
-                console.log('???');
                 navigation.navigate('UserPage', {userId: history.userId});
               }}
               onClose={() => removeHistory(history)}
@@ -233,7 +230,6 @@ const Search = ({navigation}) => {
               name={user.nickname}
               onPress={() => {
                 saveToSearchHistory(user);
-                console.log('??');
                 navigation.navigate('UserPage', {userId: user.userId});
               }}
             />

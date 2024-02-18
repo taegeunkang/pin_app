@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Pressable,
   Modal,
+  TouchableOpacity,
 } from 'react-native';
 import Edit from '../../components/Content/Edit';
 import React from 'react';
@@ -33,13 +34,12 @@ const UserPage = ({navigation, route}) => {
   const {Fonts, Colors} = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [contentClicked, setContentClicked] = useState(false);
   const [page, setPage] = useState(0);
   const [modlaVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [followLoading, setFollowLoading] = useState(false);
   const [f, setF] = useState(-1);
-
+  const [open, setOpen] = useState(false);
   const postList = useSelector(state => state.post.post);
   const dispatch = useDispatch();
 
@@ -186,13 +186,14 @@ const UserPage = ({navigation, route}) => {
   };
 
   const moveToDetail = async post => {
-    if (contentClicked) return;
+    if (open) return;
 
-    setContentClicked(true);
+    setOpen(true);
     navigation.push('Detail', {
       ...post,
       userId: userId,
       before: 'MyPage',
+      open: setOpen,
     });
   };
 
@@ -382,7 +383,7 @@ const UserPage = ({navigation, route}) => {
                 </Text>
               </View>
 
-              <Pressable
+              <TouchableOpacity
                 onPress={() => {
                   navigation.push('FollowerList', {userId: userId});
                 }}
@@ -403,8 +404,8 @@ const UserPage = ({navigation, route}) => {
                   style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
                   {formatNumber(userInfo.follower)}
                 </Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -424,7 +425,7 @@ const UserPage = ({navigation, route}) => {
                   style={[Fonts.contentRegularBold, {color: Colors.textBold}]}>
                   {formatNumber(userInfo.following)}
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

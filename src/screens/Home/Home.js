@@ -89,9 +89,6 @@ const Home = ({navigation}) => {
       const photo = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
       const location = await check(PERMISSIONS.IOS.LOCATION_ALWAYS); // 혹은 LOCATION_ALWAYS
       const locationUsage = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-      // console.log('사진 : ' + photo);
-      // console.log('위치 정보 항상 : ' + location);
-      // console.log('사용할 때만 위치 : ' + locationUsage);
 
       setPermission(
         // camera === RESULTS.GRANTED &&
@@ -305,10 +302,10 @@ const Home = ({navigation}) => {
               height: responsiveWidth(45),
               position: 'absolute',
               bottom: responsiveHeight(30),
-              left: responsiveWidth(20),
+              left: responsiveWidth(15),
               backgroundColor: Colors.buttonSecondBackground,
               borderRadius: responsiveWidth(100),
-              zIndex: detailPressed ? 0 : 100,
+              zIndex: 100,
               shadowOffset: {width: 0, height: responsiveHeight(3)},
               shadowOpacity: 0.25,
               shadowRadius: responsiveWidth(3),
@@ -321,7 +318,12 @@ const Home = ({navigation}) => {
             <Pressable
               onPressIn={() => onButtonPressIn(scaleValue)}
               onPressOut={() => onButtonPressOut(scaleValue)}
-              style={{}}
+              style={{
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
               onPress={returnCurrentLocation}>
               <Image
                 source={Images.currentLocation}
@@ -414,12 +416,16 @@ const Home = ({navigation}) => {
                     longitude: geometry.coordinates[0],
                     latitude: geometry.coordinates[1],
                   }}
-                  onPress={onPress}>
+                  onPress={onPress}
+                  style={{
+                    borderRadius: responsiveWidth(60),
+                  }}>
                   <View
                     style={{
                       position: 'relative',
                       width: responsiveWidth(100),
                       height: responsiveWidth(100),
+                      borderRadius: responsiveHeight(99),
                       flex: 1,
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -486,6 +492,9 @@ const Home = ({navigation}) => {
                         before: 'Home',
                         reload: close,
                       });
+                    }}
+                    style={{
+                      borderRadius: responsiveWidth(60),
                     }}>
                     <View
                       {...content}
@@ -493,6 +502,7 @@ const Home = ({navigation}) => {
                         position: 'relative',
                         width: responsiveWidth(100),
                         height: responsiveWidth(100),
+                        borderRadius: responsiveHeight(999),
                         flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',

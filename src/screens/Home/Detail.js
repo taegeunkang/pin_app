@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   Image,
-  ScrollView,
   RefreshControl,
   SafeAreaView,
   TextInput,
@@ -12,8 +11,9 @@ import {
   Modal,
   Pressable,
   Dimensions,
-  ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {useTheme} from '../../hooks';
 import {useState, useEffect, useRef, useLayoutEffect} from 'react';
 import {responsiveHeight, responsiveWidth} from '../../components/Scale';
@@ -25,20 +25,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditComment from '../../components/Content/EditComment';
 import {reIssue} from '../../utils/login';
 import FastImage from 'react-native-fast-image';
-import {timeAgo} from '../../utils/util';
+import {getUtcPlus9Time, timeAgo} from '../../utils/util';
 import HeaderLeftButton from '../../components/HeaderLeftButton';
-import {likeToggle, setLikeCount, setCommentCount} from '../../store/post';
+import {
+  likeToggle,
+  setLikeCount,
+  setCommentCount,
+  appendPost,
+} from '../../store/post';
 import {useDispatch, useSelector} from 'react-redux';
+import {removeMapPost} from '../../store/map';
+import {updateNewPost} from '../../store/newPost';
 
 const Detail = ({navigation, route}) => {
-  const {postId, userId, reload, before} = route.params;
+  const {postId, userId, before, open} = route.params;
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
         <HeaderLeftButton
           onPress={() => {
-            if (reload != null) reload();
+            if (open) open(false);
             navigation.pop();
           }}
           close={before == 'Home' || before == 'Alram' ? true : false}
@@ -70,14 +77,50 @@ const Detail = ({navigation, route}) => {
   const inptRef = useRef(null);
   const [postDetail, setPostDetail] = useState({});
   const post = useSelector(state => state.post.post);
+  const userPost = post[userId]
+    ? post[userId].filter(item => item.postId == postId)[0]
+    : {};
 
-  const findPostByPostId = (userId, post, postId) => {
-    for (let i = 0; i < post[userId].length; i++) {
-      if (post[userId][i].postId == postId) {
-        return post[userId][i];
+  const findPostByPostId = async () => {
+    if (post[userId]) {
+      for (let i = 0; i < post[userId].length; i++) {
+        if (post[userId][i].postId == postId) {
+          console.log('이미 있음');
+          console.log(post[userId][i]);
+          return post[userId][i];
+        }
       }
     }
-    return null;
+
+    const response = await fetch(API_URL + `/post/find?id=${postId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + (await AsyncStorage.getItem('token')),
+      },
+    });
+    if (response.status == 200) {
+      const r = await response.json();
+      console.log('여기임');
+      console.log(r);
+      dispatch(appendPost({userId: userId, post: r}));
+      return r;
+    } else if (response.status == 400) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'U08':
+          await reIssue();
+          await findPostByPostId();
+          break;
+      }
+    } else if (response.status == 500) {
+      const k = await response.json();
+      switch (k['code']) {
+        case 'P01':
+          Alert('게시글이 존재하지 않습니다.');
+          navigation.pop();
+          break;
+      }
+    }
   };
 
   // redux dispatcher
@@ -118,6 +161,7 @@ const Detail = ({navigation, route}) => {
 
   const onLike = async () => {
     const r = await thumbsUp(postId);
+    console.log(r);
   };
   // 댓글 조회
   const fetchComment = async isRefresh => {
@@ -135,6 +179,7 @@ const Detail = ({navigation, route}) => {
         },
       },
     );
+
     if (response.status == 200) {
       const r = await response.json();
       if (page == -1 || isRefresh) {
@@ -157,6 +202,7 @@ const Detail = ({navigation, route}) => {
       }
     } else if (response.status == 400) {
       const k = await response.json();
+
       switch (k['code']) {
         case 'P01':
           Alert.alert('게시글이 존재하지 않음', '게시글이 존재하지 않습니다.');
@@ -164,6 +210,15 @@ const Detail = ({navigation, route}) => {
         case 'U08':
           await reIssue();
           await fetchComment(isRefresh);
+          break;
+      }
+    } else if (response.status == 500) {
+      const k = await response.json();
+
+      switch (k['code']) {
+        case 'P01':
+          Alert.alert('게시글이 존재하지 않음', '게시글이 존재하지 않습니다.');
+          navigation.pop();
           break;
       }
     }
@@ -196,7 +251,7 @@ const Detail = ({navigation, route}) => {
           writerId: myId,
           profileImage: myProfileImage,
           replyCount: 0,
-          createdDate: new Date().toISOString().replace('Z', '+00:00'),
+          createdDate: getUtcPlus9Time().toString(),
         };
         a = a.concat(b);
         setCommentList(a);
@@ -210,7 +265,7 @@ const Detail = ({navigation, route}) => {
           writer: myNickname,
           writerId: myId,
           profileImage: myProfileImage,
-          createdDate: new Date().toISOString().replace('Z', '+00:00'),
+          createdDate: getUtcPlus9Time().toString(),
         };
         c[reply] = c[reply].concat(d);
         setReplyList(c);
@@ -320,7 +375,10 @@ const Detail = ({navigation, route}) => {
       },
     });
     if (response.status == 200) {
-      if (reload != null) reload(postId);
+      dispatch(removeMapPost({userId: userId, postId: postId}));
+      dispatch(removeMapPost({postId: postId}));
+      dispatch(updateNewPost({newState: true}));
+
       navigation.pop();
     } else if (response.status == 400) {
       const k = await response.json();
@@ -386,25 +444,17 @@ const Detail = ({navigation, route}) => {
     setMyId(await AsyncStorage.getItem('id'));
     setMyNickname(await AsyncStorage.getItem('myNickname'));
     setMyProfileImage(await AsyncStorage.getItem('myProfileImage'));
-    const r = findPostByPostId(userId, post, postId);
+    const r = await findPostByPostId();
     setPostDetail(r);
+
+    await fetchComment();
   };
   useEffect(() => {
     const t = async () => {
       await init();
     };
-    fetchComment();
     t();
   }, []);
-
-  const reRender = async () => {
-    const r = findPostByPostId(userId, post, postId);
-    setPostDetail(r);
-  };
-
-  useEffect(() => {
-    reRender();
-  }, [post]);
 
   const styles = StyleSheet.create({
     container: {
@@ -448,7 +498,7 @@ const Detail = ({navigation, route}) => {
 
   const MoreFriends = ({count}) => {
     return (
-      <View
+      <TouchableOpacity
         style={{
           width: responsiveWidth(25),
           height: responsiveHeight(25),
@@ -468,7 +518,7 @@ const Detail = ({navigation, route}) => {
           }}>
           {'+' + count}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -520,30 +570,33 @@ const Detail = ({navigation, route}) => {
           <View style={styles.container}>
             <View style={styles.postContainer}>
               <View style={styles.writerBox}>
-                <Pressable
-                  onPress={() => {
-                    navigation.push('UserPage', {userId: userId});
-                  }}
-                  style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <FastImage
-                    source={{
-                      uri:
-                        API_URL +
-                        `/post/image?watch=${postDetail.profileImage}`,
-                      priority: FastImage.priority.high,
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.push('UserPage', {userId: userId});
                     }}
-                    style={styles.writerImage}
-                  />
-                  <Text
-                    style={[
-                      Fonts.contentMediumBold,
-                      {
-                        marginRight: responsiveWidth(5),
-                        color: Colors.textNormal,
-                      },
-                    ]}>
-                    {postDetail.nickname}
-                  </Text>
+                    style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <FastImage
+                      source={{
+                        uri:
+                          API_URL +
+                          `/post/image?watch=${postDetail.profileImage}`,
+                        priority: FastImage.priority.high,
+                      }}
+                      style={styles.writerImage}
+                    />
+                    <Text
+                      style={[
+                        Fonts.contentMediumBold,
+                        {
+                          marginRight: responsiveWidth(5),
+                          color: Colors.textNormal,
+                        },
+                      ]}>
+                      {postDetail.nickname}
+                    </Text>
+                  </TouchableOpacity>
+
                   <Text
                     style={[
                       Fonts.contentRegualrMedium,
@@ -551,7 +604,7 @@ const Detail = ({navigation, route}) => {
                     ]}>
                     {timeAgo(postDetail.createdDate)}
                   </Text>
-                </Pressable>
+                </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   {postDetail.mention && postDetail.mention && (
                     <Pressable
@@ -591,7 +644,7 @@ const Detail = ({navigation, route}) => {
                   )}
 
                   {myId == userId && (
-                    <Pressable
+                    <TouchableOpacity
                       onPress={() => setPostModalVisible(true)}
                       style={{
                         width: responsiveWidth(25),
@@ -607,7 +660,7 @@ const Detail = ({navigation, route}) => {
                           resizeMode: 'contain',
                         }}
                       />
-                    </Pressable>
+                    </TouchableOpacity>
                   )}
                 </View>
               </View>
@@ -644,8 +697,8 @@ const Detail = ({navigation, route}) => {
                     marginRight: responsiveWidth(10),
                     marginBottom: responsiveHeight(5),
                   }}>
-                  {postDetail.liked ? (
-                    <Pressable onPress={() => onLike()}>
+                  {userPost && userPost.liked ? (
+                    <TouchableOpacity onPress={() => onLike()}>
                       <Image
                         source={Images.smileSelect}
                         style={{
@@ -655,9 +708,9 @@ const Detail = ({navigation, route}) => {
                           resizeMode: 'contain',
                         }}
                       />
-                    </Pressable>
+                    </TouchableOpacity>
                   ) : (
-                    <Pressable onPress={() => onLike()}>
+                    <TouchableOpacity onPress={() => onLike()}>
                       <Image
                         source={Images.smileNotSelect}
                         style={{
@@ -667,7 +720,7 @@ const Detail = ({navigation, route}) => {
                           resizeMode: 'contain',
                         }}
                       />
-                    </Pressable>
+                    </TouchableOpacity>
                   )}
 
                   <Text
@@ -675,7 +728,7 @@ const Detail = ({navigation, route}) => {
                       Fonts.contentMediumMedium,
                       {color: Colors.textNormal},
                     ]}>
-                    {formatNumber(postDetail.likesCount)}
+                    {userPost && formatNumber(userPost.likesCount)}
                   </Text>
                 </View>
 
@@ -737,6 +790,9 @@ const Detail = ({navigation, route}) => {
                       content={comment.content}
                       replyCount={comment.replyCount}
                       showReply={getReply}
+                      move={() =>
+                        navigation.push('UserPage', {userId: comment.writerId})
+                      }
                       onPress={() => {
                         setModalVisible(true);
                         setSelectedComment(comment.commentId);

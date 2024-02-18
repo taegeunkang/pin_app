@@ -26,6 +26,7 @@ import FindingFriends from '../screens/Home/FindingFriends';
 import FindingLocation from '../screens/Home/FindingLocation';
 import SearchNavigator from './SearchNavigator';
 import {useSelector} from 'react-redux';
+import SelectLocation from '../screens/Home/SelectLocation';
 
 const Stack = createStackNavigator();
 // @refresh reset
@@ -33,8 +34,6 @@ const ApplicationNavigator = () => {
   const {t} = useTranslation(['login', 'myPage', 'newPost', 'content']);
   const {Layout, darkMode, NavigationTheme, Fonts, Colors} = useTheme();
   const navigationRef = useNavigationContainerRef();
-
-  console.log('현재 모드 : ', darkMode);
 
   useFlipper(navigationRef);
   return (
@@ -129,6 +128,39 @@ const ApplicationNavigator = () => {
                         translateY: current.progress.interpolate({
                           inputRange: [0, 1],
                           outputRange: [layouts.screen.height, 0],
+                        }),
+                      },
+                    ],
+                  },
+                };
+              },
+              transitionSpec: {
+                open: {
+                  animation: 'timing',
+                  config: {duration: 250}, // Adjust the duration as needed
+                },
+                close: {
+                  animation: 'timing',
+                  config: {duration: 250}, // Adjust the duration as needed
+                },
+              },
+            }}
+          />
+          <Stack.Screen
+            name="SearchLocation"
+            component={SelectLocation}
+            options={{
+              headerShown: false,
+              headerTitle: '',
+              presentation: 'transparentModal',
+              cardStyleInterpolator: ({current, layouts}) => {
+                return {
+                  cardStyle: {
+                    transform: [
+                      {
+                        translateX: current.progress.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [layouts.screen.width, 0],
                         }),
                       },
                     ],

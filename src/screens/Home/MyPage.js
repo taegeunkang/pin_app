@@ -9,6 +9,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -37,10 +38,11 @@ const MyPage = ({navigation}) => {
   const [modlaVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [id, setId] = useState(null);
-
+  const [open, setOpen] = useState(false);
   const [reloadLoading, setReloadLoading] = useState(false);
 
   const postList = useSelector(state => state.post.post);
+
   const dispatch = useDispatch();
 
   const reload = async postid => {
@@ -340,7 +342,7 @@ const MyPage = ({navigation}) => {
                 </Text>
               </View>
 
-              <Pressable
+              <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('FollowerList', {userId: id})
                 }
@@ -361,8 +363,8 @@ const MyPage = ({navigation}) => {
                   style={(Fonts.contentRegularBold, {color: Colors.textBold})}>
                   {formatNumber(userInfo.follower)}
                 </Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -382,7 +384,7 @@ const MyPage = ({navigation}) => {
                   style={(Fonts.contentRegularBold, {color: Colors.textBold})}>
                   {formatNumber(userInfo.following)}
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -404,28 +406,32 @@ const MyPage = ({navigation}) => {
               thumbsUp={thumbsUp}
               mention={post.mention}
               onPress={() => {
+                if (open) return;
+                setOpen(true);
                 navigation.push('Detail', {
                   ...post,
                   userId: id,
                   before: 'MyPage',
+                  open: setOpen,
                 });
               }}
             />
           ))}
-        {postList.length == 0 && (
-          <View
-            style={{
-              width: '100%',
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
-              게시글이 존재하지 않습니다.
-            </Text>
-          </View>
-        )}
+        {postList[id] == undefined ||
+          (postList[id] && postList[id].length == 0 && (
+            <View
+              style={{
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={[Fonts.contentMediumMedium, {color: Colors.textNormal}]}>
+                게시글이 존재하지 않습니다.
+              </Text>
+            </View>
+          ))}
       </ScrollView>
     </SafeAreaView>
   );

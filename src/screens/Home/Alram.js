@@ -49,7 +49,6 @@ const Alram = ({navigation}) => {
     switch (response.status) {
       case 200:
         let r1 = await response.json();
-        console.log(r1);
         setNotification(r1);
         break;
       case 400:
@@ -137,7 +136,7 @@ const Notify = ({id, message, createdDate, onPress}) => {
   }, [p]);
 
   return (
-    <Pressable
+    <TouchableOpacity
       onPress={pressed}
       style={[
         styles.notiContainer,
@@ -158,7 +157,7 @@ const Notify = ({id, message, createdDate, onPress}) => {
           {timeAgo(createdDate)}
         </Text>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

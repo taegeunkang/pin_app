@@ -35,17 +35,12 @@ const WriteContent = ({navigation, route}) => {
   const {t} = useTranslation('newPost');
   const {Images, Fonts, Colors} = useTheme();
   const [loading, setLoading] = useState(false);
-  const [lat, setLat] = useState(null);
-  const [lon, setLon] = useState(null);
 
   const dispatch = useDispatch();
   const writingContent = useSelector(state => state.writing.writing);
   const friendsList = useSelector(state => state.friends.friends);
 
   const inptRef = useRef(null);
-  useEffect(() => {
-    getCurrentLocation();
-  });
 
   const closeKeyboard = () => {
     Keyboard.dismiss();
@@ -68,28 +63,10 @@ const WriteContent = ({navigation, route}) => {
     }
   };
 
-  const getCurrentLocation = async () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        setLat(position['coords']['latitude']);
-        setLon(position['coords']['longitude']);
-      },
-      error => {
-        switch (error['code']) {
-          case 1:
-            setGpsPermission(true);
-            break;
-        }
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
-  };
-
   // 포스트 제출
   // API_URL + "/post/create"
   // 동영상 기능 추가해야함
   const submitPost = async () => {
-    
     if (writingContent.text.trim().length == 0) {
       Alert.alert('내용을 입력해 주세요.');
       return;
@@ -125,8 +102,8 @@ const WriteContent = ({navigation, route}) => {
       });
     }
 
-    formData.append('lat', lat); // latitude;
-    formData.append('lon', lon); // lontitude;
+    formData.append('lat', writingContent.latitude); // latitude;
+    formData.append('lon', writingContent.longitude); // lontitude;
     formData.append('locationName', writingContent.location);
     formData.append('isPrivate', isPrivate);
     if (friendsList) {
@@ -288,9 +265,7 @@ const WriteContent = ({navigation, route}) => {
               }}
             />
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('FindingLocation', {lat: lat, lon: lon})
-              }>
+              onPress={() => navigation.navigate('SearchLocation')}>
               <Image
                 source={Images.plusBtn}
                 style={{
