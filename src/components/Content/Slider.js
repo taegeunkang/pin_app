@@ -1,11 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  Dimensions,
-  Pressable,
-} from 'react-native';
+import {Pressable} from 'react-native';
 import Swiper from 'react-native-swiper';
 import {API_URL} from '../../utils/constants';
 import {useEffect, useRef, useState} from 'react';

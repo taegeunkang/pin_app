@@ -6,6 +6,7 @@ import {
   Image,
   Animated,
   TouchableOpacity,
+  TouchableHighlight,
 } from 'react-native';
 import {useTheme} from '../../hooks';
 import {useState} from 'react';
@@ -121,7 +122,10 @@ const PostBox = ({
   };
 
   return (
-    <TouchableOpacity style={[{flex: 1}]} onPress={onPress}>
+    <TouchableHighlight
+      underlayColor={Colors.screenBackground}
+      style={[{flex: 1}]}
+      onPress={onPress}>
       <View style={styles.container}>
         <View style={styles.postContainer}>
           <View style={styles.writerBox}>
@@ -274,7 +278,7 @@ const PostBox = ({
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   );
 };
 

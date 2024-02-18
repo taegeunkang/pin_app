@@ -6,6 +6,8 @@ import {
   Pressable,
   Animated,
   TouchableOpacity,
+  TouchableHighlight,
+  Dimensions,
 } from 'react-native';
 import {responsiveHeight, responsiveWidth} from '../Scale';
 import {useTheme} from '../../hooks';
@@ -27,7 +29,7 @@ const Comment = ({
   showReply,
   onPress,
   onReplyPress,
-  move
+  move,
 }) => {
   const {Fonts, Images, Colors} = useTheme();
   const [closed, setClosed] = useState(true);
@@ -43,7 +45,10 @@ const Comment = ({
   };
 
   return (
-    <TouchableOpacity style={[styles.container]}>
+    <TouchableHighlight
+      underlayColor={Colors.screenBackground}
+      onPress={() => {}}
+      style={styles.container}>
       <View style={styles.wrap}>
         <View style={styles.content}>
           <View
@@ -156,18 +161,22 @@ const Comment = ({
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: Dimensions.get('screen').width,
     minHeight: responsiveHeight(70),
     marginTop: responsiveHeight(10),
-    // backgroundColor: 'yellow',
   },
-  wrap: {flex: 1, backgroundColor: Colors.contentBackground},
+  wrap: {
+    flex: 1,
+    backgroundColor: Colors.contentBackground,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   content: {
     width: responsiveWidth(370),
     alignItems: 'center',
